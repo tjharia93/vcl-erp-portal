@@ -285,6 +285,132 @@ a {
   color: var(--brand-primary);
 }
 
+/* ── Login Page ── */
+
+body.vcl-login-page {
+  background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.vcl-login-topbar {
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.vcl-back-link {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.vcl-back-link:hover {
+  color: var(--brand-primary);
+}
+
+.vcl-login-wrapper {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.vcl-login-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 30px;
+}
+
+.vcl-login-title {
+  margin: 0 0 8px;
+  color: var(--brand-primary);
+  font-size: 1.9rem;
+}
+
+.vcl-login-subtext {
+  margin: 0 0 22px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.vcl-field {
+  margin-bottom: 16px;
+}
+
+.vcl-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+.vcl-field input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font: inherit;
+  background: #fff;
+  color: var(--text);
+}
+
+.vcl-field input:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(43, 57, 144, 0.12);
+}
+
+.vcl-login-error {
+  display: none;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fff5f5;
+  border: 1px solid #f0c2c2;
+  color: #9f1d1d;
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.vcl-login-submit {
+  width: 100%;
+  font-size: 1rem;
+  padding: 14px 16px;
+  border: none;
+}
+
+.vcl-login-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.vcl-login-footer-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.vcl-login-footer-links a:hover {
+  color: var(--brand-primary);
+}
+
+@media (max-width: 640px) {
+  .vcl-login-card {
+    padding: 22px;
+  }
+
+  .vcl-login-topbar {
+    padding: 14px 16px;
+  }
+}
+
 /* ── Responsive: Tablet ── */
 
 @media (max-width: 920px) {
