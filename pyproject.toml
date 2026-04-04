@@ -1,0 +1,16 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core:buildapi"
+
+[project]
+name = "vcl_portal"
+authors = [
+    {name = "Vimit Converters Limited", email = "tanuj.haria@vimit.com"}
+]
+description = "VCL ERP Portal - Public website and employee portal for Vimit Converters Limited"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+
+[tool.flit.module]
+name = "vcl_portal"
