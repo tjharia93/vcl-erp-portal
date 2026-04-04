@@ -10,5 +10,5 @@ website_route_rules = [
     {"from_route": "/employee/<path:app_path>", "to_route": "employee"},
 ]
 
-# Home page
-home_page = "index"
+# Home page - available at /home-page
+# Does not override Frappe default homepage
