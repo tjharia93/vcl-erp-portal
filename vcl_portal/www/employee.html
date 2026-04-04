@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="VCL Employee Portal - Access your tools, approvals, and operational workspaces." />
+  <title>Employee Portal - Vimit Converters Limited</title>
+  <link rel="stylesheet" href="/assets/vcl_portal/css/vcl-website.css" />
+</head>
+<body class="vcl-website">
+
+  <!-- ── Top Header ── -->
+  <header class="vcl-topbar">
+    <div class="vcl-container vcl-nav">
+      <div class="vcl-nav-top">
+        <a class="vcl-brand" href="/employee">Vimit Converters Limited</a>
+        <button class="vcl-mobile-toggle" aria-label="Toggle menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="vcl-nav-links vcl-portal-user-area">
+        <span class="vcl-portal-user">Signed in as <strong id="portalUserName">User</strong></span>
+        <a class="vcl-btn vcl-btn-secondary" href="/api/method/logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Welcome Section ── -->
+    <section class="vcl-portal-hero">
+      <div class="vcl-container">
+        <div class="vcl-panel vcl-portal-welcome">
+          <div class="vcl-eyebrow">Employee Portal</div>
+          <h1 class="vcl-portal-greeting" id="portalGreeting">Welcome back</h1>
+          <p class="vcl-section-copy">Access your tools, approvals, reports, and operational workspaces from one place.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Main Portal Cards ── -->
+    <section class="vcl-section">
+      <div class="vcl-container">
+        <div class="vcl-section-head">
+          <h2 class="vcl-section-title">Main Areas</h2>
+          <p class="vcl-section-copy">Choose the area you want to work in.</p>
+        </div>
+
+        <div class="vcl-portal-grid">
+          <a class="vcl-panel vcl-portal-card" href="/employee/sales">
+            <div>
+              <h3>Sales</h3>
+              <p>View sales tools, customer follow-up areas, and team pages.</p>
+            </div>
+            <span class="vcl-portal-card-link">Open Sales</span>
+          </a>
+
+          <a class="vcl-panel vcl-portal-card" href="/employee/production">
+            <div>
+              <h3>Production</h3>
+              <p>Access planning, execution pages, and production visibility tools.</p>
+            </div>
+            <span class="vcl-portal-card-link">Open Production</span>
+          </a>
+
+          <a class="vcl-panel vcl-portal-card" href="/employee/stores">
+            <div>
+              <h3>Stores</h3>
+              <p>Go to stock, materials, and stores-related operational pages.</p>
+            </div>
+            <span class="vcl-portal-card-link">Open Stores</span>
+          </a>
+
+          <a class="vcl-panel vcl-portal-card" href="/employee/approvals">
+            <div>
+              <h3>Approvals</h3>
+              <p>Review items that need management, finance, or workflow approval.</p>
+            </div>
+            <span class="vcl-portal-card-link">Open Approvals</span>
+          </a>
+
+          <a class="vcl-panel vcl-portal-card" href="/employee/reports">
+            <div>
+              <h3>Reports</h3>
+              <p>Open dashboard and reporting pages for operational visibility.</p>
+            </div>
+            <span class="vcl-portal-card-link">Open Reports</span>
+          </a>
+
+          <a class="vcl-panel vcl-portal-card" href="/employee/profile">
+            <div>
+              <h3>My Profile</h3>
+              <p>Review your profile, settings, or personal shortcuts.</p>
+            </div>
+            <span class="vcl-portal-card-link">Open Profile</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Quick Actions Strip ── -->
+    <section class="vcl-section">
+      <div class="vcl-container">
+        <div class="vcl-section-head">
+          <h2 class="vcl-section-title">Quick Actions</h2>
+        </div>
+        <div class="vcl-panel vcl-quick-strip">
+          <div class="vcl-quick-item">
+            <strong>New Entry</strong>
+            <span>Start a new operational transaction or form.</span>
+          </div>
+          <div class="vcl-quick-item">
+            <strong>Open Tasks</strong>
+            <span>View pending work assigned to you.</span>
+          </div>
+          <div class="vcl-quick-item">
+            <strong>Pending Approvals</strong>
+            <span>See approvals that may need your action.</span>
+          </div>
+          <div class="vcl-quick-item">
+            <strong>Today's Plan</strong>
+            <span>Go directly to today's operational priorities.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Notices / Announcements ── -->
+    <section class="vcl-section">
+      <div class="vcl-container">
+        <div class="vcl-section-head">
+          <h2 class="vcl-section-title">Notices</h2>
+        </div>
+        <div class="vcl-panel vcl-notice-box">
+          <p>Company notices, internal announcements, and key reminders will be displayed here.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="vcl-footer-wrap">
+    <div class="vcl-container vcl-footer">
+      <div>&copy; 2026 Vimit Converters Limited</div>
+      <div>Support contact placeholder</div>
+      <div><a href="/api/method/logout">Logout</a></div>
+    </div>
+  </footer>
+
+  <script src="/assets/vcl_portal/js/vcl-employee.js"></script>
+</body>
+</html>

@@ -411,6 +411,118 @@ body.vcl-login-page {
   }
 }
 
+/* ── Employee Portal ── */
+
+.vcl-portal-hero {
+  padding: 28px 0 18px;
+}
+
+.vcl-portal-welcome {
+  padding: 28px;
+}
+
+.vcl-portal-greeting {
+  margin: 0 0 10px;
+  color: var(--brand-primary);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  line-height: 1.12;
+}
+
+.vcl-portal-user-area {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.vcl-portal-user {
+  white-space: nowrap;
+}
+
+.vcl-portal-user strong {
+  color: var(--text);
+}
+
+/* ── Portal Card Grid ── */
+
+.vcl-portal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.vcl-portal-card {
+  padding: 22px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.vcl-portal-card:hover {
+  border-color: var(--brand-primary);
+  box-shadow: 0 10px 28px rgba(43, 57, 144, 0.1);
+}
+
+.vcl-portal-card h3 {
+  margin: 0 0 10px;
+  color: var(--brand-primary);
+  font-size: 1.05rem;
+}
+
+.vcl-portal-card p {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.vcl-portal-card-link {
+  margin-top: 16px;
+  color: var(--brand-primary);
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+
+/* ── Quick Actions Strip ── */
+
+.vcl-quick-strip {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.vcl-quick-item {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fbfcfe;
+}
+
+.vcl-quick-item strong {
+  display: block;
+  color: var(--brand-primary);
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.vcl-quick-item span {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ── Notice Box ── */
+
+.vcl-notice-box {
+  padding: 22px;
+}
+
+.vcl-notice-box p {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* ── Responsive: Tablet ── */
 
 @media (max-width: 920px) {
@@ -423,6 +535,14 @@ body.vcl-login-page {
   }
 
   .vcl-why-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vcl-portal-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vcl-quick-strip {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -469,13 +589,21 @@ body.vcl-login-page {
   }
 
   .vcl-card-grid,
-  .vcl-why-grid {
+  .vcl-why-grid,
+  .vcl-portal-grid,
+  .vcl-quick-strip {
     grid-template-columns: 1fr;
   }
 
   .vcl-login-strip {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .vcl-portal-welcome,
+  .vcl-portal-card,
+  .vcl-notice-box {
+    padding: 20px;
   }
 
   .vcl-login-strip .vcl-btn {
