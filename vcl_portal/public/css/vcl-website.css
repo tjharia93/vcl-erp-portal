@@ -482,6 +482,19 @@ body.vcl-login-page {
   font-size: 0.94rem;
 }
 
+/* ── Portal Card States ── */
+
+.vcl-portal-card--future {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.vcl-portal-card-link--soon {
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 500;
+}
+
 /* ── Quick Actions Strip ── */
 
 .vcl-quick-strip {
@@ -492,10 +505,16 @@ body.vcl-login-page {
 }
 
 .vcl-quick-item {
+  display: block;
   padding: 14px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: #fbfcfe;
+  transition: border-color 0.15s;
+}
+
+a.vcl-quick-item:hover {
+  border-color: var(--brand-primary);
 }
 
 .vcl-quick-item strong {

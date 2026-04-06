@@ -19,6 +19,7 @@
         </button>
       </div>
       <div class="vcl-nav-links vcl-portal-user-area">
+        <a href="/home">Home</a>
         <span class="vcl-portal-user">Signed in as <strong id="portalUserName">User</strong></span>
         <a class="vcl-btn vcl-btn-secondary" href="/api/method/logout">Logout</a>
       </div>
@@ -50,77 +51,77 @@
           <a class="vcl-panel vcl-portal-card" href="/sales-dashboard">
             <div>
               <h3>Sales</h3>
-              <p>View sales tools, customer follow-up areas, and team pages.</p>
+              <p>Sales dashboard, collections, customer accounts, and team performance.</p>
             </div>
-            <span class="vcl-portal-card-link">Open Sales</span>
+            <span class="vcl-portal-card-link">Open Sales &rarr;</span>
           </a>
 
-          <a class="vcl-panel vcl-portal-card" href="/employee/production">
+          <a class="vcl-panel vcl-portal-card vcl-portal-card--future" href="/employee/production">
             <div>
               <h3>Production</h3>
-              <p>Access planning, execution pages, and production visibility tools.</p>
+              <p>Planning, execution, and production visibility tools.</p>
             </div>
-            <span class="vcl-portal-card-link">Open Production</span>
+            <span class="vcl-portal-card-link vcl-portal-card-link--soon">Coming Soon</span>
           </a>
 
-          <a class="vcl-panel vcl-portal-card" href="/employee/stores">
+          <a class="vcl-panel vcl-portal-card vcl-portal-card--future" href="/employee/stores">
             <div>
               <h3>Stores</h3>
-              <p>Go to stock, materials, and stores-related operational pages.</p>
+              <p>Stock, materials, and stores-related operational pages.</p>
             </div>
-            <span class="vcl-portal-card-link">Open Stores</span>
+            <span class="vcl-portal-card-link vcl-portal-card-link--soon">Coming Soon</span>
           </a>
 
-          <a class="vcl-panel vcl-portal-card" href="/employee/approvals">
+          <a class="vcl-panel vcl-portal-card vcl-portal-card--future" href="/employee/approvals">
             <div>
               <h3>Approvals</h3>
-              <p>Review items that need management, finance, or workflow approval.</p>
+              <p>Items that need management, finance, or workflow approval.</p>
             </div>
-            <span class="vcl-portal-card-link">Open Approvals</span>
+            <span class="vcl-portal-card-link vcl-portal-card-link--soon">Coming Soon</span>
           </a>
 
-          <a class="vcl-panel vcl-portal-card" href="/employee/reports">
+          <a class="vcl-panel vcl-portal-card vcl-portal-card--future" href="/employee/reports">
             <div>
               <h3>Reports</h3>
-              <p>Open dashboard and reporting pages for operational visibility.</p>
+              <p>Dashboard and reporting pages for operational visibility.</p>
             </div>
-            <span class="vcl-portal-card-link">Open Reports</span>
+            <span class="vcl-portal-card-link vcl-portal-card-link--soon">Coming Soon</span>
           </a>
 
-          <a class="vcl-panel vcl-portal-card" href="/employee/profile">
+          <a class="vcl-panel vcl-portal-card vcl-portal-card--future" href="/employee/profile">
             <div>
               <h3>My Profile</h3>
-              <p>Review your profile, settings, or personal shortcuts.</p>
+              <p>Your profile, settings, and personal shortcuts.</p>
             </div>
-            <span class="vcl-portal-card-link">Open Profile</span>
+            <span class="vcl-portal-card-link vcl-portal-card-link--soon">Coming Soon</span>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- ── Quick Actions Strip ── -->
+    <!-- ── Sales Quick Links ── -->
     <section class="vcl-section">
       <div class="vcl-container">
         <div class="vcl-section-head">
-          <h2 class="vcl-section-title">Quick Actions</h2>
+          <h2 class="vcl-section-title">Sales Quick Links</h2>
         </div>
         <div class="vcl-panel vcl-quick-strip">
-          <div class="vcl-quick-item">
-            <strong>New Entry</strong>
-            <span>Start a new operational transaction or form.</span>
-          </div>
-          <div class="vcl-quick-item">
-            <strong>Open Tasks</strong>
-            <span>View pending work assigned to you.</span>
-          </div>
-          <div class="vcl-quick-item">
-            <strong>Pending Approvals</strong>
-            <span>See approvals that may need your action.</span>
-          </div>
-          <div class="vcl-quick-item">
-            <strong>Today's Plan</strong>
-            <span>Go directly to today's operational priorities.</span>
-          </div>
+          <a class="vcl-quick-item" href="/sales-dashboard">
+            <strong>Sales Dashboard</strong>
+            <span>Overview of sales performance and targets.</span>
+          </a>
+          <a class="vcl-quick-item" href="/sales-collections">
+            <strong>Collections</strong>
+            <span>Track and manage payment collections.</span>
+          </a>
+          <a class="vcl-quick-item" href="/sales-collections-submission">
+            <strong>Submit Collection</strong>
+            <span>Record a new collection entry.</span>
+          </a>
+          <a class="vcl-quick-item" href="/sales-manager">
+            <strong>Sales Manager</strong>
+            <span>Manager view for sales team oversight.</span>
+          </a>
         </div>
       </div>
     </section>
@@ -143,7 +144,7 @@
   <footer class="vcl-footer-wrap">
     <div class="vcl-container vcl-footer">
       <div>&copy; 2026 Vimit Converters Limited</div>
-      <div>Support contact placeholder</div>
+      <div><a href="/home">Home</a></div>
       <div><a href="/api/method/logout">Logout</a></div>
     </div>
   </footer>
