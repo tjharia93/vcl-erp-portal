@@ -6,9 +6,8 @@ app_email = "tanuj.haria@vimit.com"
 app_license = "MIT"
 
 # Website
+home_page = "home"
+
 website_route_rules = [
     {"from_route": "/employee/<path:app_path>", "to_route": "employee"},
 ]
-
-# Home page - available at /home-page
-# Does not override Frappe default homepage
