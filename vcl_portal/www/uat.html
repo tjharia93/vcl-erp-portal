@@ -7,12 +7,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* ── BRAND TOKENS ──
+     Per VCL Brand Standards v1.0:
+       Blue primary, Navy secondary, Green for positive/success, Amber for warnings,
+       Red restricted to true error/failure states only. */
   :root {
     --blue: #2B3990;
-    --blue-dark: #1e2a6b;
-    --blue-light: #3d4fa8;
-    --red: #ED1C24;
-    --red-dark: #c4161d;
+    --blue-dark: #1D2766;
+    --blue-mid: #5C6DBE;
+    --blue-light: #D6DBF5;
+    --blue-pale: #EEF0FB;
+    --green: #1B7A45;
+    --green-light: #D4EDE0;
+    --amber: #B86B00;
+    --amber-light: #FFF0CC;
+    --red: #C0392B;            /* RESTRICTED — only true error/failure */
+    --red-light: #FADBD8;
     --white: #ffffff;
     --off-white: #f5f6fa;
     --grey-light: #e8eaf2;
@@ -45,16 +55,14 @@
     padding: 0 24px;
     box-shadow: 0 2px 16px rgba(43,57,144,0.25);
   }
-  .header-logo {
-    display: flex; align-items: center; gap: 10px;
-    text-decoration: none;
-  }
+  .header-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
   .logo-mark {
     width: 36px; height: 36px;
-    background: var(--red);
+    background: var(--white);
+    color: var(--blue-dark);
     display: flex; align-items: center; justify-content: center;
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 800; font-size: 18px; color: white;
+    font-weight: 800; font-size: 18px;
     clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 15% 100%, 0 85%);
   }
   .logo-text {
@@ -71,16 +79,33 @@
     font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.75);
     letter-spacing: 0.5px;
   }
-  .header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .uat-pill {
+    margin-left: 6px;
+    background: var(--amber);
+    color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
   .header-time {
     font-size: 12px; color: rgba(255,255,255,0.6);
     font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px;
   }
+  .role-pill {
+    font-size: 10px; font-weight: 600;
+    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85);
+    padding: 3px 9px; border-radius: 999px;
+    letter-spacing: 1px; text-transform: uppercase;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
   .header-user {
     width: 32px; height: 32px; border-radius: 50%;
-    background: var(--red); color: white;
+    background: var(--blue-dark); color: white;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px;
+    border: 1.5px solid rgba(255,255,255,0.25);
     cursor: pointer;
   }
 
@@ -98,10 +123,10 @@
   .sidebar::-webkit-scrollbar { width: 4px; }
   .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
 
-  .sidebar-section { padding: 20px 0 8px; }
+  .sidebar-section { padding: 18px 0 6px; }
   .sidebar-section-label {
     font-size: 9px; font-weight: 600; letter-spacing: 2.5px;
-    color: rgba(255,255,255,0.35); text-transform: uppercase;
+    color: rgba(255,255,255,0.4); text-transform: uppercase;
     padding: 0 20px 8px;
   }
   .nav-item {
@@ -109,7 +134,7 @@
     padding: 9px 20px;
     cursor: pointer;
     font-size: 13px; font-weight: 500;
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,255,255,0.7);
     transition: var(--transition);
     position: relative;
     border: none; background: none; width: 100%; text-align: left;
@@ -117,22 +142,24 @@
   }
   .nav-item:hover { background: rgba(255,255,255,0.07); color: white; }
   .nav-item.active {
-    background: rgba(237,28,36,0.18);
+    background: rgba(214,219,245,0.12);
     color: white;
   }
   .nav-item.active::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px; background: var(--red);
+    width: 3px; background: var(--amber);
   }
-  .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+  .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
   .nav-badge {
-    margin-left: auto; background: var(--red);
+    margin-left: auto; background: var(--blue-mid);
     color: white; font-size: 9px; font-weight: 700;
-    padding: 1px 5px; border-radius: 8px;
+    padding: 1px 6px; border-radius: 8px;
     font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px;
   }
+  .nav-badge.warn { background: var(--amber); }
+  .nav-badge.err { background: var(--red); }
 
-  /* ── MAIN CONTENT ── */
+  /* ── MAIN ── */
   .main {
     margin-left: var(--sidebar-w);
     flex: 1;
@@ -141,17 +168,14 @@
   }
 
   /* ── PAGE HEADER ── */
-  .page-header {
-    margin-bottom: 28px;
-    animation: fadeUp 0.35s ease both;
-  }
+  .page-header { margin-bottom: 28px; animation: fadeUp 0.35s ease both; }
   .page-header-eyebrow {
     font-size: 10px; font-weight: 600; letter-spacing: 3px;
-    color: var(--red); text-transform: uppercase; margin-bottom: 6px;
+    color: var(--blue); text-transform: uppercase; margin-bottom: 6px;
   }
   .page-header h1 {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 36px; font-weight: 800; color: var(--blue);
+    font-size: 36px; font-weight: 800; color: var(--blue-dark);
     line-height: 1.05; letter-spacing: -0.5px;
   }
   .page-header p {
@@ -187,21 +211,22 @@
     transition: var(--transition);
   }
   .card:hover::before { transform: scaleX(1); }
-  .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card-icon { font-size: 26px; margin-bottom: 10px; color: var(--blue); }
   .card-title {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 18px; font-weight: 700; color: var(--blue); margin-bottom: 4px;
+    font-size: 18px; font-weight: 700; color: var(--blue-dark); margin-bottom: 4px;
   }
   .card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
   .card-tag {
     display: inline-block; margin-top: 10px;
     font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--red);
-    border: 1px solid rgba(237,28,36,0.25); border-radius: 4px;
+    text-transform: uppercase; color: var(--blue-dark);
+    border: 1px solid rgba(29,39,102,0.25); border-radius: 4px;
     padding: 2px 6px;
   }
-  .card.red-accent::before { background: var(--red); }
-  .card.red-accent:hover { border-color: var(--red); }
+  .card.warn-accent::before { background: var(--amber); }
+  .card.warn-accent:hover { border-color: var(--amber); }
+  .card.warn-accent .card-tag { color: var(--amber); border-color: rgba(184,107,0,0.3); }
 
   /* ── STAT STRIP ── */
   .stat-strip {
@@ -217,9 +242,13 @@
   .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--grey-mid); }
   .stat-value {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 28px; font-weight: 800; color: var(--blue); line-height: 1;
+    font-size: 28px; font-weight: 800; color: var(--blue-dark); line-height: 1;
   }
-  .stat-change { font-size: 11px; color: #22c55e; font-weight: 600; }
+  .stat-card.positive .stat-value { color: var(--green); }
+  .stat-card.warning .stat-value { color: var(--amber); }
+  .stat-card.critical .stat-value { color: var(--red); }
+  .stat-change { font-size: 11px; color: var(--green); font-weight: 600; }
+  .stat-change.warn { color: var(--amber); }
   .stat-change.down { color: var(--red); }
 
   /* ── TABLE ── */
@@ -234,7 +263,7 @@
   }
   .table-head-title {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 16px; font-weight: 700; color: var(--blue);
+    font-size: 16px; font-weight: 700; color: var(--blue-dark);
   }
   table { width: 100%; border-collapse: collapse; }
   th {
@@ -254,16 +283,16 @@
     display: inline-block; padding: 2px 8px; border-radius: 20px;
     font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
   }
-  .badge-green { background: #dcfce7; color: #15803d; }
-  .badge-yellow { background: #fef9c3; color: #a16207; }
-  .badge-red { background: #fee2e2; color: #b91c1c; }
-  .badge-blue { background: #dbeafe; color: #1d4ed8; }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
   .badge-grey { background: var(--grey-light); color: var(--grey-dark); }
 
   /* ── SECTION HEADING ── */
   .section-heading {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 20px; font-weight: 700; color: var(--blue);
+    font-size: 20px; font-weight: 700; color: var(--blue-dark);
     margin: 28px 0 14px; letter-spacing: 0.2px;
     display: flex; align-items: center; gap: 8px;
   }
@@ -277,13 +306,13 @@
     padding: 8px 16px; border-radius: 6px; border: none;
     font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600;
     cursor: pointer; transition: var(--transition);
+    text-decoration: none;
   }
   .btn-primary { background: var(--blue); color: white; }
-  .btn-primary:hover { background: var(--blue-light); }
-  .btn-red { background: var(--red); color: white; }
-  .btn-red:hover { background: var(--red-dark); }
+  .btn-primary:hover { background: var(--blue-dark); }
   .btn-outline { background: transparent; color: var(--blue); border: 1.5px solid var(--blue); }
   .btn-outline:hover { background: var(--blue); color: white; }
+  .btn-amber { background: var(--amber); color: white; }
   .btn-sm { padding: 5px 10px; font-size: 11px; }
 
   /* ── INFO BOX ── */
@@ -295,12 +324,16 @@
     margin: 16px 0;
     animation: fadeUp 0.4s ease 0.2s both;
   }
-  .info-box.red {
-    background: rgba(237,28,36,0.05); border-color: rgba(237,28,36,0.15);
+  .info-box.warn {
+    background: rgba(184,107,0,0.06); border-color: rgba(184,107,0,0.18);
+    border-left-color: var(--amber); color: #6a3f00;
+  }
+  .info-box.critical {
+    background: rgba(192,57,43,0.05); border-color: rgba(192,57,43,0.15);
     border-left-color: var(--red);
   }
 
-  /* ── TWO COL ── */
+  /* ── LAYOUT HELPERS ── */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 
@@ -313,15 +346,12 @@
     font-size: 13px; font-weight: 500; color: var(--text);
     text-decoration: none;
   }
-  .quick-link:hover { border-color: var(--blue); color: var(--blue); background: rgba(43,57,144,0.04); }
-  .quick-link-icon { font-size: 18px; }
+  .quick-link:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+  .quick-link-icon { font-size: 18px; color: var(--blue); }
 
   /* ── PROCESS STEPS ── */
   .process-steps { display: flex; flex-direction: column; gap: 0; }
-  .process-step {
-    display: flex; gap: 16px; position: relative;
-    padding-bottom: 24px;
-  }
+  .process-step { display: flex; gap: 16px; position: relative; padding-bottom: 24px; }
   .process-step:last-child { padding-bottom: 0; }
   .step-num {
     width: 32px; height: 32px; border-radius: 50%;
@@ -340,15 +370,7 @@
   .step-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 3px; }
   .step-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* ── DASHBOARD HOME HERO ── */
+  /* ── HOME HERO ── */
   .home-hero {
     background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 60%, #12194a 100%);
     border-radius: 14px; padding: 36px 40px;
@@ -365,45 +387,114 @@
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 42px; font-weight: 800; line-height: 1.05; margin-bottom: 8px;
   }
-  .home-hero h2 span { color: var(--red); }
+  .home-hero h2 span { color: var(--amber); }
   .home-hero p { font-size: 14px; color: rgba(255,255,255,0.7); max-width: 500px; line-height: 1.6; }
-  .hero-meta { margin-top: 20px; display: flex; gap: 24px; }
+  .hero-meta { margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap; }
   .hero-meta-item { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
   .hero-meta-item strong { display: block; font-size: 14px; color: white; font-weight: 600; margin-bottom: 2px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page { display: none; }
+  .page.active { display: block; }
 
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--grey-light); border-radius: 3px; }
 
-  /* ── FORM ELEMENTS ── */
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-label { font-size: 11px; font-weight: 600; color: var(--grey-dark); letter-spacing: 0.5px; text-transform: uppercase; }
-  .form-input {
-    padding: 9px 12px; border: 1.5px solid var(--grey-light); border-radius: 6px;
-    font-family: 'Barlow', sans-serif; font-size: 13px; color: var(--text);
-    outline: none; transition: var(--transition); background: white;
-  }
-  .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(43,57,144,0.08); }
-  .form-select {
-    padding: 9px 12px; border: 1.5px solid var(--grey-light); border-radius: 6px;
-    font-family: 'Barlow', sans-serif; font-size: 13px; color: var(--text);
-    outline: none; transition: var(--transition); background: white; cursor: pointer;
-  }
-
+  /* ── SIDEBAR FOOTER ── */
   .sidebar-footer {
     margin-top: auto; padding: 16px 20px;
     border-top: 1px solid rgba(255,255,255,0.08);
-    font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.5px;
+    font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px;
   }
+  .sidebar-footer strong { color: var(--amber); }
+
+  /* ── PROFILE / WORKPLACE ── */
+  .profile-card {
+    background: white; border-radius: 12px; border: 1px solid var(--grey-light);
+    padding: 24px; display: flex; gap: 20px; align-items: center;
+    margin-bottom: 16px;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 28px;
+  }
+  .profile-info h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    color: var(--blue-dark); font-size: 24px; margin-bottom: 4px;
+  }
+  .profile-info p { font-size: 13px; color: var(--text-muted); margin: 1px 0; }
+
+  .leave-bar {
+    background: var(--off-white); border-radius: 8px; padding: 16px;
+    margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+  }
+  .leave-bar-item { text-align: center; }
+  .leave-bar-item .v {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 800; color: var(--blue-dark);
+  }
+  .leave-bar-item .l {
+    font-size: 10px; color: var(--grey-dark); text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* ── DIRECTORY ── */
+  .dir-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .dir-card {
+    background: white; border: 1px solid var(--grey-light); border-radius: 10px;
+    padding: 16px; display: flex; gap: 12px; align-items: center;
+    transition: var(--transition);
+  }
+  .dir-card:hover { border-color: var(--blue); box-shadow: 0 4px 14px rgba(43,57,144,0.08); }
+  .dir-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--blue-pale); color: var(--blue-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 15px;
+  }
+  .dir-info .n { font-size: 13px; font-weight: 600; color: var(--text); }
+  .dir-info .r { font-size: 11px; color: var(--text-muted); }
+
+  /* ── ANNOUNCEMENTS ── */
+  .ann-item {
+    background: white; border: 1px solid var(--grey-light); border-radius: 10px;
+    padding: 16px; margin-bottom: 12px;
+  }
+  .ann-meta {
+    display: flex; gap: 10px; align-items: center;
+    font-size: 11px; color: var(--text-muted); margin-bottom: 6px;
+  }
+  .ann-tag {
+    background: var(--blue-pale); color: var(--blue-dark);
+    padding: 2px 8px; border-radius: 4px; font-weight: 600; letter-spacing: 0.5px;
+  }
+  .ann-tag.urgent { background: var(--amber-light); color: var(--amber); }
+  .ann-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: var(--blue-dark); margin-bottom: 4px; }
+  .ann-body { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+  /* ── SOPs ── */
+  .sop-search {
+    width: 100%; padding: 10px 14px; border: 1px solid var(--grey-light); border-radius: 8px;
+    font-family: 'Barlow', sans-serif; font-size: 14px; margin-bottom: 16px;
+  }
+  .sop-search:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(43,57,144,0.08); }
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <header class="header">
-  <a class="header-logo" onclick="navigate('home')" style="cursor:pointer">
+  <a class="header-logo" onclick="navigate('home')">
     <div class="logo-mark">V</div>
     <div>
       <div class="logo-text">VCL</div>
@@ -412,7 +503,9 @@
   </a>
   <div class="header-divider"></div>
   <div class="header-title" id="headerTitle">Internal Portal</div>
+  <span class="uat-pill">UAT</span>
   <div class="header-right">
+    <span class="role-pill" title="Your effective role for this session">{{ primary_role }}</span>
     <div class="header-time" id="headerTime"></div>
     <div class="header-user" title="{{ full_name }}">{{ user_initials }}</div>
   </div>
@@ -429,30 +522,76 @@
     </div>
 
     <div class="sidebar-section">
+      <div class="sidebar-section-label">My Work</div>
+      <button class="nav-item" onclick="navigate('me')" id="nav-me">
+        <span class="nav-icon">👤</span> My Profile
+      </button>
+      <button class="nav-item" onclick="navigate('approvals')" id="nav-approvals">
+        <span class="nav-icon">✅</span> Approvals
+        <span class="nav-badge warn">3</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
       <div class="sidebar-section-label">Desks</div>
+      {% if roles.is_finance or roles.is_admin %}
       <button class="nav-item" onclick="navigate('finance')" id="nav-finance">
-        <span class="nav-icon">💰</span> Finance Desk
+        <span class="nav-icon">💰</span> Finance
       </button>
+      {% endif %}
+      {% if roles.is_sales or roles.is_admin %}
       <button class="nav-item" onclick="navigate('sales')" id="nav-sales">
-        <span class="nav-icon">📈</span> Sales Desk
+        <span class="nav-icon">📈</span> Sales
       </button>
+      {% endif %}
+      {% if roles.is_procurement or roles.is_admin %}
       <button class="nav-item" onclick="navigate('procurement')" id="nav-procurement">
-        <span class="nav-icon">🛒</span> Procurement Desk
+        <span class="nav-icon">🛒</span> Procurement
       </button>
+      {% endif %}
+      {% if roles.is_production or roles.is_admin %}
       <button class="nav-item" onclick="navigate('production')" id="nav-production">
-        <span class="nav-icon">🏭</span> Production Desk
+        <span class="nav-icon">🏭</span> Production
       </button>
+      {% endif %}
+      {% if roles.is_hr or roles.is_admin %}
       <button class="nav-item" onclick="navigate('hr')" id="nav-hr">
-        <span class="nav-icon">👥</span> HR Desk
+        <span class="nav-icon">👥</span> HR
       </button>
-      <button class="nav-item" onclick="navigate('it')" id="nav-it">
-        <span class="nav-icon">💻</span> IT Desk
-      </button>
-      <button class="nav-item" onclick="navigate('logistics')" id="nav-logistics">
-        <span class="nav-icon">🚚</span> Logistics Desk
-      </button>
+      {% endif %}
+      {% if roles.is_quality or roles.is_admin %}
       <button class="nav-item" onclick="navigate('quality')" id="nav-quality">
-        <span class="nav-icon">✅</span> Quality Desk
+        <span class="nav-icon">✓</span> Quality
+      </button>
+      {% endif %}
+      {% if roles.is_logistics or roles.is_admin %}
+      <button class="nav-item" onclick="navigate('logistics')" id="nav-logistics">
+        <span class="nav-icon">🚚</span> Logistics
+      </button>
+      {% endif %}
+      {% if roles.is_admin %}
+      <button class="nav-item" onclick="navigate('it')" id="nav-it">
+        <span class="nav-icon">💻</span> IT
+      </button>
+      {% endif %}
+      {% if not roles.any_desk and not roles.is_admin %}
+      <!-- Fallback: if user has no desk role, surface a hint instead of an empty group -->
+      <button class="nav-item" disabled style="opacity:0.5;cursor:default">
+        <span class="nav-icon">·</span> No desk assigned
+      </button>
+      {% endif %}
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Workplace</div>
+      <button class="nav-item" onclick="navigate('directory')" id="nav-directory">
+        <span class="nav-icon">📇</span> Directory
+      </button>
+      <button class="nav-item" onclick="navigate('announcements')" id="nav-announcements">
+        <span class="nav-icon">📣</span> Announcements
+      </button>
+      <button class="nav-item" onclick="navigate('sops')" id="nav-sops">
+        <span class="nav-icon">📚</span> SOPs
       </button>
     </div>
 
@@ -465,25 +604,30 @@
         <span class="nav-icon">🗂️</span> Projects
         <span class="nav-badge">5</span>
       </button>
+      {% if roles.is_finance or roles.is_hr or roles.is_admin %}
       <button class="nav-item" onclick="navigate('compliance')" id="nav-compliance">
-        <span class="nav-icon">📋</span> Compliance
-        <span class="nav-badge">!</span>
+        <span class="nav-icon">⚠</span> Compliance
+        <span class="nav-badge warn">!</span>
+      </button>
+      {% endif %}
+      <button class="nav-item" onclick="navigate('testing')" id="nav-testing">
+        <span class="nav-icon">🧪</span> Testing
       </button>
     </div>
 
     <div class="sidebar-footer">
-      VCL Portal v1.0 · Nairobi, KE
+      VCL Portal <strong>v4 · UAT</strong><br>Nairobi, KE · ERPNext v16
     </div>
   </nav>
 
   <!-- MAIN -->
   <main class="main">
 
-    <!-- ══ HOME ══ -->
+    <!-- ── HOME ── -->
     <div id="page-home" class="page active">
       <div class="home-hero">
         <h2>Good morning,<br><span>{{ first_name }}.</span></h2>
-        <p>Welcome to the VCL Internal Portal. All departments, desks, and operations in one place.</p>
+        <p>Welcome to the VCL Internal Portal. Single sign-in, role-aware. All data shown here is currently mock — wiring to live ERPNext data is the next phase (see Testing section for status).</p>
         <div class="hero-meta">
           <div class="hero-meta-item"><strong>Nairobi, Kenya</strong>Location</div>
           <div class="hero-meta-item"><strong>~120</strong>Employees</div>
@@ -493,130 +637,167 @@
       </div>
 
       <div class="stat-strip">
-        <div class="stat-card">
-          <div class="stat-label">Open POs</div>
-          <div class="stat-value">14</div>
-          <div class="stat-change">↑ 3 this week</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">AR Overdue</div>
-          <div class="stat-value">KSh 2.1M</div>
-          <div class="stat-change down">↑ from last month</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Production Jobs</div>
-          <div class="stat-value">8</div>
-          <div class="stat-change">Active today</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Open Tickets</div>
-          <div class="stat-value">3</div>
-          <div class="stat-change">IT support</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">VAT Filing</div>
-          <div class="stat-value">Due 20th</div>
-          <div class="stat-change down">Review pending</div>
-        </div>
+        <div class="stat-card"><div class="stat-label">My Tasks</div><div class="stat-value">7</div><div class="stat-change warn">2 due today</div></div>
+        <div class="stat-card warning"><div class="stat-label">Approvals Waiting</div><div class="stat-value">3</div><div class="stat-change warn">Oldest 2 d</div></div>
+        <div class="stat-card"><div class="stat-label">Open Sales Orders</div><div class="stat-value">24</div><div class="stat-change">5 awaiting artwork</div></div>
+        <div class="stat-card positive"><div class="stat-label">Job Cards Today</div><div class="stat-value">12</div><div class="stat-change">9 in progress</div></div>
+        <div class="stat-card warning"><div class="stat-label">VAT Filing</div><div class="stat-value">Due 20th</div><div class="stat-change warn">Review pending</div></div>
       </div>
 
-      <div class="section-heading">All Desks</div>
+      <div class="section-heading">Your Desks</div>
       <div class="card-grid">
-        <div class="card" onclick="navigate('finance')">
-          <div class="card-icon">💰</div>
-          <div class="card-title">Finance Desk</div>
-          <div class="card-desc">AR/AP management, VAT reconciliation, payroll, trial balance, and statutory filings.</div>
-          <span class="card-tag">Finance</span>
-        </div>
-        <div class="card" onclick="navigate('sales')">
-          <div class="card-icon">📈</div>
-          <div class="card-title">Sales Desk</div>
-          <div class="card-desc">Sales orders, collections tracker, ageing reports, customer 360, and pipeline.</div>
-          <span class="card-tag">Sales</span>
-        </div>
-        <div class="card" onclick="navigate('procurement')">
-          <div class="card-icon">🛒</div>
-          <div class="card-title">Procurement Desk</div>
-          <div class="card-desc">Purchase orders, supplier management, importation workflow, and goods receipt.</div>
-          <span class="card-tag">Procurement</span>
-        </div>
-        <div class="card" onclick="navigate('production')">
-          <div class="card-icon">🏭</div>
-          <div class="card-title">Production Desk</div>
-          <div class="card-desc">Job cards, plan vs actual, OEE tracking, machine register, and cost centres.</div>
-          <span class="card-tag">Production</span>
-        </div>
-        <div class="card" onclick="navigate('hr')">
-          <div class="card-icon">👥</div>
-          <div class="card-title">HR Desk</div>
-          <div class="card-desc">Payroll, employee records, PAYE, NSSF, SHIF, Housing Levy, and leave.</div>
-          <span class="card-tag">HR</span>
-        </div>
-        <div class="card" onclick="navigate('it')">
-          <div class="card-icon">💻</div>
-          <div class="card-title">IT Desk</div>
-          <div class="card-desc">ERPNext, n8n automations, TiDB warehouse, Raspberry Pi systems, and support.</div>
-          <span class="card-tag">IT</span>
-        </div>
-        <div class="card" onclick="navigate('logistics')">
-          <div class="card-icon">🚚</div>
-          <div class="card-title">Logistics Desk</div>
-          <div class="card-desc">Fleet tracking, delivery schedules, vehicle maintenance, and route planning.</div>
-          <span class="card-tag">Logistics</span>
-        </div>
-        <div class="card" onclick="navigate('quality')">
-          <div class="card-icon">✅</div>
-          <div class="card-title">Quality Desk</div>
-          <div class="card-desc">QC checklists, product specs, NCR management, and inspection records.</div>
-          <span class="card-tag">Quality</span>
-        </div>
+        {% if roles.is_finance or roles.is_admin %}
+        <div class="card" onclick="navigate('finance')"><div class="card-icon">💰</div><div class="card-title">Finance Desk</div><div class="card-desc">AR/AP, VAT recon, payroll, statutory filings.</div><span class="card-tag">Finance</span></div>
+        {% endif %}
+        {% if roles.is_sales or roles.is_admin %}
+        <div class="card" onclick="navigate('sales')"><div class="card-icon">📈</div><div class="card-title">Sales Desk</div><div class="card-desc">SOs, collections, customer ageing, rep performance.</div><span class="card-tag">Sales</span></div>
+        {% endif %}
+        {% if roles.is_procurement or roles.is_admin %}
+        <div class="card" onclick="navigate('procurement')"><div class="card-icon">🛒</div><div class="card-title">Procurement Desk</div><div class="card-desc">POs, suppliers, importation, GRN.</div><span class="card-tag">Procurement</span></div>
+        {% endif %}
+        {% if roles.is_production or roles.is_admin %}
+        <div class="card" onclick="navigate('production')"><div class="card-icon">🏭</div><div class="card-title">Production Desk</div><div class="card-desc">Job cards, OEE, machine register, plan vs actual.</div><span class="card-tag">Production</span></div>
+        {% endif %}
+        {% if roles.is_hr or roles.is_admin %}
+        <div class="card" onclick="navigate('hr')"><div class="card-icon">👥</div><div class="card-title">HR Desk</div><div class="card-desc">Payroll, employees, statutory, leave.</div><span class="card-tag">HR</span></div>
+        {% endif %}
+        {% if roles.is_quality or roles.is_admin %}
+        <div class="card" onclick="navigate('quality')"><div class="card-icon">✓</div><div class="card-title">Quality Desk</div><div class="card-desc">QC checklists, NCRs, inspections.</div><span class="card-tag">Quality</span></div>
+        {% endif %}
+        {% if roles.is_logistics or roles.is_admin %}
+        <div class="card" onclick="navigate('logistics')"><div class="card-icon">🚚</div><div class="card-title">Logistics Desk</div><div class="card-desc">Fleet, deliveries, vehicle maintenance.</div><span class="card-tag">Logistics</span></div>
+        {% endif %}
+        {% if roles.is_admin %}
+        <div class="card" onclick="navigate('it')"><div class="card-icon">💻</div><div class="card-title">IT Desk</div><div class="card-desc">ERPNext, n8n, TiDB, Pi devices, Zoho MCP.</div><span class="card-tag">IT</span></div>
+        {% endif %}
       </div>
 
       <div class="section-heading">Quick Actions</div>
       <div class="card-grid card-grid-3">
+        <div class="quick-link" onclick="navigate('me')"><span class="quick-link-icon">📅</span> Apply for Leave</div>
+        <div class="quick-link" onclick="navigate('approvals')"><span class="quick-link-icon">✅</span> Review Approvals</div>
         <div class="quick-link" onclick="navigate('procurement')"><span class="quick-link-icon">📦</span> Raise Purchase Order</div>
         <div class="quick-link" onclick="navigate('finance')"><span class="quick-link-icon">🧾</span> Record Payment</div>
         <div class="quick-link" onclick="navigate('production')"><span class="quick-link-icon">📝</span> Open Job Card</div>
-        <div class="quick-link" onclick="navigate('sales')"><span class="quick-link-icon">💼</span> New Sales Order</div>
-        <div class="quick-link" onclick="navigate('hr')"><span class="quick-link-icon">👤</span> Employee Record</div>
         <div class="quick-link" onclick="navigate('reports')"><span class="quick-link-icon">📊</span> View Reports</div>
       </div>
     </div>
 
-    <!-- ══ FINANCE ══ -->
-    <div id="page-finance" class="page">
+    <!-- ── MY PROFILE / SELF-SERVICE ── -->
+    <div id="page-me" class="page">
       <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>Finance Desk</h1>
-        <p>AR/AP management, statutory compliance, payroll reconciliation, VAT filing, and financial close.</p>
+        <div class="page-header-eyebrow">Self-Service</div>
+        <h1>My Profile</h1>
+        <p>Your profile, leave balance, payslips, and personal records. All employees can self-serve from here.</p>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-avatar">{{ user_initials }}</div>
+        <div class="profile-info">
+          <h2>{{ full_name }}</h2>
+          <p><strong>Role:</strong> {{ primary_role }}</p>
+          <p><strong>Email:</strong> {{ user_email }}</p>
+          <p><strong>Department:</strong> <em>(from Employee record — wire in Phase A)</em></p>
+        </div>
+      </div>
+
+      <div class="section-heading">Leave Balance</div>
+      <div class="leave-bar">
+        <div class="leave-bar-item"><div class="v">14</div><div class="l">Annual Available</div></div>
+        <div class="leave-bar-item"><div class="v">3</div><div class="l">Sick Used</div></div>
+        <div class="leave-bar-item"><div class="v">0</div><div class="l">Pending Apps</div></div>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-primary">+ Apply for Leave</button><button class="btn btn-outline">View History</button></div>
+
+      <div class="two-col" style="margin-top:24px">
+        <div>
+          <div class="section-heading">Recent Payslips</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Period</th><th>Net Pay (KSh)</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>March 2026</td><td>118,420</td><td><a href="#" class="btn btn-sm btn-outline">PDF</a></td></tr>
+                <tr><td>February 2026</td><td>117,200</td><td><a href="#" class="btn btn-sm btn-outline">PDF</a></td></tr>
+                <tr><td>January 2026</td><td>117,200</td><td><a href="#" class="btn btn-sm btn-outline">PDF</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="section-heading">My Recent Activity</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>When</th><th>Activity</th></tr></thead>
+              <tbody>
+                <tr><td>Today, 09:14</td><td>Logged in to /uat</td></tr>
+                <tr><td>Yesterday</td><td>Approved JC-2025-038</td></tr>
+                <tr><td>2 days ago</td><td>Submitted leave application (Apr 30)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">Data on this page is mock. Wiring to ERPNext Employee / Leave Allocation / Salary Slip is part of Phase A (api.get_my_profile, api.get_my_leave_balance, api.get_my_payslips). See v4 plan for the data contract.</div>
+    </div>
+
+    <!-- ── APPROVALS ── -->
+    <div id="page-approvals" class="page">
+      <div class="page-header">
+        <div class="page-header-eyebrow">My Work</div>
+        <h1>Approvals</h1>
+        <p>Items waiting on your approval across Sales Orders, Purchase Orders, Payment Entries, Leave Applications, and Job Cards.</p>
       </div>
 
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">Total AR</div><div class="stat-value">KSh 8.4M</div><div class="stat-change down">↑ 12% MoM</div></div>
-        <div class="stat-card"><div class="stat-label">Total AP</div><div class="stat-value">KSh 3.2M</div><div class="stat-change">↓ 5% MoM</div></div>
-        <div class="stat-card"><div class="stat-label">Cash Balance</div><div class="stat-value">KSh 1.8M</div><div class="stat-change">As of today</div></div>
-        <div class="stat-card"><div class="stat-label">VAT Payable</div><div class="stat-value">KSh 420K</div><div class="stat-change down">Due 20th</div></div>
+        <div class="stat-card warning"><div class="stat-label">Awaiting Me</div><div class="stat-value">3</div><div class="stat-change warn">Oldest 2 days</div></div>
+        <div class="stat-card"><div class="stat-label">Approved (MTD)</div><div class="stat-value">28</div><div class="stat-change">+4 this week</div></div>
+        <div class="stat-card"><div class="stat-label">Avg Turnaround</div><div class="stat-value">1.4 d</div><div class="stat-change">Within SLA</div></div>
       </div>
 
+      <div class="table-wrap">
+        <div class="table-head"><div class="table-head-title">Awaiting Your Action</div><div><button class="btn btn-sm btn-outline">Filter</button></div></div>
+        <table>
+          <thead><tr><th>Doc</th><th>Type</th><th>Requester</th><th>Value</th><th>Age</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>SO-2026-00328</td><td><span class="badge badge-blue">Sales Order</span></td><td>J. Otieno</td><td>KSh 412,500</td><td>2 d</td><td><button class="btn btn-sm btn-primary">Review</button></td></tr>
+            <tr><td>PO-2026-00177</td><td><span class="badge badge-blue">Purchase Order</span></td><td>M. Kariuki</td><td>KSh 1,180,000</td><td>1 d</td><td><button class="btn btn-sm btn-primary">Review</button></td></tr>
+            <tr><td>LA-2026-0094</td><td><span class="badge badge-amber">Leave</span></td><td>S. Wanjiru</td><td>3 days</td><td>4 h</td><td><button class="btn btn-sm btn-primary">Review</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-box">Mock list. Real data: query ERPNext Workflow Action where transition_role ∈ user roles, plus Leave Application where leave_approver = session user. Phase A spec.</div>
+    </div>
+
+    <!-- ── FINANCE ── -->
+    <div id="page-finance" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Finance Desk</h1><p>AR/AP management, statutory compliance, payroll reconciliation, VAT filing, financial close.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card"><div class="stat-label">Total AR</div><div class="stat-value">KSh 8.4M</div><div class="stat-change warn">↑ 12% MoM</div></div>
+        <div class="stat-card"><div class="stat-label">Total AP</div><div class="stat-value">KSh 3.2M</div><div class="stat-change">↓ 5% MoM</div></div>
+        <div class="stat-card positive"><div class="stat-label">Cash Balance</div><div class="stat-value">KSh 1.8M</div><div class="stat-change">As of today</div></div>
+        <div class="stat-card warning"><div class="stat-label">VAT Payable</div><div class="stat-value">KSh 420K</div><div class="stat-change warn">Due 20th</div></div>
+      </div>
       <div class="two-col">
         <div>
           <div class="section-heading">Key Modules</div>
           <div class="card-grid">
-            <div class="card"><div class="card-icon">📥</div><div class="card-title">Accounts Receivable</div><div class="card-desc">Customer invoices, ageing analysis, collections workflow, and bad debt provisioning.</div></div>
-            <div class="card"><div class="card-icon">📤</div><div class="card-title">Accounts Payable</div><div class="card-desc">Supplier invoices, payment runs, sub-ledger reconciliation, and director payables.</div></div>
-            <div class="card"><div class="card-icon">🧾</div><div class="card-title">VAT Reconciliation</div><div class="card-desc">QBO vs KRA iTax comparison across 12 monthly tabs. Habo, Awanad, and local suppliers.</div></div>
-            <div class="card"><div class="card-icon">💸</div><div class="card-title">Payroll</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. Permanent and casual worker splits.</div></div>
-            <div class="card"><div class="card-icon">📊</div><div class="card-title">Trial Balance</div><div class="card-desc">Monthly TB review, year-end close, statutory financial preparation.</div></div>
-            <div class="card red-accent"><div class="card-icon">⚠️</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table covering AR, AP, VAT suspense, investments, and TB issues.</div><span class="card-tag">29 items</span></div>
+            <div class="card"><div class="card-icon">📥</div><div class="card-title">Accounts Receivable</div><div class="card-desc">Customer invoices, ageing, collections, bad debt.</div></div>
+            <div class="card"><div class="card-icon">📤</div><div class="card-title">Accounts Payable</div><div class="card-desc">Supplier invoices, payment runs, sub-ledger reconciliation.</div></div>
+            <div class="card"><div class="card-icon">🧾</div><div class="card-title">VAT Reconciliation</div><div class="card-desc">QBO vs KRA iTax across 12 monthly tabs.</div></div>
+            <div class="card"><div class="card-icon">💸</div><div class="card-title">Payroll</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. Permanent + casual splits.</div></div>
+            <div class="card"><div class="card-icon">📊</div><div class="card-title">Trial Balance</div><div class="card-desc">Monthly TB review, year-end close.</div></div>
+            <div class="card warn-accent"><div class="card-icon">⚠</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table covering AR/AP/VAT/TB.</div><span class="card-tag">29 items</span></div>
           </div>
         </div>
         <div>
           <div class="section-heading">Statutory Calendar</div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Filing</th><th>Due Date</th><th>Status</th></tr></thead>
+              <thead><tr><th>Filing</th><th>Due</th><th>Status</th></tr></thead>
               <tbody>
-                <tr><td>VAT Return</td><td>20th Monthly</td><td><span class="badge badge-yellow">Pending</span></td></tr>
+                <tr><td>VAT Return</td><td>20th Monthly</td><td><span class="badge badge-amber">Pending</span></td></tr>
                 <tr><td>PAYE</td><td>9th Monthly</td><td><span class="badge badge-green">Filed</span></td></tr>
                 <tr><td>NSSF</td><td>15th Monthly</td><td><span class="badge badge-green">Filed</span></td></tr>
                 <tr><td>SHIF</td><td>15th Monthly</td><td><span class="badge badge-green">Filed</span></td></tr>
@@ -625,182 +806,149 @@
               </tbody>
             </table>
           </div>
-          <div class="section-heading">Payment Workflow</div>
-          <div class="info-box">ERPNext payment flow: <strong>Draft → Pending Approval → Approved → Pending in Bank → In Bank Account</strong>. All payments above KSh 50K require dual authorisation.</div>
           <div class="section-heading">Quick Links</div>
           <div style="display:flex;flex-direction:column;gap:8px">
             <div class="quick-link"><span class="quick-link-icon">🔗</span> ERPNext — Accounts</div>
             <div class="quick-link"><span class="quick-link-icon">🔗</span> QuickBooks Online</div>
             <div class="quick-link"><span class="quick-link-icon">🔗</span> KRA iTax Portal</div>
-            <div class="quick-link"><span class="quick-link-icon">📄</span> VCL Costing Model v1.xlsx</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ══ SALES ══ -->
+    <!-- ── SALES ── -->
     <div id="page-sales" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>Sales Desk</h1>
-        <p>Sales orders, collections management, customer ageing, pipeline tracking, and rep performance.</p>
-      </div>
-
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Sales Desk</h1><p>Sales orders, collections, customer ageing, pipeline, rep performance.</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">MTD Revenue</div><div class="stat-value">KSh 4.2M</div><div class="stat-change">↑ 8%</div></div>
+        <div class="stat-card positive"><div class="stat-label">MTD Revenue</div><div class="stat-value">KSh 4.2M</div><div class="stat-change">↑ 8%</div></div>
         <div class="stat-card"><div class="stat-label">Open Orders</div><div class="stat-value">23</div><div class="stat-change">Active</div></div>
-        <div class="stat-card"><div class="stat-label">Overdue AR</div><div class="stat-value">KSh 2.1M</div><div class="stat-change down">Action needed</div></div>
-        <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value">147</div><div class="stat-change">Active accounts</div></div>
+        <div class="stat-card warning"><div class="stat-label">Overdue AR</div><div class="stat-value">KSh 2.1M</div><div class="stat-change warn">Action needed</div></div>
+        <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value">147</div><div class="stat-change">Active</div></div>
       </div>
-
       <div class="section-heading">Sales Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">🛍️</div><div class="card-title">Sales Orders</div><div class="card-desc">Create and track sales orders, delivery notes, and invoices in ERPNext.</div></div>
-        <div class="card"><div class="card-icon">💳</div><div class="card-title">Collections Tracker</div><div class="card-desc">Weekly collections tracker by sales rep. Links to customer ageing and payment status.</div></div>
-        <div class="card"><div class="card-icon">📋</div><div class="card-title">Ageing Report</div><div class="card-desc">Upload ageing report to sales dashboard. 0–30, 31–60, 61–90, 90+ buckets.</div></div>
-        <div class="card"><div class="card-icon">👤</div><div class="card-title">Customer 360</div><div class="card-desc">Full customer profile: outstanding, order history, payment behaviour, and contacts.</div></div>
-        <div class="card"><div class="card-icon">📊</div><div class="card-title">Rep Dashboard</div><div class="card-desc">Sales rep performance: targets, actuals, collections, and commission tracking.</div></div>
-        <div class="card"><div class="card-icon">🏆</div><div class="card-title">Manager View</div><div class="card-desc">Cross-rep comparison, territory management, and escalation workflow.</div></div>
+        <div class="card"><div class="card-icon">🛍️</div><div class="card-title">Sales Orders</div><div class="card-desc">Create + track SOs, delivery notes, invoices.</div></div>
+        <div class="card"><div class="card-icon">💳</div><div class="card-title">Collections Tracker</div><div class="card-desc">Weekly collections by rep with ageing/payment status.</div></div>
+        <div class="card"><div class="card-icon">📋</div><div class="card-title">Ageing Report</div><div class="card-desc">0–30, 31–60, 61–90, 90+ buckets per customer.</div></div>
+        <div class="card"><div class="card-icon">👤</div><div class="card-title">Customer 360</div><div class="card-desc">Outstanding, history, behaviour, contacts.</div></div>
+        <div class="card"><div class="card-icon">📊</div><div class="card-title">Rep Dashboard</div><div class="card-desc">Targets, actuals, collections, commission.</div></div>
+        <div class="card"><div class="card-icon">🏆</div><div class="card-title">Manager View</div><div class="card-desc">Cross-rep comparison, escalations.</div></div>
       </div>
-
       <div class="section-heading">Ageing Summary</div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Customer</th><th>0–30 Days</th><th>31–60 Days</th><th>61–90 Days</th><th>90+ Days</th><th>Total</th><th>Rep</th></tr></thead>
+          <thead><tr><th>Customer</th><th>0–30</th><th>31–60</th><th>61–90</th><th>90+</th><th>Total</th><th>Rep</th></tr></thead>
           <tbody>
-            <tr><td>Mwangi Stationery</td><td>KSh 120,000</td><td>KSh 80,000</td><td>—</td><td>—</td><td>KSh 200,000</td><td><span class="badge badge-blue">Joan</span></td></tr>
-            <tr><td>Nairobi Schools Board</td><td>KSh 450,000</td><td>KSh 220,000</td><td>KSh 90,000</td><td>—</td><td>KSh 760,000</td><td><span class="badge badge-blue">Joyce</span></td></tr>
-            <tr><td>Equity Printing Ltd</td><td>—</td><td>KSh 150,000</td><td>KSh 200,000</td><td>KSh 310,000</td><td>KSh 660,000</td><td><span class="badge badge-yellow">Raheel</span></td></tr>
-            <tr><td>Lake Basin Supplies</td><td>KSh 90,000</td><td>—</td><td>—</td><td>KSh 180,000</td><td>KSh 270,000</td><td><span class="badge badge-blue">Joan</span></td></tr>
+            <tr><td>Mwangi Stationery</td><td>120,000</td><td>80,000</td><td>—</td><td>—</td><td>200,000</td><td><span class="badge badge-blue">Joan</span></td></tr>
+            <tr><td>Nairobi Schools Board</td><td>450,000</td><td>220,000</td><td>90,000</td><td>—</td><td>760,000</td><td><span class="badge badge-blue">Joyce</span></td></tr>
+            <tr><td>Equity Printing Ltd</td><td>—</td><td>150,000</td><td>200,000</td><td>310,000</td><td>660,000</td><td><span class="badge badge-amber">Raheel</span></td></tr>
+            <tr><td>Lake Basin Supplies</td><td>90,000</td><td>—</td><td>—</td><td>180,000</td><td>270,000</td><td><span class="badge badge-blue">Joan</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ══ PROCUREMENT ══ -->
+    <!-- ── PROCUREMENT ── -->
     <div id="page-procurement" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>Procurement Desk</h1>
-        <p>Purchase orders, supplier management, importation lifecycle, goods receipt, and stock replenishment.</p>
-      </div>
-
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Procurement Desk</h1><p>Purchase orders, supplier management, importation lifecycle, GRN, replenishment.</p></div>
       <div class="stat-strip">
         <div class="stat-card"><div class="stat-label">Open POs</div><div class="stat-value">14</div><div class="stat-change">↑ 3 this week</div></div>
-        <div class="stat-card"><div class="stat-label">Pending GRNs</div><div class="stat-value">6</div><div class="stat-change down">Awaiting receipt</div></div>
+        <div class="stat-card warning"><div class="stat-label">Pending GRNs</div><div class="stat-value">6</div><div class="stat-change warn">Awaiting receipt</div></div>
         <div class="stat-card"><div class="stat-label">Suppliers</div><div class="stat-value">38</div><div class="stat-change">Active</div></div>
-        <div class="stat-card"><div class="stat-label">Import Shipments</div><div class="stat-value">2</div><div class="stat-change">In transit</div></div>
+        <div class="stat-card"><div class="stat-label">Imports In Transit</div><div class="stat-value">2</div><div class="stat-change">Shipments</div></div>
       </div>
-
       <div class="two-col">
         <div>
           <div class="section-heading">Procurement Modules</div>
           <div class="card-grid">
-            <div class="card"><div class="card-icon">📋</div><div class="card-title">Purchase Orders</div><div class="card-desc">Raise, approve, and track POs. Linked to ERPNext materials request workflow.</div></div>
-            <div class="card"><div class="card-icon">🏪</div><div class="card-title">Supplier Register</div><div class="card-desc">Supplier database with contact, banking, credit terms, and performance ratings.</div></div>
-            <div class="card"><div class="card-icon">✈️</div><div class="card-title">Importation SOP</div><div class="card-desc">Five-stage import lifecycle: Order → Shipment → Customs → Clearance → Stock.</div></div>
-            <div class="card"><div class="card-icon">📦</div><div class="card-title">Goods Receipt (GRN)</div><div class="card-desc">Receive goods against PO, quality check, and post to stock in ERPNext.</div></div>
+            <div class="card"><div class="card-icon">📋</div><div class="card-title">Purchase Orders</div><div class="card-desc">Raise, approve, track POs against MR workflow.</div></div>
+            <div class="card"><div class="card-icon">🏪</div><div class="card-title">Supplier Register</div><div class="card-desc">Contact, banking, terms, performance.</div></div>
+            <div class="card"><div class="card-icon">✈️</div><div class="card-title">Importation SOP</div><div class="card-desc">Order → Shipment → Customs → Clearance → Stock.</div></div>
+            <div class="card"><div class="card-icon">📦</div><div class="card-title">Goods Receipt (GRN)</div><div class="card-desc">Receive against PO, QC, post to stock.</div></div>
           </div>
         </div>
-
         <div>
           <div class="section-heading">Importation Process</div>
-          <div class="card" style="cursor:default;margin-bottom:16px">
+          <div class="card" style="cursor:default">
             <div class="process-steps">
-              <div class="process-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Purchase Order</div><div class="step-desc">Raise PO in ERPNext. Obtain director approval for orders above threshold.</div></div></div>
-              <div class="process-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Proforma & Payment</div><div class="step-desc">Receive proforma invoice. Arrange TT/LC payment. Log in Import Tracker Excel.</div></div></div>
-              <div class="process-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Shipment Tracking</div><div class="step-desc">Track BL/AWB. Monitor ETD/ETA. Update QBO and ERPNext prepayment entries.</div></div></div>
-              <div class="process-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Customs Clearance</div><div class="step-desc">Lodge entry with clearing agent. Pay customs duties. Obtain release order.</div></div></div>
-              <div class="process-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">GRN & Stock Update</div><div class="step-desc">Physical count, quality check, GRN in ERPNext, landed cost entry in QBO.</div></div></div>
+              <div class="process-step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Purchase Order</div><div class="step-desc">Raise PO. Director approval above threshold.</div></div></div>
+              <div class="process-step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Proforma & Payment</div><div class="step-desc">TT/LC payment. Log in Import Tracker.</div></div></div>
+              <div class="process-step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Shipment Tracking</div><div class="step-desc">BL/AWB, ETD/ETA, prepayment entries.</div></div></div>
+              <div class="process-step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Customs Clearance</div><div class="step-desc">Lodge entry, pay duties, release order.</div></div></div>
+              <div class="process-step"><div class="step-num">5</div><div class="step-body"><div class="step-title">GRN & Stock Update</div><div class="step-desc">Count, QC, GRN, landed cost in QBO.</div></div></div>
             </div>
           </div>
-          <div class="info-box">Import Tracker Excel maintained at <strong>\\finance\\apps\\06. DATA\\Imports</strong>. SSL certificates stored at <strong>\\finance\\apps\\06. DATA\\SQL</strong>.</div>
         </div>
       </div>
-
       <div class="section-heading">Active Purchase Orders</div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>PO No.</th><th>Supplier</th><th>Item</th><th>Value (KSh)</th><th>Date</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>PO-2025-089</td><td>Habo Paper Ltd</td><td>NCR Paper Reels</td><td>1,240,000</td><td>Apr 10</td><td><span class="badge badge-yellow">Pending GRN</span></td></tr>
-            <tr><td>PO-2025-088</td><td>Awanad Trading</td><td>Carbonless CB Sheets</td><td>820,000</td><td>Apr 8</td><td><span class="badge badge-blue">In Transit</span></td></tr>
-            <tr><td>PO-2025-087</td><td>Local Supplier A</td><td>Glue & Binding Wire</td><td>145,000</td><td>Apr 5</td><td><span class="badge badge-green">Received</span></td></tr>
-            <tr><td>PO-2025-086</td><td>Cartridge World</td><td>Printer Consumables</td><td>67,000</td><td>Apr 1</td><td><span class="badge badge-green">Received</span></td></tr>
+            <tr><td>PO-2025-089</td><td>Habo Paper Ltd</td><td>NCR Paper Reels</td><td>1,240,000</td><td>Apr 10</td><td><span class="badge badge-amber">Pending GRN</span></td></tr>
+            <tr><td>PO-2025-088</td><td>Awanad Trading</td><td>Carbonless CB</td><td>820,000</td><td>Apr 8</td><td><span class="badge badge-blue">In Transit</span></td></tr>
+            <tr><td>PO-2025-087</td><td>Local Supplier A</td><td>Glue & Wire</td><td>145,000</td><td>Apr 5</td><td><span class="badge badge-green">Received</span></td></tr>
+            <tr><td>PO-2025-086</td><td>Cartridge World</td><td>Consumables</td><td>67,000</td><td>Apr 1</td><td><span class="badge badge-green">Received</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ══ PRODUCTION ══ -->
+    <!-- ── PRODUCTION ── -->
     <div id="page-production" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>Production Desk</h1>
-        <p>Job cards, plan vs actual, OEE tracking, machine register, cost centres, and production planning.</p>
-      </div>
-
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Production Desk</h1><p>Job cards, plan vs actual, OEE tracking, machine register, cost centres.</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">Active Jobs</div><div class="stat-value">8</div><div class="stat-change">Across all depts</div></div>
-        <div class="stat-card"><div class="stat-label">OEE (Today)</div><div class="stat-value">74%</div><div class="stat-change down">Target: 85%</div></div>
-        <div class="stat-card"><div class="stat-label">Waste Rate</div><div class="stat-value">3.2%</div><div class="stat-change">Within tolerance</div></div>
+        <div class="stat-card"><div class="stat-label">Active Jobs</div><div class="stat-value">8</div><div class="stat-change">All depts</div></div>
+        <div class="stat-card warning"><div class="stat-label">OEE (Today)</div><div class="stat-value">74%</div><div class="stat-change warn">Target: 85%</div></div>
+        <div class="stat-card positive"><div class="stat-label">Waste Rate</div><div class="stat-value">3.2%</div><div class="stat-change">Within tolerance</div></div>
         <div class="stat-card"><div class="stat-label">Jobs Completed</div><div class="stat-value">142</div><div class="stat-change">This month</div></div>
       </div>
-
       <div class="section-heading">Cost Centres</div>
       <div class="card-grid card-grid-3">
-        <div class="card"><div class="card-icon">🏷️</div><div class="card-title">Labels (L1–L4)</div><div class="card-desc">Label printing lines. Material tracked in m². GSM-based costing per run.</div></div>
-        <div class="card"><div class="card-icon">💻</div><div class="card-title">Computer Paper (CP1–CP8)</div><div class="card-desc">NCR/plain paper. Separate costing for plain vs carbonless. CB/CFB/CF rules.</div></div>
-        <div class="card"><div class="card-icon">📚</div><div class="card-title">Exercise Books (EB1–EB9)</div><div class="card-desc">Paper per tonne costing. Piecework for folding and stitching operations.</div></div>
+        <div class="card"><div class="card-icon">🏷️</div><div class="card-title">Labels (L1–L4)</div><div class="card-desc">Label lines. m² costing per run.</div></div>
+        <div class="card"><div class="card-icon">💻</div><div class="card-title">Computer Paper (CP1–CP8)</div><div class="card-desc">NCR/plain. CB/CFB/CF rules.</div></div>
+        <div class="card"><div class="card-icon">📚</div><div class="card-title">Exercise Books (EB1–EB9)</div><div class="card-desc">Tonne costing. Folding/stitching piecework.</div></div>
       </div>
-
       <div class="section-heading">Production Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">📝</div><div class="card-title">Job Cards</div><div class="card-desc">Customer Product Specification + Job Card DocTypes. Computer paper, labels, cartons.</div></div>
-        <div class="card"><div class="card-icon">📅</div><div class="card-title">Daily Production Plan</div><div class="card-desc">Plan vs Actual HTML report for 7 stations. A4 landscape. Downloaded from ERPNext.</div></div>
-        <div class="card"><div class="card-icon">⚙️</div><div class="card-title">Machine Register</div><div class="card-desc">Fixed assets machine register with spares tracking. ERPNext migration path defined.</div></div>
-        <div class="card"><div class="card-icon">📈</div><div class="card-title">OEE Tracking</div><div class="card-desc">Availability × Performance × Quality per machine. Raspberry Pi IR sensor data.</div></div>
-        <div class="card"><div class="card-icon">🔁</div><div class="card-title">MRP / Reorder</div><div class="card-desc">Reorder logic, reel-level FIFO, and capacity planning for corrugation department.</div></div>
-        <div class="card"><div class="card-icon">📊</div><div class="card-title">Variance Reports</div><div class="card-desc">Standard vs actual costing variance. TiDB nightly sync. n8n daily reminder.</div></div>
+        <div class="card"><div class="card-icon">📝</div><div class="card-title">Job Cards</div><div class="card-desc">CPS + Job Card. CP/Label/Carton variants.</div></div>
+        <div class="card"><div class="card-icon">📅</div><div class="card-title">Daily Plan</div><div class="card-desc">Plan vs Actual, 7 stations, A4 landscape.</div></div>
+        <div class="card"><div class="card-icon">⚙️</div><div class="card-title">Machine Register</div><div class="card-desc">Fixed assets + spares.</div></div>
+        <div class="card"><div class="card-icon">📈</div><div class="card-title">OEE Tracking</div><div class="card-desc">A × P × Q from Pi sensors.</div></div>
+        <div class="card"><div class="card-icon">🔁</div><div class="card-title">MRP / Reorder</div><div class="card-desc">Reorder, FIFO, capacity planning.</div></div>
+        <div class="card"><div class="card-icon">📊</div><div class="card-title">Variance Reports</div><div class="card-desc">Standard vs actual. TiDB nightly sync.</div></div>
       </div>
-
       <div class="section-heading">Active Job Cards</div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Job Card</th><th>Product</th><th>Customer</th><th>Cost Centre</th><th>Parts</th><th>Status</th></tr></thead>
+          <thead><tr><th>Job Card</th><th>Product</th><th>Customer</th><th>CC</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>JC-2025-041</td><td>NCR 2-Part A4</td><td>Equity Printing</td><td>CP3</td><td>2</td><td><span class="badge badge-blue">In Progress</span></td></tr>
-            <tr><td>JC-2025-040</td><td>Exercise Book 96pp</td><td>NSB</td><td>EB5</td><td>—</td><td><span class="badge badge-blue">In Progress</span></td></tr>
-            <tr><td>JC-2025-039</td><td>Label 50×25mm</td><td>Bidco Africa</td><td>L2</td><td>—</td><td><span class="badge badge-yellow">Pending QC</span></td></tr>
-            <tr><td>JC-2025-038</td><td>Carton 300gsm</td><td>Aga Khan Hospital</td><td>—</td><td>—</td><td><span class="badge badge-green">Complete</span></td></tr>
+            <tr><td>JC-2025-041</td><td>NCR 2-Part A4</td><td>Equity Printing</td><td>CP3</td><td><span class="badge badge-blue">In Progress</span></td></tr>
+            <tr><td>JC-2025-040</td><td>Exercise Book 96pp</td><td>NSB</td><td>EB5</td><td><span class="badge badge-blue">In Progress</span></td></tr>
+            <tr><td>JC-2025-039</td><td>Label 50×25mm</td><td>Bidco Africa</td><td>L2</td><td><span class="badge badge-amber">Pending QC</span></td></tr>
+            <tr><td>JC-2025-038</td><td>Carton 300gsm</td><td>Aga Khan Hospital</td><td>—</td><td><span class="badge badge-green">Complete</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ══ HR ══ -->
+    <!-- ── HR ── -->
     <div id="page-hr" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>HR Desk</h1>
-        <p>Employee records, payroll, statutory deductions, leave management, and headcount planning.</p>
-      </div>
-
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>HR Desk</h1><p>Employee records, payroll, statutory deductions, leave, headcount.</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">Total Employees</div><div class="stat-value">~120</div><div class="stat-change">All departments</div></div>
+        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">~120</div><div class="stat-change">All depts</div></div>
         <div class="stat-card"><div class="stat-label">Permanent</div><div class="stat-value">78</div><div class="stat-change">On payroll</div></div>
         <div class="stat-card"><div class="stat-label">Casual</div><div class="stat-value">~42</div><div class="stat-change">Variable</div></div>
         <div class="stat-card"><div class="stat-label">On Leave</div><div class="stat-value">5</div><div class="stat-change">This week</div></div>
       </div>
-
       <div class="two-col">
         <div>
           <div class="section-heading">HR Modules</div>
           <div class="card-grid">
-            <div class="card"><div class="card-icon">👤</div><div class="card-title">Employee Records</div><div class="card-desc">Personal details, department, cost centre allocation, and employment terms.</div></div>
-            <div class="card"><div class="card-icon">💰</div><div class="card-title">Payroll Processing</div><div class="card-desc">Separate permanent and casual payroll schedules. Piecework reconciliation for production.</div></div>
-            <div class="card"><div class="card-icon">📅</div><div class="card-title">Leave Management</div><div class="card-desc">Annual leave, sick leave, maternity/paternity, and unpaid leave tracking.</div></div>
-            <div class="card"><div class="card-icon">📋</div><div class="card-title">Statutory Schedules</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. Reconciliation against KRA portal.</div></div>
+            <div class="card"><div class="card-icon">👤</div><div class="card-title">Employee Records</div><div class="card-desc">Personal, dept, cost centre, terms.</div></div>
+            <div class="card"><div class="card-icon">💰</div><div class="card-title">Payroll Processing</div><div class="card-desc">Permanent + casual schedules. Piecework recon.</div></div>
+            <div class="card"><div class="card-icon">📅</div><div class="card-title">Leave Management</div><div class="card-desc">Annual, sick, maternity/paternity, unpaid.</div></div>
+            <div class="card"><div class="card-icon">📋</div><div class="card-title">Statutory Schedules</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. KRA recon.</div></div>
           </div>
         </div>
         <div>
@@ -816,172 +964,264 @@
               </tbody>
             </table>
           </div>
-          <div class="info-box">Payroll Excel maintained with permanent and casual sheets. Casual worker piecework rates reconciled monthly against production job cards.</div>
+          <div class="info-box">Casual worker piecework rates reconciled monthly against production job cards.</div>
         </div>
       </div>
     </div>
 
-    <!-- ══ IT ══ -->
-    <div id="page-it" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>IT Desk</h1>
-        <p>ERPNext administration, automations, data warehouse, Raspberry Pi systems, and user support.</p>
-      </div>
-
+    <!-- ── QUALITY ── -->
+    <div id="page-quality" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Quality Desk</h1><p>QC checklists, product specifications, NCRs, inspection sign-offs.</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">ERPNext</div><div class="stat-value">v16</div><div class="stat-change">Frappe Cloud</div></div>
-        <div class="stat-card"><div class="stat-label">Open Tickets</div><div class="stat-value">3</div><div class="stat-change down">Needs attention</div></div>
-        <div class="stat-card"><div class="stat-label">n8n Workflows</div><div class="stat-value">12</div><div class="stat-value" style="font-size:14px">Active</div></div>
-        <div class="stat-card"><div class="stat-label">Pi Devices</div><div class="stat-value">4</div><div class="stat-change">Edge sensors</div></div>
+        <div class="stat-card warning"><div class="stat-label">Jobs Pending QC</div><div class="stat-value">3</div><div class="stat-change warn">Awaiting sign-off</div></div>
+        <div class="stat-card"><div class="stat-label">NCRs (MTD)</div><div class="stat-value">2</div><div class="stat-change">Non-conformances</div></div>
+        <div class="stat-card positive"><div class="stat-label">Pass Rate</div><div class="stat-value">97.4%</div><div class="stat-change">This month</div></div>
+        <div class="stat-card positive"><div class="stat-label">Complaints</div><div class="stat-value">0</div><div class="stat-change">This month</div></div>
       </div>
-
-      <div class="section-heading">Technology Stack</div>
+      <div class="section-heading">Quality Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">🔧</div><div class="card-title">ERPNext v16</div><div class="card-desc">Hosted at vimitconverters.frappe.cloud. Custom apps: vcl_portal, vcl_sales_dashboard, vcl_job_cards.</div></div>
-        <div class="card"><div class="card-icon">📚</div><div class="card-title">QuickBooks Online</div><div class="card-desc">Accounting source of truth. Synced to TiDB warehouse nightly via n8n.</div></div>
-        <div class="card"><div class="card-icon">🗄️</div><div class="card-title">TiDB Data Warehouse</div><div class="card-desc">Central data layer. QBO + ERPNext sync. Powers Power BI dashboards.</div></div>
-        <div class="card"><div class="card-icon">⚡</div><div class="card-title">n8n Automations</div><div class="card-desc">Email classification (17-node), daily production reminders, nightly sync, and reporting.</div></div>
-        <div class="card"><div class="card-icon">🍓</div><div class="card-title">Raspberry Pi (Edge)</div><div class="card-desc">IR sensors, LCD displays, Wi-Fi logging, production monitoring. Gmail SMTP for alerts.</div></div>
-        <div class="card"><div class="card-icon">📧</div><div class="card-title">Zoho Mail / SMTP</div><div class="card-desc">Primary mail infrastructure. SMTP used for all application-generated emails.</div></div>
-        <div class="card"><div class="card-icon">📝</div><div class="card-title">Notion (PARA)</div><div class="card-desc">Second brain: Projects, Tasks, Reading List, Idea Capture. ERPNext wiki, SOPs, knowledge bases.</div></div>
-        <div class="card"><div class="card-icon">🤖</div><div class="card-title">Claude AI Integration</div><div class="card-desc">Email classification, OCR workflow for handwritten logs, API-powered automations.</div></div>
+        <div class="card"><div class="card-icon">📋</div><div class="card-title">QC Checklists</div><div class="card-desc">Per-product checklists for label / CP / EB / carton.</div></div>
+        <div class="card"><div class="card-icon">📐</div><div class="card-title">Product Specifications</div><div class="card-desc">CPS doctype. GSM, dimensions, colour, substrate.</div></div>
+        <div class="card warn-accent"><div class="card-icon">⚠</div><div class="card-title">NCR Management</div><div class="card-desc">Root cause, corrective actions, closure.</div></div>
+        <div class="card"><div class="card-icon">🔬</div><div class="card-title">Incoming Inspection</div><div class="card-desc">Raw material on GRN. CB/CFB/CF grade verification.</div></div>
       </div>
-
-      <div class="section-heading">Custom Frappe Apps (UAT)</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>App</th><th>Module</th><th>Tester</th><th>Sections Tested</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>vcl_portal</td><td>Homepage + Employee Portal</td><td>Joan / Joyce / Raheel / Radhika</td><td>2–6</td><td><span class="badge badge-yellow">UAT Bugs</span></td></tr>
-            <tr><td>vcl_sales_dashboard</td><td>Sales Rep Dashboard</td><td>Joan / Joyce / Raheel</td><td>2–4</td><td><span class="badge badge-red">Data Layer Incomplete</span></td></tr>
-            <tr><td>vcl_job_cards</td><td>Computer Paper Job Card</td><td>Tanuj (SA)</td><td>All</td><td><span class="badge badge-blue">In Development</span></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="info-box">CPS link to Job Cards. CB/CFB/CF GSM rules and colour-of-parts logic enforced at JC creation. QC sign-off required before delivery note.</div>
     </div>
 
-    <!-- ══ LOGISTICS ══ -->
+    <!-- ── LOGISTICS ── -->
     <div id="page-logistics" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>Logistics Desk</h1>
-        <p>Fleet management, delivery scheduling, vehicle maintenance, and Track &amp; Trace monitoring.</p>
-      </div>
-
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Logistics Desk</h1><p>Fleet, deliveries, vehicle maintenance, Track &amp; Trace.</p></div>
       <div class="stat-strip">
         <div class="stat-card"><div class="stat-label">Fleet Size</div><div class="stat-value">6</div><div class="stat-change">Vehicles</div></div>
         <div class="stat-card"><div class="stat-label">Active Deliveries</div><div class="stat-value">4</div><div class="stat-change">Today</div></div>
-        <div class="stat-card"><div class="stat-label">Completed (MTD)</div><div class="stat-value">89</div><div class="stat-change">↑ 6%</div></div>
-        <div class="stat-card"><div class="stat-label">Vehicles in Service</div><div class="stat-value">1</div><div class="stat-change down">Maintenance</div></div>
+        <div class="stat-card positive"><div class="stat-label">Completed (MTD)</div><div class="stat-value">89</div><div class="stat-change">↑ 6%</div></div>
+        <div class="stat-card warning"><div class="stat-label">In Service</div><div class="stat-value">1</div><div class="stat-change warn">Maintenance</div></div>
       </div>
-
       <div class="section-heading">Logistics Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">🚛</div><div class="card-title">Fleet Register</div><div class="card-desc">Vehicle details, registration, insurance, service schedules, and driver assignments.</div></div>
-        <div class="card"><div class="card-icon">📍</div><div class="card-title">Track &amp; Trace</div><div class="card-desc">Daily Track & Trace emails parsed from web@trackntrace.co.ke. Dashboard view.</div></div>
-        <div class="card"><div class="card-icon">🗓️</div><div class="card-title">Delivery Schedule</div><div class="card-desc">Plan and dispatch deliveries linked to completed sales orders and job cards.</div></div>
-        <div class="card"><div class="card-icon">🔧</div><div class="card-title">Vehicle Maintenance</div><div class="card-desc">Service log, fuel consumption, tyre replacements, and insurance renewals.</div></div>
+        <div class="card"><div class="card-icon">🚛</div><div class="card-title">Fleet Register</div><div class="card-desc">Vehicle details, insurance, schedules, drivers.</div></div>
+        <div class="card"><div class="card-icon">📍</div><div class="card-title">Track &amp; Trace</div><div class="card-desc">Daily emails parsed. Dashboard view.</div></div>
+        <div class="card"><div class="card-icon">🗓️</div><div class="card-title">Delivery Schedule</div><div class="card-desc">Plan and dispatch linked to SOs and job cards.</div></div>
+        <div class="card"><div class="card-icon">🔧</div><div class="card-title">Vehicle Maintenance</div><div class="card-desc">Service log, fuel, tyres, insurance renewals.</div></div>
       </div>
-
-      <div class="info-box">Track & Trace dashboard connects to daily email reports from <strong>web@trackntrace.co.ke</strong>. OCR workflow via Google Vision API processes handwritten delivery notes from <strong>vimitcltd@gmail.com</strong>.</div>
+      <div class="info-box">Track &amp; Trace dashboard ingests daily emails from web@trackntrace.co.ke. Handwritten delivery notes processed via Claude Vision OCR.</div>
     </div>
 
-    <!-- ══ QUALITY ══ -->
-    <div id="page-quality" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Desk</div>
-        <h1>Quality Desk</h1>
-        <p>QC checklists, product specifications, non-conformance records, and inspection sign-offs.</p>
-      </div>
-
+    <!-- ── IT ── -->
+    <div id="page-it" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>IT Desk</h1><p>ERPNext administration, n8n automations, TiDB warehouse, Pi devices, Zoho MCP, support.</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">Jobs Pending QC</div><div class="stat-value">3</div><div class="stat-change down">Awaiting sign-off</div></div>
-        <div class="stat-card"><div class="stat-label">NCRs (MTD)</div><div class="stat-value">2</div><div class="stat-change">Non-conformances</div></div>
-        <div class="stat-card"><div class="stat-label">Pass Rate</div><div class="stat-value">97.4%</div><div class="stat-change">This month</div></div>
-        <div class="stat-card"><div class="stat-label">Customer Complaints</div><div class="stat-value">0</div><div class="stat-change">This month</div></div>
+        <div class="stat-card"><div class="stat-label">ERPNext</div><div class="stat-value">v16</div><div class="stat-change">Frappe Cloud</div></div>
+        <div class="stat-card warning"><div class="stat-label">Open Tickets</div><div class="stat-value">3</div><div class="stat-change warn">Needs attention</div></div>
+        <div class="stat-card positive"><div class="stat-label">n8n Workflows</div><div class="stat-value">12</div><div class="stat-change">All green</div></div>
+        <div class="stat-card"><div class="stat-label">Pi Devices</div><div class="stat-value">4</div><div class="stat-change">Edge sensors</div></div>
       </div>
-
-      <div class="section-heading">Quality Modules</div>
+      <div class="section-heading">Technology Stack</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">📋</div><div class="card-title">QC Checklists</div><div class="card-desc">Per-product checklists for labels, computer paper, exercise books, and cartons.</div></div>
-        <div class="card"><div class="card-icon">📐</div><div class="card-title">Product Specifications</div><div class="card-desc">Customer Product Specification DocType in ERPNext. GSM, dimensions, colour, substrate.</div></div>
-        <div class="card"><div class="card-icon">⚠️</div><div class="card-title">NCR Management</div><div class="card-desc">Non-conformance reports, root cause analysis, corrective actions, and closure tracking.</div></div>
-        <div class="card"><div class="card-icon">🔬</div><div class="card-title">Incoming Inspection</div><div class="card-desc">Raw material inspection on GRN. Carbonless paper CB/CFB/CF grade verification.</div></div>
+        <div class="card"><div class="card-icon">🔧</div><div class="card-title">ERPNext v16</div><div class="card-desc">vimitconverters.frappe.cloud. Custom apps: vcl_portal, vcl_sales_dashboard, vcl_job_cards.</div></div>
+        <div class="card"><div class="card-icon">📚</div><div class="card-title">QuickBooks Online</div><div class="card-desc">Accounting source of truth. Synced to TiDB nightly.</div></div>
+        <div class="card"><div class="card-icon">🗄️</div><div class="card-title">TiDB Warehouse</div><div class="card-desc">QBO + ERPNext sync. Powers Power BI.</div></div>
+        <div class="card"><div class="card-icon">⚡</div><div class="card-title">n8n Automations</div><div class="card-desc">Email classification, daily reminders, sync, KRA CUIN, ruling log, LPO intake.</div></div>
+        <div class="card"><div class="card-icon">🍓</div><div class="card-title">Raspberry Pi (Edge)</div><div class="card-desc">IR sensors, LCDs, Wi-Fi logging, alerts.</div></div>
+        <div class="card"><div class="card-icon">📧</div><div class="card-title">Zoho Mail / MCP</div><div class="card-desc">Primary mail. MCP server on :3030 via Tailscale.</div></div>
       </div>
-
-      <div class="info-box">Product specifications link directly to Job Cards in ERPNext. CB/CFB/CF GSM rules and colour-of-parts logic are enforced at Job Card creation. QC sign-off required before delivery note generation.</div>
+      <div class="section-heading">Custom Frappe Apps</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>App</th><th>Module</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>vcl_portal</td><td>/uat (this app), /home, /employee</td><td><span class="badge badge-amber">UAT Round 1 — data wiring pending</span></td></tr>
+            <tr><td>vcl_sales_dashboard</td><td>Sales Rep Dashboard, Collections</td><td><span class="badge badge-red">Data Layer Incomplete</span></td></tr>
+            <tr><td>vcl_job_cards</td><td>CP / Label / Carton Job Cards</td><td><span class="badge badge-blue">In Development</span></td></tr>
+            <tr><td>production_log</td><td>PPC + Job Cards</td><td><span class="badge badge-green">Live (Apr 17 sign-off)</span></td></tr>
+            <tr><td>vcl_stock_control</td><td>Stock Taking, Variance</td><td><span class="badge badge-green">Live</span></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- ══ REPORTS ══ -->
+    <!-- ── REPORTS ── -->
     <div id="page-reports" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Management</div>
-        <h1>Reports</h1>
-        <p>Financial, operational, and compliance reports across all departments.</p>
-      </div>
-
+      <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Reports</h1><p>Financial, operational, and compliance reports across all departments.</p></div>
       <div class="section-heading">Financial Reports</div>
       <div class="card-grid">
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">📊</div><div class="card-title">Trial Balance</div><div class="card-desc">Monthly TB from QuickBooks. Reconciled against ERPNext ledger.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">🧾</div><div class="card-title">VAT Reconciliation</div><div class="card-desc">QBO vs iTax. 12-month tabs. Supplier group segregation.</div></div>
-        <div class="card" onclick="navigate('sales')"><div class="card-icon">📈</div><div class="card-title">Ageing Report</div><div class="card-desc">AR ageing by customer. Upload to sales dashboard. 0–90+ day buckets.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">💸</div><div class="card-title">Payroll Summary</div><div class="card-desc">Permanent and casual payroll. PAYE, NSSF, SHIF, Housing Levy totals.</div></div>
+        <div class="card" onclick="navigate('finance')"><div class="card-icon">📊</div><div class="card-title">Trial Balance</div><div class="card-desc">Monthly TB from QBO. Reconciled vs ERPNext.</div></div>
+        <div class="card" onclick="navigate('finance')"><div class="card-icon">🧾</div><div class="card-title">VAT Reconciliation</div><div class="card-desc">QBO vs iTax. 12-month tabs.</div></div>
+        <div class="card" onclick="navigate('sales')"><div class="card-icon">📈</div><div class="card-title">Ageing Report</div><div class="card-desc">AR ageing by customer. 0–90+ buckets.</div></div>
+        <div class="card" onclick="navigate('finance')"><div class="card-icon">💸</div><div class="card-title">Payroll Summary</div><div class="card-desc">Permanent + casual. PAYE/NSSF/SHIF/Housing totals.</div></div>
       </div>
-
       <div class="section-heading">Operational Reports</div>
       <div class="card-grid">
-        <div class="card" onclick="navigate('production')"><div class="card-icon">🏭</div><div class="card-title">Daily Production Plan</div><div class="card-desc">Plan vs Actual for 7 stations. HTML report, A4 landscape, downloadable.</div></div>
-        <div class="card" onclick="navigate('production')"><div class="card-icon">⚙️</div><div class="card-title">OEE Dashboard</div><div class="card-desc">Machine efficiency: Availability, Performance, Quality per cost centre.</div></div>
-        <div class="card" onclick="navigate('procurement')"><div class="card-icon">🛒</div><div class="card-title">PO Tracker</div><div class="card-desc">Open POs, pending GRNs, supplier performance, and import status.</div></div>
-        <div class="card" onclick="navigate('logistics')"><div class="card-icon">🚚</div><div class="card-title">Fleet Report</div><div class="card-desc">Vehicle utilisation, fuel costs, maintenance spend, and delivery completion.</div></div>
+        <div class="card" onclick="navigate('production')"><div class="card-icon">🏭</div><div class="card-title">Daily Production Plan</div><div class="card-desc">Plan vs Actual for 7 stations. A4 landscape.</div></div>
+        <div class="card" onclick="navigate('production')"><div class="card-icon">⚙️</div><div class="card-title">OEE Dashboard</div><div class="card-desc">Availability × Performance × Quality per cost centre.</div></div>
+        <div class="card" onclick="navigate('procurement')"><div class="card-icon">🛒</div><div class="card-title">PO Tracker</div><div class="card-desc">Open POs, pending GRNs, supplier perf.</div></div>
+        <div class="card" onclick="navigate('logistics')"><div class="card-icon">🚚</div><div class="card-title">Fleet Report</div><div class="card-desc">Utilisation, fuel, maintenance, deliveries.</div></div>
       </div>
     </div>
 
-    <!-- ══ PROJECTS ══ -->
+    <!-- ── PROJECTS ── -->
     <div id="page-projects" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Management</div>
-        <h1>Projects</h1>
-        <p>Active projects tracked in Notion PARA. ERPNext implementation, automations, job cards, and compliance.</p>
+      <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Projects</h1><p>Active projects tracked in Tanuj's Notion Second Brain → Projects DB.</p></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Project</th><th>ID</th><th>Owner</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>VCL UI — Unified Employee Portal</td><td>PRJ-8</td><td>Tanuj</td><td><span class="badge badge-amber">UAT Round 1</span></td></tr>
+            <tr><td>ERPNext v16 Full Implementation</td><td>PRJ-5</td><td>Tanuj</td><td><span class="badge badge-blue">In Progress</span></td></tr>
+            <tr><td>Email Automation (Zoho + Claude)</td><td>PRJ-3</td><td>Tanuj</td><td><span class="badge badge-amber">Active</span></td></tr>
+            <tr><td>Job Card — Carton</td><td>PRJ-6</td><td>Tanuj</td><td><span class="badge badge-blue">In Progress</span></td></tr>
+            <tr><td>Job Card — Label</td><td>PRJ-7</td><td>Tanuj</td><td><span class="badge badge-blue">In Progress</span></td></tr>
+            <tr><td>VAT Pre-Audit Actions</td><td>—</td><td>Tanuj / Radhika</td><td><span class="badge badge-red">Needs Project</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── COMPLIANCE ── -->
+    <div id="page-compliance" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Compliance</h1><p>Statutory filings, pre-audit action items, VAT, regulatory obligations.</p></div>
+      <div class="info-box warn"><strong>29 pre-audit action items</strong> identified in the 2025 review — AR bad debt, AP sub-ledger, director payables, investments, VAT suspense, TB issues.</div>
+      <div class="section-heading">Compliance Areas</div>
+      <div class="card-grid">
+        <div class="card warn-accent"><div class="card-icon">⚠</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table. Needs formal Notion project + assignments.</div><span class="card-tag">29 items</span></div>
+        <div class="card" onclick="navigate('finance')"><div class="card-icon">🧾</div><div class="card-title">VAT Filing</div><div class="card-desc">Monthly by 20th. QBO vs iTax. Suspense clearance.</div></div>
+        <div class="card" onclick="navigate('finance')"><div class="card-icon">📁</div><div class="card-title">Monthly Close</div><div class="card-desc">Monthly + year-end checklists per Kenyan statutory.</div></div>
+        <div class="card" onclick="navigate('finance')"><div class="card-icon">💼</div><div class="card-title">Corporate Tax</div><div class="card-desc">Return due June 30. Instalment schedule.</div></div>
+        <div class="card" onclick="navigate('hr')"><div class="card-icon">👥</div><div class="card-title">Employment Compliance</div><div class="card-desc">NSSF/SHIF/PAYE/Housing. Casual contracts.</div></div>
+        <div class="card"><div class="card-icon">📜</div><div class="card-title">Business Permits</div><div class="card-desc">Nairobi County, NEMA, fire safety renewals.</div></div>
+      </div>
+    </div>
+
+    <!-- ── DIRECTORY ── -->
+    <div id="page-directory" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Workplace</div><h1>Directory</h1><p>Find colleagues by name, department, or role.</p></div>
+      <input type="text" class="sop-search" placeholder="Search by name, role, or department…">
+      <div class="section-heading">Senior Team</div>
+      <div class="dir-grid">
+        <div class="dir-card"><div class="dir-avatar">TH</div><div class="dir-info"><div class="n">Tanuj Haria</div><div class="r">CFO · IT</div></div></div>
+        <div class="dir-card"><div class="dir-avatar">RS</div><div class="dir-info"><div class="n">Radhika Sharma</div><div class="r">Finance / Accountant</div></div></div>
+        <div class="dir-card"><div class="dir-avatar">SW</div><div class="dir-info"><div class="n">Sarah Wanjiru</div><div class="r">Production</div></div></div>
+      </div>
+      <div class="section-heading">Sales</div>
+      <div class="dir-grid">
+        <div class="dir-card"><div class="dir-avatar">JM</div><div class="dir-info"><div class="n">Joan Mwangi</div><div class="r">Sales Rep</div></div></div>
+        <div class="dir-card"><div class="dir-avatar">JO</div><div class="dir-info"><div class="n">Joyce Otieno</div><div class="r">Sales Rep</div></div></div>
+        <div class="dir-card"><div class="dir-avatar">RA</div><div class="dir-info"><div class="n">Raheel Ahmed</div><div class="r">Sales / Collections</div></div></div>
+      </div>
+      <div class="info-box">Mock list. Real data: ERPNext Employee + User. Phase A wires this to api.get_directory(department=None).</div>
+    </div>
+
+    <!-- ── ANNOUNCEMENTS ── -->
+    <div id="page-announcements" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Workplace</div><h1>Announcements</h1><p>Internal news, policy changes, and operational notices.</p></div>
+      <div class="ann-item">
+        <div class="ann-meta"><span class="ann-tag urgent">URGENT</span><span>Posted 2 hours ago by Tanuj</span></div>
+        <div class="ann-title">Portal /uat is live for testing</div>
+        <div class="ann-body">The new internal portal (v4) is now at https://vimitconverters.frappe.cloud/uat for UAT Round 2. Please log in with your ERPNext credentials and work through the Testing section to give feedback.</div>
+      </div>
+      <div class="ann-item">
+        <div class="ann-meta"><span class="ann-tag">OPS</span><span>Yesterday by Production</span></div>
+        <div class="ann-title">Q1 production targets met — 104% of plan</div>
+        <div class="ann-body">All cost centres delivered above plan in Q1. Carton department led at 112%. Full breakdown available in the Production Desk.</div>
+      </div>
+      <div class="ann-item">
+        <div class="ann-meta"><span class="ann-tag">IT</span><span>2 days ago by IT</span></div>
+        <div class="ann-title">New SOP published: KRA CUIN validation</div>
+        <div class="ann-body">A new SOP for KRA CUIN invoice validation is now in the SOPs section. Affects Sales and Finance teams.</div>
+      </div>
+      <div class="ann-item">
+        <div class="ann-meta"><span class="ann-tag">HR</span><span>3 days ago by HR</span></div>
+        <div class="ann-title">Labour Day public holiday — 1 May</div>
+        <div class="ann-body">All operations closed Friday 1 May. Production resumes Saturday morning shift as normal.</div>
+      </div>
+      <div class="info-box">Mock entries. Real source: custom Announcement doctype (recommended new) or Notion mirror via api.</div>
+    </div>
+
+    <!-- ── SOPs ── -->
+    <div id="page-sops" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Workplace</div><h1>SOPs &amp; Knowledge Base</h1><p>Searchable library of Standard Operating Procedures across all departments.</p></div>
+      <input type="text" class="sop-search" placeholder="Search SOPs… (e.g. petty cash, KRA, payroll, GRN)">
+      <div class="section-heading">Finance &amp; Compliance</div>
+      <div class="card-grid">
+        <div class="card"><div class="card-icon">💵</div><div class="card-title">Petty Cash Management</div><div class="card-desc">Disbursement, categorisation, weekly reconciliation.</div><span class="card-tag">SOP</span></div>
+        <div class="card"><div class="card-icon">🧾</div><div class="card-title">KRA CUIN Validation</div><div class="card-desc">eTIMS invoice validation via iTax public checker.</div><span class="card-tag">SOP</span></div>
+        <div class="card"><div class="card-icon">💰</div><div class="card-title">Monthly Payroll Run</div><div class="card-desc">Permanent + casual workflow, statutory filing.</div><span class="card-tag">SOP</span></div>
+      </div>
+      <div class="section-heading">Operations</div>
+      <div class="card-grid">
+        <div class="card"><div class="card-icon">📦</div><div class="card-title">Goods Receipt (GRN)</div><div class="card-desc">Receive against PO, QC, post to stock.</div><span class="card-tag">SOP</span></div>
+        <div class="card"><div class="card-icon">✈️</div><div class="card-title">Importation Lifecycle</div><div class="card-desc">Five-stage import process from PO to GRN.</div><span class="card-tag">SOP</span></div>
+        <div class="card"><div class="card-icon">📋</div><div class="card-title">Job Card Workflow</div><div class="card-desc">LPO+artwork → SO → Job Card Label.</div><span class="card-tag">SOP</span></div>
+      </div>
+      <div class="info-box">Mock list. Real source: Frappe Knowledge Base or Notion-mirror DocType. Phase A spec.</div>
+    </div>
+
+    <!-- ── TESTING ── -->
+    <div id="page-testing" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Testing</h1><p>UAT and OAT testing rounds for /uat. Results, defects, sign-off, and links to the live testing pages in Notion.</p></div>
+
+      <div class="stat-strip">
+        <div class="stat-card"><div class="stat-label">Current Round</div><div class="stat-value">1</div><div class="stat-change">Apr 2026</div></div>
+        <div class="stat-card positive"><div class="stat-label">UAT Pass Rate</div><div class="stat-value">~95%</div><div class="stat-change">Look-and-feel approved</div></div>
+        <div class="stat-card warning"><div class="stat-label">Headline Gap</div><div class="stat-value">Mock Data</div><div class="stat-change warn">Wire to ERPNext (Phase A)</div></div>
       </div>
 
-      <div class="table-wrap" style="animation: fadeUp 0.4s ease both">
+      <div class="info-box warn">
+        <strong>Round 1 outcome:</strong> UAT and OAT mostly passed. Look-and-feel is approved across all 12 sections. The single headline gap from both rounds: <em>/uat is a static shell, not connected to live ERPNext data</em>. Wiring is the next phase per the v4 plan.
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="section-heading">UAT Round 1</div>
+          <div class="card" style="cursor:default">
+            <div class="card-title">User Acceptance Testing</div>
+            <div class="card-desc" style="margin:8px 0 12px">Joan / Joyce / Raheel / Radhika walked through their primary desks plus the home / nav. 22 test cases covered auth, personalisation, navigation, branding, and per-desk content.</div>
+            <table style="margin-top:10px">
+              <tr><td style="width:140px;font-weight:600">Testers</td><td>Joan, Joyce, Raheel, Radhika, Tanuj</td></tr>
+              <tr><td style="font-weight:600">Test cases</td><td>22 (UAT-01 to UAT-22)</td></tr>
+              <tr><td style="font-weight:600">Status</td><td><span class="badge badge-amber">Pass with notes</span> — see Notion</td></tr>
+              <tr><td style="font-weight:600">Sign-off</td><td>Pending data wiring before Round 2</td></tr>
+            </table>
+            <a href="https://www.notion.so/3508e0265cd581c784a5f137de0ddf39" target="_blank" class="btn btn-primary btn-sm" style="margin-top:14px">Open in Notion</a>
+          </div>
+        </div>
+        <div>
+          <div class="section-heading">OAT Round 1</div>
+          <div class="card" style="cursor:default">
+            <div class="card-title">Operational Acceptance Testing</div>
+            <div class="card-desc" style="margin:8px 0 12px">Tanuj-led ops checks: deploy success, auth gate, performance, mobile, security, recovery, no regressions on /home or /employee. 22 test cases.</div>
+            <table style="margin-top:10px">
+              <tr><td style="width:140px;font-weight:600">Owner</td><td>Tanuj (Admin)</td></tr>
+              <tr><td style="font-weight:600">Test cases</td><td>22 (OAT-01 to OAT-22)</td></tr>
+              <tr><td style="font-weight:600">Status</td><td><span class="badge badge-green">Pass</span></td></tr>
+              <tr><td style="font-weight:600">Sign-off</td><td>Foundation acceptable; data wiring next</td></tr>
+            </table>
+            <a href="https://www.notion.so/3508e0265cd58173ab33deb20f8ed4f0" target="_blank" class="btn btn-primary btn-sm" style="margin-top:14px">Open in Notion</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-heading">Defects from Round 1</div>
+      <div class="table-wrap">
         <table>
-          <thead><tr><th>Project</th><th>ID</th><th>Owner</th><th>Due</th><th>Status</th></tr></thead>
+          <thead><tr><th>ID</th><th>Severity</th><th>Section</th><th>Issue</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>ERPNext v16 Full Implementation</td><td>PRJ-5</td><td>Tanuj</td><td>Sep 2026</td><td><span class="badge badge-blue">In Progress</span></td></tr>
-            <tr><td>Email Automation System (Zoho + Claude API)</td><td>PRJ-3</td><td>Tanuj</td><td>Ongoing</td><td><span class="badge badge-yellow">Active</span></td></tr>
-            <tr><td>Job Card — Carton</td><td>PRJ-6</td><td>Tanuj</td><td>Apr 2026</td><td><span class="badge badge-blue">In Progress</span></td></tr>
-            <tr><td>Job Card — Computer Paper</td><td>PRJ-7</td><td>Tanuj</td><td>Apr 2026</td><td><span class="badge badge-blue">In Progress</span></td></tr>
-            <tr><td>Job Card — Label</td><td>PRJ-8</td><td>Tanuj</td><td>Apr 2026</td><td><span class="badge badge-blue">In Progress</span></td></tr>
-            <tr><td>VAT Obligations &amp; Pre-Audit Actions</td><td>—</td><td>Tanuj / Radhika</td><td>Pending</td><td><span class="badge badge-red">Needs Project</span></td></tr>
+            <tr><td>UAT-R1-01</td><td><span class="badge badge-amber">Medium</span></td><td>Branding</td><td>Red logo + accent contradicted Brand v1.0 (red restricted)</td><td><span class="badge badge-green">Fixed in v4</span></td></tr>
+            <tr><td>UAT-R1-02</td><td><span class="badge badge-red">Headline</span></td><td>All desks</td><td>All section data is mock — does not reflect real ERPNext</td><td><span class="badge badge-amber">Phase A queued</span></td></tr>
+            <tr><td>UAT-R1-03</td><td><span class="badge badge-blue">Low</span></td><td>Sidebar</td><td>No sub-grouping; hard to scan as nav grows</td><td><span class="badge badge-green">Fixed in v4</span></td></tr>
+            <tr><td>UAT-R1-04</td><td><span class="badge badge-blue">Low</span></td><td>Header</td><td>No way to see what role you're effectively browsing as</td><td><span class="badge badge-green">Fixed in v4 (role pill)</span></td></tr>
           </tbody>
         </table>
       </div>
 
-      <div class="info-box">Projects managed in Notion (Projects DB: <strong>81957fcb-f1a0-4ff0-ba47-cf45ca5e9344</strong>, Tasks DB: <strong>cf168646-d259-4063-b2db-7301fddb348a</strong>).</div>
-    </div>
-
-    <!-- ══ COMPLIANCE ══ -->
-    <div id="page-compliance" class="page">
-      <div class="page-header">
-        <div class="page-header-eyebrow">Management</div>
-        <h1>Compliance</h1>
-        <p>Statutory filings, pre-audit action items, VAT reconciliation, and regulatory obligations.</p>
-      </div>
-
-      <div class="info-box red">⚠️ <strong>29 pre-audit action items</strong> identified in the 2025 financial review. Covering AR bad debt provision, AP sub-ledger gap, director payables, long-term investments documentation, VAT suspense reconciliation, and Trial Balance issues.</div>
-
-      <div class="section-heading">Compliance Areas</div>
+      <div class="section-heading">Next Round Plan</div>
       <div class="card-grid">
-        <div class="card red-accent"><div class="card-icon">⚠️</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table. Formal Notion project required. Assign owners and deadlines.</div><span class="card-tag">29 items</span></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">🧾</div><div class="card-title">VAT Filing</div><div class="card-desc">Monthly VAT return by 20th. QBO vs iTax reconciliation. Suspense account clearance.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">📁</div><div class="card-title">Monthly Close Checklist</div><div class="card-desc">Monthly and year-end checklists aligned to Kenyan statutory requirements.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">💼</div><div class="card-title">Corporate Tax</div><div class="card-desc">Corporation tax return due June 30. Instalment tax schedule.</div></div>
-        <div class="card" onclick="navigate('hr')"><div class="card-icon">👥</div><div class="card-title">Employment Compliance</div><div class="card-desc">NSSF, SHIF, PAYE, Housing Levy. Employment Act compliance. Casual worker contracts.</div></div>
-        <div class="card"><div class="card-icon">📜</div><div class="card-title">Business Permits</div><div class="card-desc">Nairobi County business permit, NEMA, and fire safety certificate renewals.</div></div>
+        <div class="card"><div class="card-icon">🔌</div><div class="card-title">Phase A — Wiring</div><div class="card-desc">Build vcl_portal.api.* whitelisted methods; replace mock data per v4 data contracts; start with /me, then Sales, then Finance.</div></div>
+        <div class="card"><div class="card-icon">🧪</div><div class="card-title">UAT Round 2</div><div class="card-desc">Re-run all 22 UAT cases against live data + add data-accuracy spot-checks per desk.</div></div>
+        <div class="card"><div class="card-icon">🛡️</div><div class="card-title">OAT Round 2</div><div class="card-desc">Add row-level permission tests (Sales Rep sees only own customers, etc.) + load test with 5 concurrent sessions.</div></div>
       </div>
+
+      <div class="info-box">All testing pages live as sub-pages under <strong>PRJ-8 | VCL UI — Unified Employee Portal</strong> in the Notion Projects DB. The full v4 plan (data contracts per section, build sequencing) is also a sub-page there.</div>
     </div>
 
   </main>
@@ -990,25 +1230,29 @@
 <script>
   const pages = {
     home: 'Dashboard',
+    me: 'My Profile',
+    approvals: 'Approvals',
     finance: 'Finance Desk',
     sales: 'Sales Desk',
     procurement: 'Procurement Desk',
     production: 'Production Desk',
     hr: 'HR Desk',
-    it: 'IT Desk',
-    logistics: 'Logistics Desk',
     quality: 'Quality Desk',
+    logistics: 'Logistics Desk',
+    it: 'IT Desk',
+    directory: 'Directory',
+    announcements: 'Announcements',
+    sops: 'SOPs',
     reports: 'Reports',
     projects: 'Projects',
     compliance: 'Compliance',
+    testing: 'Testing',
   };
 
   function navigate(id) {
-    // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-    // Show target
     const page = document.getElementById('page-' + id);
     if (page) page.classList.add('active');
 
@@ -1019,7 +1263,6 @@
     window.scrollTo(0, 0);
   }
 
-  // Clock
   function updateTime() {
     const now = new Date();
     const opts = { timeZone: 'Africa/Nairobi', hour: '2-digit', minute: '2-digit', hour12: false };
