@@ -108,6 +108,77 @@
     border: 1.5px solid rgba(255,255,255,0.25);
     cursor: pointer;
   }
+  .header-logout {
+    color: rgba(255,255,255,0.75);
+    font-size: 12px; font-weight: 600;
+    text-decoration: none;
+    padding: 6px 12px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.18);
+    transition: var(--transition);
+    font-family: 'Barlow', sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .header-logout:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.4); }
+  .in-dev-banner {
+    background: var(--amber-light);
+    border: 1px solid rgba(184,107,0,0.18);
+    border-left: 4px solid var(--amber);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: #6a3f00;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .in-dev-banner::before { content: '\26A0'; font-size: 14px; }
+  .in-dev-tag {
+    display: inline-block; vertical-align: middle;
+    background: var(--amber-light); color: var(--amber);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+    padding: 1px 6px; border-radius: 3px; margin-left: 8px;
+  }
+  .brand-strip {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+    color: white;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin: 20px 0;
+    display: grid; grid-template-columns: 80px 1fr; gap: 20px;
+    align-items: center;
+    animation: fadeUp 0.4s ease 0.15s both;
+  }
+  .brand-mark-large {
+    width: 80px; height: 80px;
+    background: var(--white); color: var(--blue-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 44px;
+    clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 15% 100%, 0 85%);
+  }
+  .brand-strip-text h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 700; letter-spacing: 1px; margin: 0 0 4px;
+  }
+  .brand-strip-text p { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; }
+  .brand-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.12); color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    padding: 2px 8px; border-radius: 4px;
+    margin-top: 6px;
+  }
+  .live-tag {
+    display: inline-block;
+    background: var(--green-light); color: var(--green);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+    padding: 1px 6px; border-radius: 3px; margin-left: 8px;
+    text-transform: uppercase;
+  }
 
   /* ── LAYOUT ── */
   .layout { display: flex; margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); }
@@ -387,7 +458,13 @@
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 42px; font-weight: 800; line-height: 1.05; margin-bottom: 8px;
   }
-  .home-hero h2 span { color: var(--amber); }
+  .home-hero h2 span {
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: rgba(255,255,255,0.45);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
   .home-hero p { font-size: 14px; color: rgba(255,255,255,0.7); max-width: 500px; line-height: 1.6; }
   .hero-meta { margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap; }
   .hero-meta-item { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
@@ -508,6 +585,7 @@
     <span class="role-pill" title="Your effective role for this session">{{ primary_role }}</span>
     <div class="header-time" id="headerTime"></div>
     <div class="header-user" title="{{ full_name }}">{{ user_initials }}</div>
+    <a href="/api/method/logout" class="header-logout" title="Sign out of the portal">Logout</a>
   </div>
 </header>
 
@@ -644,6 +722,17 @@
         <div class="stat-card warning"><div class="stat-label">VAT Filing</div><div class="stat-value">Due 20th</div><div class="stat-change warn">Review pending</div></div>
       </div>
 
+      <div class="brand-strip">
+        <div class="brand-mark-large">V</div>
+        <div class="brand-strip-text">
+          <h3>VIMIT CONVERTERS LIMITED</h3>
+          <p>Manufacturing &middot; Printing &middot; Packaging &middot; Stationery &middot; Nairobi, Kenya. ERPNext v16 + custom Frappe apps.</p>
+          <span class="brand-tag">Brand v1.0</span>
+        </div>
+      </div>
+
+      <div class="in-dev-banner">v4.1 build &middot; sections marked <span class="live-tag" style="margin-left:0">LIVE</span> are wired to ERPNext. Sections marked <span class="in-dev-tag" style="margin-left:0">IN DEV</span> still show mock data; Phase A wiring in progress.</div>
+
       <div class="section-heading">Your Desks</div>
       <div class="card-grid">
         {% if roles.is_finance or roles.is_admin %}
@@ -683,12 +772,12 @@
       </div>
     </div>
 
-    <!-- ── MY PROFILE / SELF-SERVICE ── -->
+    <!-- ── MY PROFILE / SELF-SERVICE — LIVE ── -->
     <div id="page-me" class="page">
       <div class="page-header">
         <div class="page-header-eyebrow">Self-Service</div>
-        <h1>My Profile</h1>
-        <p>Your profile, leave balance, payslips, and personal records. All employees can self-serve from here.</p>
+        <h1>My Profile <span class="live-tag">LIVE</span></h1>
+        <p>Your profile, leave balance, payslips, and personal records. Wired to your ERPNext Employee record.</p>
       </div>
 
       <div class="profile-card">
@@ -697,17 +786,18 @@
           <h2>{{ full_name }}</h2>
           <p><strong>Role:</strong> {{ primary_role }}</p>
           <p><strong>Email:</strong> {{ user_email }}</p>
-          <p><strong>Department:</strong> <em>(from Employee record — wire in Phase A)</em></p>
+          <p><strong>Department:</strong> <span id="me-department" class="mono">—</span></p>
+          <p><strong>Designation:</strong> <span id="me-designation" class="mono">—</span></p>
+          <p><strong>Joined:</strong> <span id="me-doj" class="mono">—</span> &middot; <strong>Type:</strong> <span id="me-empty" class="mono">—</span></p>
+          <p><strong>Employee ID:</strong> <span id="me-empid" class="mono">—</span></p>
         </div>
       </div>
 
       <div class="section-heading">Leave Balance</div>
-      <div class="leave-bar">
-        <div class="leave-bar-item"><div class="v">14</div><div class="l">Annual Available</div></div>
-        <div class="leave-bar-item"><div class="v">3</div><div class="l">Sick Used</div></div>
-        <div class="leave-bar-item"><div class="v">0</div><div class="l">Pending Apps</div></div>
+      <div class="leave-bar" id="me-leave-bar">
+        <div class="leave-bar-item"><div class="v">—</div><div class="l">Loading…</div></div>
       </div>
-      <div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-primary">+ Apply for Leave</button><button class="btn btn-outline">View History</button></div>
+      <div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-primary" disabled title="Apply for Leave (form coming Phase A.2)">+ Apply for Leave</button><button class="btn btn-outline" disabled>View History</button></div>
 
       <div class="two-col" style="margin-top:24px">
         <div>
@@ -715,10 +805,8 @@
           <div class="table-wrap">
             <table>
               <thead><tr><th>Period</th><th>Net Pay (KSh)</th><th></th></tr></thead>
-              <tbody>
-                <tr><td>March 2026</td><td>118,420</td><td><a href="#" class="btn btn-sm btn-outline">PDF</a></td></tr>
-                <tr><td>February 2026</td><td>117,200</td><td><a href="#" class="btn btn-sm btn-outline">PDF</a></td></tr>
-                <tr><td>January 2026</td><td>117,200</td><td><a href="#" class="btn btn-sm btn-outline">PDF</a></td></tr>
+              <tbody id="me-payslips-tbody">
+                <tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr>
               </tbody>
             </table>
           </div>
@@ -728,17 +816,15 @@
           <div class="table-wrap">
             <table>
               <thead><tr><th>When</th><th>Activity</th></tr></thead>
-              <tbody>
-                <tr><td>Today, 09:14</td><td>Logged in to /uat</td></tr>
-                <tr><td>Yesterday</td><td>Approved JC-2025-038</td></tr>
-                <tr><td>2 days ago</td><td>Submitted leave application (Apr 30)</td></tr>
+              <tbody id="me-activity-tbody">
+                <tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <div class="info-box">Data on this page is mock. Wiring to ERPNext Employee / Leave Allocation / Salary Slip is part of Phase A (api.get_my_profile, api.get_my_leave_balance, api.get_my_payslips). See v4 plan for the data contract.</div>
+      <div class="info-box">Wired to ERPNext via <code>vcl_portal.api.get_my_profile / get_my_leave_balance / get_my_payslips / get_my_recent_activity</code>. Empty? Check that an Employee record exists for your User (<code>{{ user_email }}</code>).</div>
     </div>
 
     <!-- ── APPROVALS ── -->
@@ -1092,23 +1178,15 @@
       </div>
     </div>
 
-    <!-- ── DIRECTORY ── -->
+    <!-- ── DIRECTORY — LIVE ── -->
     <div id="page-directory" class="page">
-      <div class="page-header"><div class="page-header-eyebrow">Workplace</div><h1>Directory</h1><p>Find colleagues by name, department, or role.</p></div>
-      <input type="text" class="sop-search" placeholder="Search by name, role, or department…">
-      <div class="section-heading">Senior Team</div>
-      <div class="dir-grid">
-        <div class="dir-card"><div class="dir-avatar">TH</div><div class="dir-info"><div class="n">Tanuj Haria</div><div class="r">CFO · IT</div></div></div>
-        <div class="dir-card"><div class="dir-avatar">RS</div><div class="dir-info"><div class="n">Radhika Sharma</div><div class="r">Finance / Accountant</div></div></div>
-        <div class="dir-card"><div class="dir-avatar">SW</div><div class="dir-info"><div class="n">Sarah Wanjiru</div><div class="r">Production</div></div></div>
+      <div class="page-header"><div class="page-header-eyebrow">Workplace</div><h1>Directory <span class="live-tag">LIVE</span></h1><p>Find colleagues by name, department, or role. Pulled from ERPNext active Employees.</p></div>
+      <input type="text" class="sop-search" id="dir-search" placeholder="Search by name, designation, or department…">
+      <div class="section-heading"><span id="dir-count">All Employees</span></div>
+      <div class="dir-grid" id="dir-grid">
+        <div style="padding:20px;color:var(--text-muted);grid-column:1/-1">Loading…</div>
       </div>
-      <div class="section-heading">Sales</div>
-      <div class="dir-grid">
-        <div class="dir-card"><div class="dir-avatar">JM</div><div class="dir-info"><div class="n">Joan Mwangi</div><div class="r">Sales Rep</div></div></div>
-        <div class="dir-card"><div class="dir-avatar">JO</div><div class="dir-info"><div class="n">Joyce Otieno</div><div class="r">Sales Rep</div></div></div>
-        <div class="dir-card"><div class="dir-avatar">RA</div><div class="dir-info"><div class="n">Raheel Ahmed</div><div class="r">Sales / Collections</div></div></div>
-      </div>
-      <div class="info-box">Mock list. Real data: ERPNext Employee + User. Phase A wires this to api.get_directory(department=None).</div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_directory(search)</code>. Empty? Make sure Employee records have <em>status = Active</em>.</div>
     </div>
 
     <!-- ── ANNOUNCEMENTS ── -->
@@ -1228,16 +1306,24 @@
 
     <!-- ── SALES SUB-PAGES ── -->
     <div id="page-sales-orders" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Sales Orders</h1><p>Open SOs, drafts, fulfilment status, and the create-SO workflow.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Open</div><div class="stat-value">23</div><div class="stat-change">All reps</div></div><div class="stat-card warning"><div class="stat-label">Awaiting Artwork</div><div class="stat-value">5</div><div class="stat-change warn">Blocking JC</div></div><div class="stat-card"><div class="stat-label">Created MTD</div><div class="stat-value">68</div><div class="stat-change">↑ 14%</div></div></div>
-      <div style="margin:14px 0"><button class="btn btn-primary">+ New Sales Order</button></div>
-      <div class="table-wrap"><table><thead><tr><th>SO No.</th><th>Customer</th><th>Value (KSh)</th><th>Status</th><th>Rep</th></tr></thead><tbody>
-        <tr><td>SO-2026-00328</td><td>Mwangi Stationery</td><td>412,500</td><td><span class="badge badge-amber">Pending Approval</span></td><td>Joan</td></tr>
-        <tr><td>SO-2026-00327</td><td>Bidco Africa</td><td>1,840,000</td><td><span class="badge badge-blue">Confirmed</span></td><td>Joyce</td></tr>
-        <tr><td>SO-2026-00326</td><td>Equity Printing</td><td>620,000</td><td><span class="badge badge-amber">Awaiting Artwork</span></td><td>Raheel</td></tr>
-        <tr><td>SO-2026-00325</td><td>Lake Basin Supplies</td><td>185,000</td><td><span class="badge badge-green">In Production</span></td><td>Joan</td></tr>
-      </tbody></table></div>
-      <div class="info-box">Mock. ERPNext: <code>Sales Order</code> with sales_person scope. API: <code>vcl_portal.api.get_open_sales_orders(filters)</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Sales Invoices <span class="live-tag">LIVE</span></h1><p>Drafts (not yet submitted) and submitted invoices that are still owing. Wired to ERPNext Sales Invoice — scoped by your role permissions.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card"><div class="stat-label">Drafts</div><div class="stat-value" id="si-stat-drafts">—</div><div class="stat-change">Not yet submitted</div></div>
+        <div class="stat-card warning"><div class="stat-label">Outstanding</div><div class="stat-value" id="si-stat-outstanding">—</div><div class="stat-change warn">Submitted &amp; unpaid</div></div>
+        <div class="stat-card"><div class="stat-label">Total Owing (KSh)</div><div class="stat-value" id="si-stat-total">—</div><div class="stat-change">Sum across submitted</div></div>
+      </div>
+
+      <div class="section-heading">Submitted &middot; outstanding</div>
+      <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Posting</th><th>Due</th><th>Outstanding</th><th>Status</th></tr></thead>
+        <tbody id="si-submitted-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+
+      <div class="section-heading">Drafts</div>
+      <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Posting</th><th>Total</th></tr></thead>
+        <tbody id="si-drafts-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+
+      <div class="info-box">Wired via <code>vcl_portal.api.get_open_sales_invoices()</code>. Sales Reps see only their territory; Finance / CFO see all. Empty? Check that Sales Invoices exist or that you have permission.</div>
     </div>
 
     <div id="page-sales-collections" class="page">
@@ -1364,10 +1450,17 @@
 
     <!-- ── PRODUCTION SUB-PAGES ── -->
     <div id="page-prod-jobcards" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>Job Cards</h1><p>CP / Label / Carton variants. Customer Product Spec + Job Card workflow.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Active</div><div class="stat-value">8</div><div class="stat-change">All depts</div></div><div class="stat-card warning"><div class="stat-label">Pending QC</div><div class="stat-value">3</div><div class="stat-change warn">Block delivery</div></div><div class="stat-card positive"><div class="stat-label">Closed MTD</div><div class="stat-value">142</div><div class="stat-change">↑ 9%</div></div></div>
-      <div style="margin:14px 0;display:flex;gap:8px"><button class="btn btn-primary">+ Job Card Label</button><button class="btn btn-outline">+ JC Computer Paper</button></div>
-      <div class="info-box">Mock. ERPNext: custom <code>Job Card Label</code> / <code>Job Card CP</code> / <code>Job Card Carton</code> (vcl_job_cards). plate_status='Old' needs non-empty plate_code; 'New' needs empty.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>Job Cards <span class="live-tag">LIVE</span></h1><p>Open Job Cards across ERPNext core + VCL custom variants (Label / Computer Paper / Carton). Wired to live data.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card"><div class="stat-label">Open Total</div><div class="stat-value" id="jc-stat-open">—</div><div class="stat-change">All variants</div></div>
+        <div class="stat-card"><div class="stat-label">By Type</div><div class="stat-value" id="jc-stat-types" style="font-size:14px">—</div><div class="stat-change">Doctype split</div></div>
+        <div class="stat-card warning"><div class="stat-label">Stale (&gt; 14 d)</div><div class="stat-value" id="jc-stat-stale">—</div><div class="stat-change warn">Needs follow-up</div></div>
+      </div>
+      <div style="margin:14px 0;display:flex;gap:8px"><button class="btn btn-primary" disabled title="JCL form coming Phase A.3">+ Job Card Label</button><button class="btn btn-outline" disabled>+ JC Computer Paper</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Job Card</th><th>Type</th><th>Customer</th><th>Status</th><th>Created</th></tr></thead>
+        <tbody id="jc-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_open_job_cards()</code> across <code>Job Card</code>, <code>Job Card Label</code>, <code>Job Card Computer Paper</code>, <code>Job Card Carton</code>. Degrades gracefully if a variant is not installed.</div>
     </div>
 
     <div id="page-prod-plan" class="page">
@@ -1537,7 +1630,7 @@
     projects: 'Projects',
     compliance: 'Compliance',
     testing: 'Testing',
-    'sales-orders': 'Sales · Orders',
+    'sales-orders': 'Sales · Invoices',
     'sales-collections': 'Sales · Collections Tracker',
     'sales-ageing': 'Sales · Ageing Report',
     'sales-customer360': 'Sales · Customer 360',
@@ -1579,6 +1672,249 @@
     'comp-permits': 'Compliance · Permits',
   };
 
+  // ── Generic fetch helper for whitelisted vcl_portal.api.* methods ──
+  function csrf() {
+    const m = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/);
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+  async function vclFetch(method, args) {
+    args = args || {};
+    const r = await fetch('/api/method/vcl_portal.api.' + method, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Frappe-CSRF-Token': csrf(),
+        'Accept': 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(args),
+    });
+    if (!r.ok) {
+      const t = await r.text();
+      throw new Error('API ' + method + ' failed: ' + r.status + ' ' + t.slice(0, 200));
+    }
+    const j = await r.json();
+    return j.message;
+  }
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+  function fmtNum(n) {
+    if (n == null || n === '') return '—';
+    const v = Number(n);
+    if (isNaN(v)) return String(n);
+    return v.toLocaleString('en-KE', { maximumFractionDigits: 0 });
+  }
+  function fmtDate(s) {
+    if (!s) return '—';
+    try {
+      return new Date(s).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch (e) { return String(s); }
+  }
+  function fmtRelative(s) {
+    if (!s) return '—';
+    const d = new Date(s);
+    const diffH = (Date.now() - d.getTime()) / 36e5;
+    if (diffH < 1) return Math.max(1, Math.round(diffH * 60)) + ' min ago';
+    if (diffH < 24) return Math.round(diffH) + ' h ago';
+    const diffD = Math.round(diffH / 24);
+    if (diffD < 7) return diffD + ' d ago';
+    return fmtDate(s);
+  }
+  function statusBadge(status) {
+    const s = String(status || '').toLowerCase();
+    let cls = 'badge-grey';
+    if (/(complete|paid|filed|closed|delivered|active)/.test(s)) cls = 'badge-green';
+    else if (/(submit|approved|in.?progress|on.?going|confirm)/.test(s)) cls = 'badge-blue';
+    else if (/(pending|draft|wait|hold|review)/.test(s)) cls = 'badge-amber';
+    else if (/(overdue|fail|reject|cancel|error)/.test(s)) cls = 'badge-red';
+    return '<span class="badge ' + cls + '">' + escHtml(status || '—') + '</span>';
+  }
+
+  // ── Render: My Profile ──
+  const _loaded = { me: false, directory: false, salesInvoices: false, jobCards: false };
+
+  async function renderMyProfile(force) {
+    if (_loaded.me && !force) return;
+    try {
+      const [profile, leave, payslips, activity] = await Promise.all([
+        vclFetch('get_my_profile'),
+        vclFetch('get_my_leave_balance'),
+        vclFetch('get_my_payslips', { limit: 3 }),
+        vclFetch('get_my_recent_activity', { limit: 5 }),
+      ]);
+      const emp = (profile && profile.employee) || {};
+      const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v || '—'; };
+      setText('me-department', emp.department);
+      setText('me-designation', emp.designation);
+      setText('me-doj', fmtDate(emp.date_of_joining));
+      setText('me-empty', emp.employment_type);
+      setText('me-empid', emp.name);
+
+      const lb = document.getElementById('me-leave-bar');
+      if (lb) {
+        if (!leave || !leave.length) {
+          lb.innerHTML = '<div class="leave-bar-item" style="grid-column:1/-1"><div class="v">—</div><div class="l">No leave allocations on record</div></div>';
+        } else {
+          lb.innerHTML = leave.slice(0, 3).map(l => {
+            const remaining = (Number(l.total_leaves_allocated) || 0) - (Number(l.leaves_taken) || 0);
+            return '<div class="leave-bar-item"><div class="v">' + fmtNum(remaining) + '</div><div class="l">' + escHtml(l.leave_type) + ' available</div></div>';
+          }).join('');
+        }
+      }
+
+      const pt = document.getElementById('me-payslips-tbody');
+      if (pt) {
+        if (!payslips || !payslips.length) {
+          pt.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:18px">No payslips on record</td></tr>';
+        } else {
+          pt.innerHTML = payslips.map(p =>
+            '<tr><td>' + escHtml(p.start_date ? (fmtDate(p.start_date) + ' — ' + fmtDate(p.end_date)) : fmtDate(p.posting_date)) +
+            '</td><td>' + fmtNum(p.net_pay) +
+            '</td><td><a class="btn btn-sm btn-outline" target="_blank" href="/app/salary-slip/' + encodeURIComponent(p.name) + '">View</a></td></tr>'
+          ).join('');
+        }
+      }
+
+      const at = document.getElementById('me-activity-tbody');
+      if (at) {
+        if (!activity || !activity.length) {
+          at.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:18px">No recent activity</td></tr>';
+        } else {
+          at.innerHTML = activity.map(a =>
+            '<tr><td style="white-space:nowrap;color:var(--text-muted);font-size:12px">' + escHtml(fmtRelative(a.when)) +
+            '</td><td>' + escHtml(a.what || '—') + ' <span class="badge badge-grey" style="font-size:9px">' + escHtml(a.kind) + '</span></td></tr>'
+          ).join('');
+        }
+      }
+      _loaded.me = true;
+    } catch (e) {
+      const pt = document.getElementById('me-payslips-tbody');
+      if (pt) pt.innerHTML = '<tr><td colspan="3" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  // ── Render: Directory ──
+  let _dirSearchTimer = null;
+  async function renderDirectory(force) {
+    if (_loaded.directory && !force) return;
+    const grid = document.getElementById('dir-grid');
+    if (!grid) return;
+    grid.innerHTML = '<div style="padding:20px;color:var(--text-muted);grid-column:1/-1">Loading…</div>';
+    try {
+      const search = (document.getElementById('dir-search') || {}).value || '';
+      const rows = await vclFetch('get_directory', { search: search });
+      document.getElementById('dir-count').textContent = (rows.length || 0) + ' employee' + (rows.length === 1 ? '' : 's');
+      if (!rows || !rows.length) {
+        grid.innerHTML = '<div style="padding:20px;color:var(--text-muted);grid-column:1/-1">No employees match.</div>';
+      } else {
+        grid.innerHTML = rows.map(r => {
+          const initials = String(r.employee_name || '?').split(/\s+/).map(w => w[0] || '').slice(0, 2).join('').toUpperCase();
+          return '<div class="dir-card"><div class="dir-avatar">' + escHtml(initials) +
+            '</div><div class="dir-info"><div class="n">' + escHtml(r.employee_name || r.name) +
+            '</div><div class="r">' + escHtml([r.designation, r.department].filter(Boolean).join(' · ') || '—') +
+            '</div></div></div>';
+        }).join('');
+      }
+      _loaded.directory = true;
+    } catch (e) {
+      grid.innerHTML = '<div style="padding:20px;color:var(--red);grid-column:1/-1">' + escHtml(e.message) + '</div>';
+    }
+  }
+  function _bindDirSearch() {
+    const i = document.getElementById('dir-search');
+    if (!i || i._bound) return;
+    i._bound = true;
+    i.addEventListener('input', () => {
+      clearTimeout(_dirSearchTimer);
+      _dirSearchTimer = setTimeout(() => renderDirectory(true), 250);
+    });
+  }
+
+  // ── Render: Sales Invoices ──
+  async function renderSalesInvoices(force) {
+    if (_loaded.salesInvoices && !force) return;
+    const sub = document.getElementById('si-submitted-tbody');
+    const dr = document.getElementById('si-drafts-tbody');
+    if (!sub || !dr) return;
+    try {
+      const data = await vclFetch('get_open_sales_invoices');
+      const submitted = data.submitted || [];
+      const drafts = data.drafts || [];
+      document.getElementById('si-stat-drafts').textContent = drafts.length;
+      document.getElementById('si-stat-outstanding').textContent = submitted.length;
+      const total = submitted.reduce((a, r) => a + (Number(r.outstanding_amount) || 0), 0);
+      document.getElementById('si-stat-total').textContent = fmtNum(total);
+
+      sub.innerHTML = submitted.length
+        ? submitted.map(r => '<tr>' +
+          '<td><a target="_blank" href="/app/sales-invoice/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+          '<td>' + escHtml(r.customer) + '</td>' +
+          '<td>' + escHtml(fmtDate(r.posting_date)) + '</td>' +
+          '<td>' + escHtml(fmtDate(r.due_date)) + '</td>' +
+          '<td>' + fmtNum(r.outstanding_amount) + '</td>' +
+          '<td>' + statusBadge(r.status) + '</td>' +
+          '</tr>').join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No outstanding submitted invoices</td></tr>';
+
+      dr.innerHTML = drafts.length
+        ? drafts.map(r => '<tr>' +
+          '<td><a target="_blank" href="/app/sales-invoice/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+          '<td>' + escHtml(r.customer) + '</td>' +
+          '<td>' + escHtml(fmtDate(r.posting_date)) + '</td>' +
+          '<td>' + fmtNum(r.grand_total) + '</td>' +
+          '</tr>').join('')
+        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">No drafts</td></tr>';
+      _loaded.salesInvoices = true;
+    } catch (e) {
+      sub.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  // ── Render: Job Cards ──
+  async function renderJobCards(force) {
+    if (_loaded.jobCards && !force) return;
+    const tb = document.getElementById('jc-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_open_job_cards');
+      document.getElementById('jc-stat-open').textContent = rows.length;
+      const byType = rows.reduce((a, r) => { const k = (r._doctype || 'Job Card').replace('Job Card', '').trim() || 'Core'; a[k] = (a[k] || 0) + 1; return a; }, {});
+      const typeStr = Object.entries(byType).map(([k, v]) => k + ' ' + v).join(' · ') || '—';
+      document.getElementById('jc-stat-types').textContent = typeStr;
+      const cutoff = Date.now() - 14 * 86400000;
+      const stale = rows.filter(r => new Date(r.creation).getTime() < cutoff).length;
+      document.getElementById('jc-stat-stale').textContent = stale;
+
+      tb.innerHTML = rows.length
+        ? rows.map(r => {
+            const dt = String(r._doctype || 'Job Card').replace('Job Card ', 'JC ').replace('Job Card', 'JC');
+            const url = '/app/' + (r._doctype || 'job-card').toLowerCase().replace(/\s+/g, '-') + '/' + encodeURIComponent(r.name);
+            return '<tr>' +
+              '<td><a target="_blank" href="' + url + '">' + escHtml(r.name) + '</a></td>' +
+              '<td><span class="badge badge-blue">' + escHtml(dt) + '</span></td>' +
+              '<td>' + escHtml(r.customer || r.customer_name || '—') + '</td>' +
+              '<td>' + statusBadge(r.status) + '</td>' +
+              '<td style="white-space:nowrap;color:var(--text-muted);font-size:12px">' + escHtml(fmtRelative(r.creation)) + '</td>' +
+              '</tr>';
+          }).join('')
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No open job cards</td></tr>';
+      _loaded.jobCards = true;
+    } catch (e) {
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  // ── Lazy-load hook on tab activation ──
+  const _renderers = {
+    me: renderMyProfile,
+    directory: () => { _bindDirSearch(); renderDirectory(); },
+    'sales-orders': renderSalesInvoices,
+    'prod-jobcards': renderJobCards,
+  };
+
   function navigate(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1591,6 +1927,9 @@
 
     document.getElementById('headerTitle').textContent = pages[id] || 'Internal Portal';
     window.scrollTo(0, 0);
+
+    const r = _renderers[id];
+    if (r) try { r(); } catch (e) { console.error(e); }
   }
 
   function updateTime() {
