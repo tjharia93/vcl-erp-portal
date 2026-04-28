@@ -4,15 +4,57 @@ Each method is callable via `/api/method/vcl_portal.api.<name>`. Auth is enforce
 via Frappe session — Guest is rejected before any data is returned. Where a
 DocType might not be installed (e.g. custom Job Card variants from vcl_job_cards),
 the method degrades gracefully rather than throwing.
+
+User → Customer scoping reuses the canonical helpers from vcl_sales_dashboard
+(see Customer Sales Rep Assignment doctype). This avoids forking the rep
+assignment logic across two apps.
 """
 
 import frappe
 from frappe import _
+from frappe.utils import today, getdate, formatdate
+
+# Reuse the canonical scope logic from vcl_sales_dashboard so we never fork
+# the User → Sales Person → Customer chain. Falls back to "restricted with no
+# customers" if vcl_sales_dashboard isn't installed.
+try:
+    from vcl_sales_dashboard.api.collections_utils import (
+        get_user_scope as _sd_get_user_scope,
+        get_customers_for_scope as _sd_get_customers_for_scope,
+    )
+    _SCOPE_HELPERS_AVAILABLE = True
+except Exception:
+    _SCOPE_HELPERS_AVAILABLE = False
 
 
 def _require_login():
     if frappe.session.user == "Guest":
         frappe.throw(_("Login required"), frappe.PermissionError)
+
+
+def _scope():
+    """Return {is_restricted, sales_persons, customers, user, role}.
+
+    `customers` is None for unrestricted (= no filter) or a list (possibly empty)
+    for restricted users. Empty list = "Sales User with no permitted Sales Persons"
+    = no data should be returned.
+    """
+    if _SCOPE_HELPERS_AVAILABLE:
+        scope = _sd_get_user_scope()
+        if scope.get("is_restricted"):
+            scope["customers"] = _sd_get_customers_for_scope(scope) or []
+        else:
+            scope["customers"] = None
+        return scope
+    # Fallback: no helper available, treat everyone as restricted with no data
+    # except System Manager (who sees everything).
+    user = frappe.session.user
+    roles = frappe.get_roles(user)
+    if "System Manager" in roles or "Administrator" in roles:
+        return {"is_restricted": False, "sales_persons": [], "customers": None,
+                "user": user, "role": "System Manager"}
+    return {"is_restricted": True, "sales_persons": [], "customers": [],
+            "user": user, "role": "Limited"}
 
 
 def _employee_for_session():
@@ -136,36 +178,212 @@ def get_directory(search=None, limit=200):
 
 @frappe.whitelist()
 def get_open_sales_invoices(limit=100):
-    """Sales Invoices that are draft or submitted+unpaid/overdue. Scoped by
-    standard ERPNext permission_query (Sales User sees only their territory etc.)."""
+    """Sales Invoices that are draft or submitted+unpaid/overdue.
+    Scoped via Customer Sales Rep Assignment for restricted users.
+    """
     _require_login()
     if not frappe.has_permission("Sales Invoice", "read"):
-        return []
+        return {"submitted": [], "drafts": [], "scope": _scope_summary()}
+    scope = _scope()
+    submitted_filters = {
+        "docstatus": 1,
+        "status": ["in", ["Unpaid", "Overdue", "Partly Paid", "Submitted"]],
+    }
+    drafts_filters = {"docstatus": 0}
+    if scope["is_restricted"]:
+        if not scope["customers"]:
+            return {"submitted": [], "drafts": [], "scope": _scope_summary(scope)}
+        submitted_filters["customer"] = ["in", scope["customers"]]
+        drafts_filters["customer"] = ["in", scope["customers"]]
     try:
-        # Submitted + still owing
         submitted = frappe.get_all(
             "Sales Invoice",
-            filters={
-                "docstatus": 1,
-                "status": ["in", ["Unpaid", "Overdue", "Partly Paid", "Submitted"]],
-            },
+            filters=submitted_filters,
             fields=["name", "customer", "grand_total", "outstanding_amount",
                     "posting_date", "due_date", "status"],
             order_by="posting_date desc",
             limit=int(limit),
         )
-        # Drafts (not yet submitted)
         drafts = frappe.get_all(
             "Sales Invoice",
-            filters={"docstatus": 0},
+            filters=drafts_filters,
             fields=["name", "customer", "grand_total", "outstanding_amount",
                     "posting_date", "due_date", "status"],
             order_by="modified desc",
             limit=int(limit),
         )
-        return {"submitted": submitted, "drafts": drafts}
+        return {"submitted": submitted, "drafts": drafts, "scope": _scope_summary(scope)}
     except Exception as e:
-        return {"error": str(e), "submitted": [], "drafts": []}
+        return {"error": str(e), "submitted": [], "drafts": [], "scope": _scope_summary(scope)}
+
+
+def _scope_summary(scope=None):
+    s = scope or _scope()
+    return {
+        "user": s["user"],
+        "role": s["role"],
+        "is_restricted": s["is_restricted"],
+        "sales_persons_count": len(s.get("sales_persons") or []),
+        "customers_count": (len(s["customers"]) if s.get("customers") is not None else None),
+    }
+
+
+@frappe.whitelist()
+def get_user_scope():
+    """Return the current user's scope info for the UI to display
+    (e.g. 'Viewing as Joan Mwangi · Sales User · 23 customers')."""
+    _require_login()
+    return _scope_summary()
+
+
+@frappe.whitelist()
+def get_my_day():
+    """Composite stat-strip data for the dashboard home page."""
+    _require_login()
+    user = frappe.session.user
+    scope = _scope()
+    out = {"user": user, "role": scope["role"]}
+
+    # My Tasks (ToDo)
+    try:
+        out["my_tasks"] = frappe.db.count("ToDo", {"owner": user, "status": "Open"})
+    except Exception:
+        out["my_tasks"] = 0
+
+    # Approvals waiting on me
+    waiting = 0
+    try:
+        waiting += frappe.db.count("Leave Application",
+                                   {"leave_approver": user, "status": "Open"})
+    except Exception:
+        pass
+    try:
+        # Workflow Action assigned to me (still pending)
+        waiting += frappe.db.count("Workflow Action",
+                                   {"user": user, "status": "Open"})
+    except Exception:
+        pass
+    out["approvals_waiting"] = waiting
+
+    # Open Sales Invoices for my scope
+    try:
+        si_filters = {"docstatus": 1,
+                      "status": ["in", ["Unpaid", "Overdue", "Partly Paid", "Submitted"]]}
+        if scope["is_restricted"]:
+            if scope["customers"]:
+                si_filters["customer"] = ["in", scope["customers"]]
+            else:
+                out["open_sales_invoices"] = 0
+                si_filters = None
+        if si_filters:
+            out["open_sales_invoices"] = frappe.db.count("Sales Invoice", si_filters)
+    except Exception:
+        out["open_sales_invoices"] = 0
+
+    # Open Job Cards (across variants where status field exists)
+    open_jc = 0
+    for dt in ("Job Card", "Job Card Label", "Job Card Computer Paper", "Job Card Carton"):
+        if not frappe.db.exists("DocType", dt):
+            continue
+        if not frappe.has_permission(dt, "read"):
+            continue
+        try:
+            open_jc += frappe.db.count(dt, {"status": ["!=", "Completed"]})
+        except Exception:
+            try:
+                open_jc += frappe.db.count(dt)
+            except Exception:
+                pass
+    out["open_job_cards"] = open_jc
+
+    # VAT Filing — KRA monthly VAT return is due on the 20th
+    today_d = getdate(today())
+    if today_d.day <= 20:
+        next_due = today_d.replace(day=20)
+    else:
+        if today_d.month == 12:
+            next_due = today_d.replace(year=today_d.year + 1, month=1, day=20)
+        else:
+            next_due = today_d.replace(month=today_d.month + 1, day=20)
+    out["vat_due_in_days"] = (next_due - today_d).days
+    out["vat_due_label"] = formatdate(next_due, "d MMM")
+
+    return out
+
+
+@frappe.whitelist()
+def get_finance_kpis():
+    """Finance Desk top stat strip: Total AR, Total AP, Cash Balance, VAT Payable."""
+    _require_login()
+    out = {}
+    scope = _scope()
+
+    # Total AR — Sales Invoice outstanding sum, scoped
+    try:
+        if scope["is_restricted"]:
+            if not scope["customers"]:
+                out["total_ar"] = 0.0
+            else:
+                ph = ", ".join(["%s"] * len(scope["customers"]))
+                row = frappe.db.sql(f"""
+                    SELECT COALESCE(SUM(outstanding_amount), 0)
+                    FROM `tabSales Invoice`
+                    WHERE docstatus = 1
+                      AND status IN ('Unpaid', 'Overdue', 'Partly Paid', 'Submitted')
+                      AND customer IN ({ph})
+                """, scope["customers"])
+                out["total_ar"] = float(row[0][0] or 0)
+        else:
+            row = frappe.db.sql("""
+                SELECT COALESCE(SUM(outstanding_amount), 0)
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1
+                  AND status IN ('Unpaid', 'Overdue', 'Partly Paid', 'Submitted')
+            """)
+            out["total_ar"] = float(row[0][0] or 0)
+    except Exception as e:
+        out["total_ar"] = 0.0
+        out["_ar_error"] = str(e)[:200]
+
+    # Total AP — Purchase Invoice outstanding sum (no scope filter — finance role gates this)
+    try:
+        if not frappe.has_permission("Purchase Invoice", "read"):
+            out["total_ap"] = None
+        else:
+            row = frappe.db.sql("""
+                SELECT COALESCE(SUM(outstanding_amount), 0)
+                FROM `tabPurchase Invoice`
+                WHERE docstatus = 1
+                  AND status IN ('Unpaid', 'Overdue', 'Partly Paid')
+            """)
+            out["total_ap"] = float(row[0][0] or 0)
+    except Exception as e:
+        out["total_ap"] = None
+        out["_ap_error"] = str(e)[:200]
+
+    # Cash Balance — sum across Bank accounts via GL Entry
+    try:
+        if not frappe.has_permission("Account", "read"):
+            out["cash_balance"] = None
+        else:
+            row = frappe.db.sql("""
+                SELECT COALESCE(SUM(gl.debit - gl.credit), 0)
+                FROM `tabGL Entry` gl
+                JOIN `tabAccount` a ON a.name = gl.account
+                WHERE a.account_type = 'Bank'
+                  AND gl.is_cancelled = 0
+            """)
+            out["cash_balance"] = float(row[0][0] or 0)
+    except Exception as e:
+        out["cash_balance"] = None
+        out["_cash_error"] = str(e)[:200]
+
+    # VAT Payable — placeholder (needs VAT account identification per the
+    # VAT recon workflow). Returns None so the UI shows "—" rather than 0.
+    out["vat_payable"] = None
+    out["vat_payable_note"] = "Wiring deferred to Phase A.2 (needs VAT account mapping)"
+
+    return out
 
 
 @frappe.whitelist()

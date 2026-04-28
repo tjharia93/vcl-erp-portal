@@ -714,12 +714,12 @@
         </div>
       </div>
 
-      <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">My Tasks</div><div class="stat-value">7</div><div class="stat-change warn">2 due today</div></div>
-        <div class="stat-card warning"><div class="stat-label">Approvals Waiting</div><div class="stat-value">3</div><div class="stat-change warn">Oldest 2 d</div></div>
-        <div class="stat-card"><div class="stat-label">Open Sales Orders</div><div class="stat-value">24</div><div class="stat-change">5 awaiting artwork</div></div>
-        <div class="stat-card positive"><div class="stat-label">Job Cards Today</div><div class="stat-value">12</div><div class="stat-change">9 in progress</div></div>
-        <div class="stat-card warning"><div class="stat-label">VAT Filing</div><div class="stat-value">Due 20th</div><div class="stat-change warn">Review pending</div></div>
+      <div class="stat-strip" id="home-stat-strip">
+        <div class="stat-card"><div class="stat-label">My Tasks <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-my-tasks">—</div><div class="stat-change" id="kpi-my-tasks-sub">Open ToDos</div></div>
+        <div class="stat-card warning"><div class="stat-label">Approvals Waiting <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-approvals">—</div><div class="stat-change warn" id="kpi-approvals-sub">Workflow + Leave</div></div>
+        <div class="stat-card"><div class="stat-label">Open Sales Invoices <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-sales-invoices">—</div><div class="stat-change" id="kpi-sales-invoices-sub">Your scope</div></div>
+        <div class="stat-card positive"><div class="stat-label">Open Job Cards <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-job-cards">—</div><div class="stat-change" id="kpi-job-cards-sub">Across variants</div></div>
+        <div class="stat-card warning"><div class="stat-label">VAT Filing <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-vat" style="font-size:18px">—</div><div class="stat-change warn" id="kpi-vat-sub">KRA monthly</div></div>
       </div>
 
       <div class="brand-strip">
@@ -858,12 +858,12 @@
 
     <!-- ── FINANCE ── -->
     <div id="page-finance" class="page">
-      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Finance Desk</h1><p>AR/AP management, statutory compliance, payroll reconciliation, VAT filing, financial close.</p></div>
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Finance Desk <span class="live-tag">LIVE</span></h1><p>AR/AP, statutory compliance, payroll reconciliation, VAT filing, financial close. Top stats wired to ERPNext (sub-modules below still mock).</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">Total AR</div><div class="stat-value">KSh 8.4M</div><div class="stat-change warn">↑ 12% MoM</div></div>
-        <div class="stat-card"><div class="stat-label">Total AP</div><div class="stat-value">KSh 3.2M</div><div class="stat-change">↓ 5% MoM</div></div>
-        <div class="stat-card positive"><div class="stat-label">Cash Balance</div><div class="stat-value">KSh 1.8M</div><div class="stat-change">As of today</div></div>
-        <div class="stat-card warning"><div class="stat-label">VAT Payable</div><div class="stat-value">KSh 420K</div><div class="stat-change warn">Due 20th</div></div>
+        <div class="stat-card"><div class="stat-label">Total AR (KSh)</div><div class="stat-value" id="fin-ar">—</div><div class="stat-change" id="fin-ar-sub">Outstanding submitted invoices</div></div>
+        <div class="stat-card"><div class="stat-label">Total AP (KSh)</div><div class="stat-value" id="fin-ap">—</div><div class="stat-change" id="fin-ap-sub">Outstanding to suppliers</div></div>
+        <div class="stat-card positive"><div class="stat-label">Cash Balance (KSh)</div><div class="stat-value" id="fin-cash">—</div><div class="stat-change" id="fin-cash-sub">All bank accounts</div></div>
+        <div class="stat-card warning"><div class="stat-label">VAT Payable (KSh)</div><div class="stat-value" id="fin-vat">—</div><div class="stat-change warn" id="fin-vat-sub">Phase A.2 wiring</div></div>
       </div>
       <div class="two-col">
         <div>
@@ -1734,7 +1734,7 @@
   }
 
   // ── Render: My Profile ──
-  const _loaded = { me: false, directory: false, salesInvoices: false, jobCards: false };
+  const _loaded = { home: false, me: false, directory: false, finance: false, salesInvoices: false, jobCards: false };
 
   async function renderMyProfile(force) {
     if (_loaded.me && !force) return;
@@ -1907,10 +1907,57 @@
     }
   }
 
+  // ── Render: Home dashboard stat strip ──
+  async function renderHomeStats(force) {
+    if (_loaded.home && !force) return;
+    try {
+      const d = await vclFetch('get_my_day');
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = (v == null ? '—' : v); };
+      set('kpi-my-tasks', d.my_tasks);
+      set('kpi-approvals', d.approvals_waiting);
+      set('kpi-sales-invoices', d.open_sales_invoices);
+      set('kpi-job-cards', d.open_job_cards);
+      const vat = document.getElementById('kpi-vat');
+      const vatSub = document.getElementById('kpi-vat-sub');
+      if (vat) vat.textContent = (d.vat_due_in_days == null ? '—' : (d.vat_due_in_days + 'd'));
+      if (vatSub) vatSub.textContent = (d.vat_due_label ? 'Due ' + d.vat_due_label : 'KRA monthly');
+      _loaded.home = true;
+    } catch (e) {
+      console.error('home stats:', e);
+    }
+  }
+
+  // ── Render: Finance Desk top KPIs ──
+  async function renderFinanceKpis(force) {
+    if (_loaded.finance && !force) return;
+    try {
+      const d = await vclFetch('get_finance_kpis');
+      const setMoney = (id, v) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (v == null) { el.textContent = '—'; return; }
+        el.textContent = fmtNum(v);
+      };
+      setMoney('fin-ar', d.total_ar);
+      setMoney('fin-ap', d.total_ap);
+      setMoney('fin-cash', d.cash_balance);
+      setMoney('fin-vat', d.vat_payable);
+      if (d.vat_payable_note) {
+        const sub = document.getElementById('fin-vat-sub');
+        if (sub) sub.textContent = d.vat_payable_note;
+      }
+      _loaded.finance = true;
+    } catch (e) {
+      console.error('finance kpis:', e);
+    }
+  }
+
   // ── Lazy-load hook on tab activation ──
   const _renderers = {
+    home: renderHomeStats,
     me: renderMyProfile,
     directory: () => { _bindDirSearch(); renderDirectory(); },
+    finance: renderFinanceKpis,
     'sales-orders': renderSalesInvoices,
     'prod-jobcards': renderJobCards,
   };
@@ -1941,6 +1988,9 @@
   }
   updateTime();
   setInterval(updateTime, 30000);
+
+  // Kick off the home dashboard fetch on first paint (it's the active page).
+  document.addEventListener('DOMContentLoaded', () => { renderHomeStats(); });
 </script>
 </body>
 </html>
