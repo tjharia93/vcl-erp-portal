@@ -797,7 +797,39 @@
       <div class="leave-bar" id="me-leave-bar">
         <div class="leave-bar-item"><div class="v">—</div><div class="l">Loading…</div></div>
       </div>
-      <div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-primary" disabled title="Apply for Leave (form coming Phase A.2)">+ Apply for Leave</button><button class="btn btn-outline" disabled>View History</button></div>
+      <div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-primary" id="me-apply-btn" type="button">+ Apply for Leave</button><a class="btn btn-outline" href="/app/leave-application?status=Open" target="_blank" rel="noopener">View History ↗</a></div>
+
+      <div id="leave-form" style="display:none;margin-top:16px;padding:16px;border:1px solid var(--blue-light);background:var(--blue-pale);border-radius:10px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--blue-dark);font-size:18px;margin-bottom:12px">Apply for Leave</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="display:block;font-size:11px;color:var(--grey-dark);margin-bottom:4px;letter-spacing:0.5px">LEAVE TYPE</label>
+            <select id="leave-type" style="width:100%;padding:8px 10px;border:1px solid var(--grey-light);border-radius:6px;font-family:'Barlow',sans-serif;font-size:13px"><option value="">Loading…</option></select>
+          </div>
+          <div></div>
+          <div>
+            <label style="display:block;font-size:11px;color:var(--grey-dark);margin-bottom:4px;letter-spacing:0.5px">FROM DATE</label>
+            <input type="date" id="leave-from" style="width:100%;padding:8px 10px;border:1px solid var(--grey-light);border-radius:6px;font-family:'Barlow',sans-serif;font-size:13px">
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;color:var(--grey-dark);margin-bottom:4px;letter-spacing:0.5px">TO DATE</label>
+            <input type="date" id="leave-to" style="width:100%;padding:8px 10px;border:1px solid var(--grey-light);border-radius:6px;font-family:'Barlow',sans-serif;font-size:13px">
+          </div>
+          <div style="grid-column:1/-1">
+            <label style="display:block;font-size:11px;color:var(--grey-dark);margin-bottom:4px;letter-spacing:0.5px">REASON (optional)</label>
+            <textarea id="leave-reason" rows="2" style="width:100%;padding:8px 10px;border:1px solid var(--grey-light);border-radius:6px;font-family:'Barlow',sans-serif;font-size:13px;resize:vertical" placeholder="Why this leave?"></textarea>
+          </div>
+          <div style="grid-column:1/-1;display:flex;align-items:center;gap:8px">
+            <input type="checkbox" id="leave-half">
+            <label for="leave-half" style="font-size:13px;color:var(--text-muted)">Half-day</label>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-primary" id="leave-submit" type="button">Submit Application</button>
+          <button class="btn btn-outline" id="leave-cancel" type="button">Cancel</button>
+          <span id="leave-msg" style="font-size:12px;color:var(--text-muted)"></span>
+        </div>
+      </div>
 
       <div class="two-col" style="margin-top:24px">
         <div>
@@ -1319,15 +1351,16 @@
     </div>
 
     <div id="page-sales-collections" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Collections Tracker</h1><p>Weekly follow-up workflow for outstanding receivables by sales rep.</p></div>
-      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Total Overdue</div><div class="stat-value">KSh 2.1M</div><div class="stat-change warn">Needs action</div></div><div class="stat-card"><div class="stat-label">Promises This Wk</div><div class="stat-value">8</div><div class="stat-change">From follow-ups</div></div><div class="stat-card positive"><div class="stat-label">Collected Wk</div><div class="stat-value">KSh 740K</div><div class="stat-change">Above target</div></div></div>
-      <div style="margin:14px 0;display:flex;gap:8px"><button class="btn btn-primary">+ Log Follow-Up</button><button class="btn btn-outline">+ Payment Promise</button></div>
-      <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Outstanding</th><th>Last Contact</th><th>Next Action</th><th>Rep</th></tr></thead><tbody>
-        <tr><td>Equity Printing Ltd</td><td>KSh 660,000</td><td>Yesterday</td><td>Call MD by 30 Apr</td><td>Raheel</td></tr>
-        <tr><td>Nairobi Schools Board</td><td>KSh 760,000</td><td>3 days ago</td><td>Email reminder</td><td>Joyce</td></tr>
-        <tr><td>Lake Basin Supplies</td><td>KSh 270,000</td><td>1 week ago</td><td>Site visit</td><td>Joan</td></tr>
-      </tbody></table></div>
-      <div class="info-box">Mock. Custom doctypes from vcl_sales_dashboard: <code>Collections Follow Up</code>, <code>Collections Submission</code>. API: <code>vcl_portal.api.log_follow_up()</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Collections Tracker <span class="live-tag">LIVE</span></h1><p>Customers with outstanding invoices &gt; 30 days, ranked by amount. Last contact pulled from <code>Collections Follow Up</code> if available.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card warning"><div class="stat-label">Customers in Collections</div><div class="stat-value" id="cl-count">—</div><div class="stat-change warn">Outstanding &gt; 30 d</div></div>
+        <div class="stat-card"><div class="stat-label">Total Overdue (KSh)</div><div class="stat-value" id="cl-total">—</div><div class="stat-change">Sum across customers</div></div>
+        <div class="stat-card"><div class="stat-label">Oldest Item</div><div class="stat-value" id="cl-oldest" style="font-size:18px">—</div><div class="stat-change">Days from posting</div></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest (d)</th><th>Last Contact</th></tr></thead>
+        <tbody id="cl-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_sales_collections</code>. Customer scope from <code>Customer Sales Rep Assignment</code>. Logging follow-ups from this page = Phase A.4.</div>
     </div>
 
     <div id="page-sales-ageing" class="page">
@@ -1343,75 +1376,111 @@
     </div>
 
     <div id="page-sales-customer360" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Customer 360</h1><p>Full customer profile: outstanding, order history, payment behaviour, contacts.</p></div>
-      <input type="text" class="sop-search" placeholder="Search customer by name or code…">
-      <div class="card-grid card-grid-3">
-        <div class="card"><div class="card-title">Mwangi Stationery</div><div class="card-desc">Outstanding KSh 200K · 24 SOs YTD · Pays in ~28 days · Rep: Joan</div></div>
-        <div class="card"><div class="card-title">Bidco Africa</div><div class="card-desc">Outstanding KSh 0 · 89 SOs YTD · Pays in ~14 days · Rep: Joyce</div></div>
-        <div class="card"><div class="card-title">Equity Printing</div><div class="card-desc">Outstanding KSh 660K · 12 SOs YTD · Pays in ~78 days · Rep: Raheel</div></div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Customer 360 <span class="live-tag">LIVE</span></h1><p>Full customer profile: outstanding, MTD revenue, recent invoices and payments. Picker is scoped to your customers.</p></div>
+      <select id="c360-picker" class="sop-search" style="margin-bottom:14px">
+        <option value="">Loading customers…</option>
+      </select>
+      <div id="c360-detail" style="display:none">
+        <div class="profile-card" style="grid-template-columns:auto 1fr;display:grid;gap:20px">
+          <div class="profile-avatar" id="c360-initials">—</div>
+          <div class="profile-info">
+            <h2 id="c360-name">—</h2>
+            <p><strong>Territory:</strong> <span id="c360-territory">—</span> &middot; <strong>Group:</strong> <span id="c360-group">—</span></p>
+            <p><strong>Currency:</strong> <span id="c360-cur">—</span> &middot; <strong>Credit days:</strong> <span id="c360-credit">—</span></p>
+          </div>
+        </div>
+        <div class="stat-strip">
+          <div class="stat-card warning"><div class="stat-label">Outstanding (KSh)</div><div class="stat-value" id="c360-outstanding">—</div><div class="stat-change warn">All open invoices</div></div>
+          <div class="stat-card positive"><div class="stat-label">MTD Revenue (KSh)</div><div class="stat-value" id="c360-mtd">—</div><div class="stat-change">This month</div></div>
+        </div>
+        <div class="two-col">
+          <div>
+            <div class="section-heading">Recent Invoices</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Invoice</th><th>Posting</th><th>Total</th><th>Outstanding</th><th>Status</th></tr></thead>
+              <tbody id="c360-inv-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px">—</td></tr></tbody>
+            </table></div>
+          </div>
+          <div>
+            <div class="section-heading">Recent Payments</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Entry</th><th>Posting</th><th>Paid</th></tr></thead>
+              <tbody id="c360-pay-tbody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:14px">—</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
       </div>
-      <div class="info-box">Mock. ERPNext: <code>Customer</code> + <code>Sales Invoice</code> + <code>Payment Entry</code> joined. API: <code>vcl_portal.api.get_customer_360(customer)</code>.</div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_customer_360(customer)</code>. Picker first call lists customers in your scope.</div>
     </div>
 
     <div id="page-sales-rep-dash" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Rep Dashboard</h1><p>Per-rep performance: targets, actuals, collections, commission tracking.</p></div>
-      <div class="table-wrap"><table><thead><tr><th>Rep</th><th>Target (KSh)</th><th>Actual MTD</th><th>%</th><th>Collections</th></tr></thead><tbody>
-        <tr><td>Joan Mwangi</td><td>1,500,000</td><td>1,420,000</td><td><span class="badge badge-amber">95%</span></td><td>KSh 380K</td></tr>
-        <tr><td>Joyce Otieno</td><td>1,500,000</td><td>1,820,000</td><td><span class="badge badge-green">121%</span></td><td>KSh 510K</td></tr>
-        <tr><td>Raheel Ahmed</td><td>1,200,000</td><td>980,000</td><td><span class="badge badge-amber">82%</span></td><td>KSh 250K</td></tr>
-      </tbody></table></div>
-      <div class="info-box">Mock. ERPNext: <code>Sales Order</code> + <code>Sales Person</code> + custom <code>Sales Target</code>. API: <code>vcl_portal.api.get_rep_performance(period)</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Rep Dashboard <span class="live-tag">LIVE</span></h1><p>Per-Sales-Person actual MTD vs target (from custom <code>Sales Target</code> doctype, if available). Restricted users see only their permitted reps.</p></div>
+      <div class="table-wrap"><table><thead><tr><th>Sales Person</th><th>Target (KSh)</th><th>Actual MTD (KSh)</th><th>%</th></tr></thead>
+        <tbody id="rd-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_rep_performance</code>. Actual = sum of grand_total on Sales Invoices via Sales Team for current month. Target requires custom <code>Sales Target</code> doctype (will show — if absent).</div>
     </div>
 
     <div id="page-sales-mgr" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Manager View</h1><p>Cross-rep comparison, territory management, and escalations.</p></div>
-      <div class="stat-strip"><div class="stat-card positive"><div class="stat-label">Team MTD</div><div class="stat-value">KSh 4.2M</div><div class="stat-change">↑ 8% vs target</div></div><div class="stat-card warning"><div class="stat-label">Escalations</div><div class="stat-value">2</div><div class="stat-change warn">Needs your call</div></div><div class="stat-card"><div class="stat-label">Pipeline</div><div class="stat-value">KSh 6.8M</div><div class="stat-change">31 active SOs</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Sales Person</code> hierarchy + aggregations. API: <code>vcl_portal.api.get_team_performance()</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Manager View <span class="live-tag">LIVE</span></h1><p>Aggregate team view. Restricted users see their own scope only.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card positive"><div class="stat-label">Team MTD (KSh)</div><div class="stat-value" id="smgr-mtd">—</div><div class="stat-change">Submitted invoices</div></div>
+        <div class="stat-card warning"><div class="stat-label">Escalations</div><div class="stat-value" id="smgr-esc">—</div><div class="stat-change warn">Customers w/ &gt; 60 d outstanding</div></div>
+        <div class="stat-card"><div class="stat-label">Pipeline (KSh)</div><div class="stat-value" id="smgr-pipe">—</div><div class="stat-change">Open SO value (less advance)</div></div>
+      </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_sales_manager_view</code>. Pipeline = sum(grand_total - advance_paid) on open Sales Orders.</div>
     </div>
 
     <!-- ── FINANCE SUB-PAGES ── -->
     <div id="page-finance-ar" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Receivable</h1><p>Customer invoices, ageing, collections workflow, bad-debt provisioning.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Total AR</div><div class="stat-value">KSh 8.4M</div><div class="stat-change warn">↑ 12% MoM</div></div><div class="stat-card warning"><div class="stat-label">Overdue</div><div class="stat-value">KSh 2.1M</div><div class="stat-change warn">25% of AR</div></div><div class="stat-card critical"><div class="stat-label">Bad Debt Provision</div><div class="stat-value">KSh 720K</div><div class="stat-change down">90+ days</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Sales Invoice</code> outstanding_amount + <code>Customer</code>. API: <code>vcl_portal.api.get_ar_summary()</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Receivable <span class="live-tag">LIVE</span></h1><p>Per-customer outstanding with oldest age + oldest overdue days. Top 50 by amount.</p></div>
+      <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest age (d)</th><th>Oldest overdue (d)</th></tr></thead>
+        <tbody id="ar-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_ar_detail</code>. Customer scope from <code>Customer Sales Rep Assignment</code>.</div>
     </div>
 
     <div id="page-finance-ap" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Payable</h1><p>Supplier invoices, payment runs, sub-ledger reconciliation, director payables.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Total AP</div><div class="stat-value">KSh 3.2M</div><div class="stat-change">↓ 5% MoM</div></div><div class="stat-card warning"><div class="stat-label">Due This Wk</div><div class="stat-value">KSh 1.4M</div><div class="stat-change warn">14 invoices</div></div><div class="stat-card"><div class="stat-label">Director Payables</div><div class="stat-value">KSh 480K</div><div class="stat-change">Tracked separately</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Purchase Invoice</code> + <code>Payment Entry</code> workflow. API: <code>vcl_portal.api.get_ap_summary()</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Payable <span class="live-tag">LIVE</span></h1><p>Per-supplier outstanding with oldest age + oldest overdue days.</p></div>
+      <div class="table-wrap"><table><thead><tr><th>Supplier</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest age (d)</th><th>Oldest overdue (d)</th></tr></thead>
+        <tbody id="ap-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_ap_detail</code>. Director payables (separate tracking) requires custom doctype tagging — Phase A.4.</div>
     </div>
 
     <div id="page-finance-vat" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>VAT Reconciliation</h1><p>QBO vs KRA iTax comparison across 12 monthly tabs. Habo, Awanad, local suppliers.</p></div>
-      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">VAT Payable</div><div class="stat-value">KSh 420K</div><div class="stat-change warn">Due 20th</div></div><div class="stat-card"><div class="stat-label">Output VAT MTD</div><div class="stat-value">KSh 720K</div><div class="stat-change">From sales</div></div><div class="stat-card"><div class="stat-label">Input VAT MTD</div><div class="stat-value">KSh 300K</div><div class="stat-change">From purchases</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Sales Invoice</code> + <code>Purchase Invoice</code> tax tables, plus QBO ledger. API: <code>vcl_portal.api.get_vat_payable_for_period(start, end)</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>VAT Reconciliation <span class="live-tag">LIVE</span></h1><p>Output VAT (sales tax) vs Input VAT (purchase tax) for the current period. Sums all rows on <code>Sales Taxes and Charges</code> + <code>Purchase Taxes and Charges</code>.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card warning"><div class="stat-label">Net VAT Payable (KSh)</div><div class="stat-value" id="vat-net">—</div><div class="stat-change warn" id="vat-period">—</div></div>
+        <div class="stat-card"><div class="stat-label">Output VAT (KSh)</div><div class="stat-value" id="vat-output">—</div><div class="stat-change">From submitted SI</div></div>
+        <div class="stat-card"><div class="stat-label">Input VAT (KSh)</div><div class="stat-value" id="vat-input">—</div><div class="stat-change">From submitted PI</div></div>
+      </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_vat_period(start, end)</code> — defaults to current month. Includes <strong>all</strong> tax rows; if VCL has non-VAT taxes (e.g. withholding), this will overstate. Phase A.4: filter to specific VAT account heads only.</div>
     </div>
 
     <div id="page-finance-payroll" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Payroll</h1><p>PAYE, NSSF, SHIF, Housing Levy. Permanent and casual worker splits.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Headcount</div><div class="stat-value">~120</div><div class="stat-change">78 perm + 42 casual</div></div><div class="stat-card"><div class="stat-label">March Net</div><div class="stat-value">KSh 4.6M</div><div class="stat-change">Filed 9 Apr</div></div><div class="stat-card warning"><div class="stat-label">April Run</div><div class="stat-value">In Progress</div><div class="stat-change warn">Due 9 May</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Payroll Entry</code> + <code>Salary Slip</code>. API: <code>vcl_portal.api.get_payroll_summary(month)</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Payroll <span class="live-tag">LIVE</span></h1><p>Latest Payroll Entry summary + month-to-date net pay across all submitted Salary Slips.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card"><div class="stat-label">Latest Payroll Entry</div><div class="stat-value" id="pr-latest" style="font-size:14px">—</div><div class="stat-change" id="pr-latest-period">—</div></div>
+        <div class="stat-card positive"><div class="stat-label">MTD Net Pay (KSh)</div><div class="stat-value" id="pr-mtd">—</div><div class="stat-change">All Salary Slips this month</div></div>
+        <div class="stat-card"><div class="stat-label">Submitted Total</div><div class="stat-value" id="pr-all">—</div><div class="stat-change">All-time Payroll Entries</div></div>
+        <div class="stat-card warning"><div class="stat-label">In Draft</div><div class="stat-value" id="pr-pending">—</div><div class="stat-change warn">Awaiting submission</div></div>
+      </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_payroll_summary</code>. Permanent vs casual split lives on the HR Desk. Statutory totals (PAYE/NSSF/SHIF/Housing) come from Salary Slip deductions — Phase A.4.</div>
     </div>
 
     <div id="page-finance-tb" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Trial Balance</h1><p>Monthly TB review, year-end close, statutory financial preparation.</p></div>
-      <div class="stat-strip"><div class="stat-card positive"><div class="stat-label">March TB</div><div class="stat-value">Balanced</div><div class="stat-change">As at 31 Mar</div></div><div class="stat-card"><div class="stat-label">YTD Net</div><div class="stat-value">KSh 12.4M</div><div class="stat-change">Pre-tax</div></div><div class="stat-card warning"><div class="stat-label">Year-End</div><div class="stat-value">Dec 31</div><div class="stat-change warn">8 mo to close</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>GL Entry</code> aggregations per <code>Account</code>. Standard ERPNext Trial Balance report.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Trial Balance <span class="live-tag">LIVE</span></h1><p>Trial Balance is fully implemented in ERPNext as a standard query report. We deep-link into it rather than rebuild.</p></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap">
+        <a id="tb-link" href="/app/query-report/Trial Balance" target="_blank" rel="noopener" class="btn btn-primary">Open Trial Balance ↗</a>
+        <span style="font-size:12px;color:var(--text-muted)">Loads with current month + your default Company.</span>
+      </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_trial_balance_link</code>. Embedding the full TB in an iframe is possible but the standalone report is wider and easier to read — deep link is the cleaner choice.</div>
     </div>
 
     <div id="page-finance-preaudit" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Pre-Audit Actions</h1><p>29 items identified in 2025 financial review covering AR, AP, VAT suspense, investments, and TB issues.</p></div>
-      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Total Items</div><div class="stat-value">29</div><div class="stat-change warn">Open</div></div><div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value">7</div><div class="stat-change">Assigned</div></div><div class="stat-card"><div class="stat-label">Closed</div><div class="stat-value">3</div><div class="stat-change">Of 29</div></div></div>
-      <div class="table-wrap"><table><thead><tr><th>#</th><th>Area</th><th>Item</th><th>Owner</th><th>Status</th></tr></thead><tbody>
-        <tr><td>01</td><td>AR</td><td>Bad debt provision review for 90+ accounts</td><td>Radhika</td><td><span class="badge badge-amber">In Progress</span></td></tr>
-        <tr><td>02</td><td>AP</td><td>Sub-ledger reconciliation gap (KSh 180K variance)</td><td>Radhika</td><td><span class="badge badge-grey">Open</span></td></tr>
-        <tr><td>03</td><td>Director</td><td>Director payables documentation</td><td>Tanuj</td><td><span class="badge badge-amber">In Progress</span></td></tr>
-        <tr><td>04</td><td>Investments</td><td>Long-term investments documentation</td><td>Tanuj</td><td><span class="badge badge-grey">Open</span></td></tr>
-        <tr><td>05</td><td>VAT</td><td>VAT suspense account clearance</td><td>Radhika</td><td><span class="badge badge-amber">In Progress</span></td></tr>
-        <tr><td colspan="5" style="text-align:center;color:var(--text-muted)">… 24 more items</td></tr>
-      </tbody></table></div>
-      <div class="info-box warn">Recommended: build a custom <code>Pre Audit Action</code> doctype to replace Excel tracking. API: <code>vcl_portal.api.get_pre_audit_actions(status='Open')</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Pre-Audit Actions <span id="preaudit-pill" class="live-tag">LIVE</span></h1><p>29 items identified in 2025 review. Loaded from the custom <code>Pre Audit Action</code> doctype if installed; otherwise shows a "needs doctype" placeholder.</p></div>
+      <div id="preaudit-content"><div class="info-box">Loading…</div></div>
     </div>
 
     <!-- ── PROCUREMENT SUB-PAGES ── -->
@@ -1734,7 +1803,13 @@
   }
 
   // ── Render: My Profile ──
-  const _loaded = { home: false, me: false, directory: false, finance: false, sales: false, salesDesk: false, approvals: false, hr: false, procurement: false, salesInvoices: false, jobCards: false };
+  const _loaded = {
+    home: false, me: false, directory: false, finance: false,
+    sales: false, salesDesk: false, approvals: false, hr: false, procurement: false,
+    salesInvoices: false, jobCards: false,
+    salesCollections: false, repDash: false, salesMgr: false,
+    arDetail: false, apDetail: false, vat: false, payroll: false, tbLink: false, preAudit: false,
+  };
 
   async function renderMyProfile(force) {
     if (_loaded.me && !force) return;
@@ -2060,10 +2135,297 @@
     }
   }
 
+  // ── Render: Sales Collections ──
+  async function renderSalesCollections(force) {
+    if (_loaded.salesCollections && !force) return;
+    const tb = document.getElementById('cl-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_sales_collections', { limit: 50 });
+      document.getElementById('cl-count').textContent = rows.length;
+      const total = rows.reduce((a, r) => a + (Number(r.outstanding) || 0), 0);
+      document.getElementById('cl-total').textContent = fmtNum(total);
+      const oldest = rows.reduce((a, r) => Math.max(a, Number(r.oldest_age_days) || 0), 0);
+      document.getElementById('cl-oldest').textContent = oldest ? oldest + ' d' : '—';
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td>' + escHtml(r.customer || '—') + '</td>' +
+            '<td>' + (r.open_invoices || 0) + '</td>' +
+            '<td>' + fmtNum(r.outstanding) + '</td>' +
+            '<td>' + (r.oldest_age_days || 0) + '</td>' +
+            '<td>' + escHtml(r.last_contact ? fmtRelative(r.last_contact) : '—') + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No customers in collections (no outstanding > 30 d)</td></tr>';
+      _loaded.salesCollections = true;
+    } catch (e) {
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  // ── Render: Customer 360 ──
+  let _c360PickerLoaded = false;
+  async function renderCustomer360(force) {
+    if (_c360PickerLoaded && !force) return;
+    const sel = document.getElementById('c360-picker');
+    if (!sel) return;
+    try {
+      const r = await vclFetch('get_customer_360');
+      if (r.error) { sel.innerHTML = '<option>' + escHtml(r.error) + '</option>'; return; }
+      const list = r.customers || [];
+      sel.innerHTML = '<option value="">Pick a customer…</option>' +
+        list.map(c => '<option value="' + escHtml(c.name) + '">' +
+          escHtml(c.customer_name || c.name) + '</option>').join('');
+      sel.onchange = () => loadC360(sel.value);
+      _c360PickerLoaded = true;
+    } catch (e) {
+      sel.innerHTML = '<option>Error: ' + escHtml(e.message) + '</option>';
+    }
+  }
+  async function loadC360(customer) {
+    const detail = document.getElementById('c360-detail');
+    if (!customer) { detail.style.display = 'none'; return; }
+    try {
+      const d = await vclFetch('get_customer_360', { customer: customer });
+      if (d.error) { detail.style.display = 'block'; document.getElementById('c360-name').textContent = d.error; return; }
+      detail.style.display = 'block';
+      const p = d.profile || {};
+      const initials = String(p.customer_name || customer).split(/\s+/).map(w => w[0] || '').slice(0, 2).join('').toUpperCase();
+      document.getElementById('c360-initials').textContent = initials;
+      document.getElementById('c360-name').textContent = p.customer_name || customer;
+      document.getElementById('c360-territory').textContent = p.territory || '—';
+      document.getElementById('c360-group').textContent = p.customer_group || '—';
+      document.getElementById('c360-cur').textContent = p.default_currency || '—';
+      document.getElementById('c360-credit').textContent = (p.credit_days != null ? p.credit_days + ' days' : '—');
+      document.getElementById('c360-outstanding').textContent = fmtNum(d.outstanding);
+      document.getElementById('c360-mtd').textContent = fmtNum(d.mtd_revenue);
+      const it = document.getElementById('c360-inv-tbody');
+      it.innerHTML = (d.recent_invoices || []).length
+        ? d.recent_invoices.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/sales-invoice/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+            '<td>' + escHtml(fmtDate(r.posting_date)) + '</td>' +
+            '<td>' + fmtNum(r.grand_total) + '</td>' +
+            '<td>' + fmtNum(r.outstanding_amount) + '</td>' +
+            '<td>' + statusBadge(r.status) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px">No invoices</td></tr>';
+      const pt = document.getElementById('c360-pay-tbody');
+      pt.innerHTML = (d.recent_payments || []).length
+        ? d.recent_payments.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/payment-entry/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+            '<td>' + escHtml(fmtDate(r.posting_date)) + '</td>' +
+            '<td>' + fmtNum(r.paid_amount) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:14px">No payments</td></tr>';
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Render: Rep Dashboard ──
+  async function renderRepDash(force) {
+    if (_loaded.repDash && !force) return;
+    const tb = document.getElementById('rd-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_rep_performance');
+      tb.innerHTML = rows.length
+        ? rows.map(r => {
+            const pct = r.pct_achieved == null ? '—' : (r.pct_achieved + '%');
+            const cls = r.pct_achieved == null ? 'badge-grey'
+                       : r.pct_achieved >= 100 ? 'badge-green'
+                       : r.pct_achieved >= 80 ? 'badge-amber' : 'badge-red';
+            return '<tr>' +
+              '<td>' + escHtml(r.sales_person) + '</td>' +
+              '<td>' + (r.target_period == null ? '—' : fmtNum(r.target_period)) + '</td>' +
+              '<td>' + fmtNum(r.actual_mtd) + '</td>' +
+              '<td><span class="badge ' + cls + '">' + escHtml(pct) + '</span></td>' +
+              '</tr>';
+          }).join('')
+        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">No Sales Persons in your scope</td></tr>';
+      _loaded.repDash = true;
+    } catch (e) {
+      tb.innerHTML = '<tr><td colspan="4" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  // ── Render: Sales Manager View ──
+  async function renderSalesMgr(force) {
+    if (_loaded.salesMgr && !force) return;
+    try {
+      const d = await vclFetch('get_sales_manager_view');
+      document.getElementById('smgr-mtd').textContent = fmtNum(d.team_mtd);
+      document.getElementById('smgr-esc').textContent = (d.escalations == null ? '—' : d.escalations);
+      document.getElementById('smgr-pipe').textContent = fmtNum(d.pipeline);
+      _loaded.salesMgr = true;
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Render: Finance AR / AP ──
+  function _renderArApRows(rows, idCol) {
+    return rows.length
+      ? rows.map(r => '<tr>' +
+          '<td>' + escHtml(r[idCol] || '—') + '</td>' +
+          '<td>' + (r.open_invoices || 0) + '</td>' +
+          '<td>' + fmtNum(r.outstanding) + '</td>' +
+          '<td>' + (r.oldest_age_days || 0) + '</td>' +
+          '<td>' + (r.oldest_overdue_days != null && r.oldest_overdue_days > 0 ? r.oldest_overdue_days : '—') + '</td>' +
+          '</tr>').join('')
+      : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Nothing outstanding</td></tr>';
+  }
+  async function renderArDetail(force) {
+    if (_loaded.arDetail && !force) return;
+    const tb = document.getElementById('ar-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_ar_detail', { limit: 50 });
+      tb.innerHTML = _renderArApRows(rows, 'customer');
+      _loaded.arDetail = true;
+    } catch (e) {
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+  async function renderApDetail(force) {
+    if (_loaded.apDetail && !force) return;
+    const tb = document.getElementById('ap-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_ap_detail', { limit: 50 });
+      tb.innerHTML = _renderArApRows(rows, 'supplier');
+      _loaded.apDetail = true;
+    } catch (e) {
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  // ── Render: Finance VAT ──
+  async function renderVat(force) {
+    if (_loaded.vat && !force) return;
+    try {
+      const d = await vclFetch('get_vat_period');
+      document.getElementById('vat-output').textContent = fmtNum(d.output_vat);
+      document.getElementById('vat-input').textContent = fmtNum(d.input_vat);
+      document.getElementById('vat-net').textContent = fmtNum(d.net_vat_payable);
+      document.getElementById('vat-period').textContent =
+        (d.period_start ? fmtDate(d.period_start) + ' → ' + fmtDate(d.period_end) : '—');
+      _loaded.vat = true;
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Render: Finance Payroll ──
+  async function renderPayroll(force) {
+    if (_loaded.payroll && !force) return;
+    try {
+      const d = await vclFetch('get_payroll_summary');
+      const latest = d.latest;
+      document.getElementById('pr-latest').textContent = latest ? latest.name : 'No runs';
+      document.getElementById('pr-latest-period').textContent = latest
+        ? (fmtDate(latest.start_date) + ' → ' + fmtDate(latest.end_date))
+        : '—';
+      document.getElementById('pr-mtd').textContent = fmtNum(d.mtd_net_pay);
+      document.getElementById('pr-all').textContent = d.all_count ?? '—';
+      document.getElementById('pr-pending').textContent = d.pending_count ?? '—';
+      _loaded.payroll = true;
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Render: Finance Trial Balance link ──
+  async function renderTbLink(force) {
+    if (_loaded.tbLink && !force) return;
+    try {
+      const d = await vclFetch('get_trial_balance_link');
+      const a = document.getElementById('tb-link');
+      if (a && d.url) a.href = d.url;
+      _loaded.tbLink = true;
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Render: Pre-Audit Actions ──
+  async function renderPreAudit(force) {
+    if (_loaded.preAudit && !force) return;
+    const wrap = document.getElementById('preaudit-content');
+    if (!wrap) return;
+    try {
+      const r = await vclFetch('get_pre_audit_actions');
+      if (Array.isArray(r)) {
+        if (!r.length) {
+          wrap.innerHTML = '<div class="info-box">No Pre-Audit Action records yet. Add some in the doctype to populate.</div>';
+        } else {
+          const rows = r.map(a => '<tr>' +
+            '<td>' + escHtml(a.name) + '</td>' +
+            '<td>' + escHtml(a.title || '—') + '</td>' +
+            '<td>' + escHtml(a.category || '—') + '</td>' +
+            '<td>' + escHtml(a.owner || '—') + '</td>' +
+            '<td>' + statusBadge(a.status) + '</td>' +
+            '<td>' + escHtml(fmtDate(a.due_date)) + '</td>' +
+            '</tr>').join('');
+          wrap.innerHTML = '<div class="table-wrap"><table>' +
+            '<thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Owner</th><th>Status</th><th>Due</th></tr></thead>' +
+            '<tbody>' + rows + '</tbody></table></div>';
+        }
+      } else if (r && r._no_doctype) {
+        document.getElementById('preaudit-pill').className = 'in-dev-tag';
+        document.getElementById('preaudit-pill').textContent = 'IN DEV';
+        wrap.innerHTML = '<div class="info-box warn">' + escHtml(r.note) + '</div>';
+      }
+      _loaded.preAudit = true;
+    } catch (e) {
+      wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>';
+    }
+  }
+
+  // ── Apply for Leave form ──
+  async function _initLeaveForm() {
+    if (_initLeaveForm._done) return;
+    _initLeaveForm._done = true;
+    const sel = document.getElementById('leave-type');
+    try {
+      const types = await vclFetch('get_leave_types');
+      sel.innerHTML = '<option value="">Pick a leave type…</option>' +
+        (types || []).map(t => '<option value="' + escHtml(t.name) + '">' + escHtml(t.name) + '</option>').join('');
+    } catch (e) {
+      sel.innerHTML = '<option>Error loading types</option>';
+    }
+    document.getElementById('me-apply-btn').addEventListener('click', () => {
+      const f = document.getElementById('leave-form');
+      f.style.display = (f.style.display === 'none' || !f.style.display) ? 'block' : 'none';
+      const today = new Date().toISOString().slice(0, 10);
+      if (!document.getElementById('leave-from').value) document.getElementById('leave-from').value = today;
+      if (!document.getElementById('leave-to').value) document.getElementById('leave-to').value = today;
+    });
+    document.getElementById('leave-cancel').addEventListener('click', () => {
+      document.getElementById('leave-form').style.display = 'none';
+      document.getElementById('leave-msg').textContent = '';
+    });
+    document.getElementById('leave-submit').addEventListener('click', async () => {
+      const msg = document.getElementById('leave-msg');
+      const btn = document.getElementById('leave-submit');
+      const lt = document.getElementById('leave-type').value;
+      const fd = document.getElementById('leave-from').value;
+      const td = document.getElementById('leave-to').value;
+      const half = document.getElementById('leave-half').checked ? 1 : 0;
+      const reason = document.getElementById('leave-reason').value;
+      if (!lt || !fd || !td) { msg.textContent = 'Leave type + dates required.'; msg.style.color = 'var(--amber)'; return; }
+      btn.disabled = true; msg.textContent = 'Submitting…'; msg.style.color = 'var(--text-muted)';
+      try {
+        const r = await vclFetch('create_leave_application', {
+          leave_type: lt, from_date: fd, to_date: td,
+          half_day: half, half_day_date: half ? fd : null,
+          description: reason,
+        });
+        msg.innerHTML = '✓ Created <a href="' + escHtml(r.url) + '" target="_blank">' + escHtml(r.name) + '</a>. Refreshing leave balance…';
+        msg.style.color = 'var(--green)';
+        renderMyProfile(true);
+      } catch (e) {
+        msg.textContent = 'Error: ' + e.message;
+        msg.style.color = 'var(--red)';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
   // ── Lazy-load hook on tab activation ──
   const _renderers = {
     home: renderHomeStats,
-    me: renderMyProfile,
+    me: () => { renderMyProfile(); _initLeaveForm(); },
     approvals: renderApprovals,
     directory: () => { _bindDirSearch(); renderDirectory(); },
     finance: renderFinanceKpis,
@@ -2071,6 +2433,16 @@
     hr: renderHrKpis,
     procurement: renderProcurementKpis,
     'sales-orders': renderSalesInvoices,
+    'sales-collections': renderSalesCollections,
+    'sales-customer360': renderCustomer360,
+    'sales-rep-dash': renderRepDash,
+    'sales-mgr': renderSalesMgr,
+    'finance-ar': renderArDetail,
+    'finance-ap': renderApDetail,
+    'finance-vat': renderVat,
+    'finance-payroll': renderPayroll,
+    'finance-tb': renderTbLink,
+    'finance-preaudit': renderPreAudit,
     'prod-jobcards': renderJobCards,
   };
 

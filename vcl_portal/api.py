@@ -324,6 +324,462 @@ def _customer_filter_sql(scope, field="customer"):
 
 
 @frappe.whitelist()
+def get_sales_collections(limit=30):
+    """Customers with outstanding > 30 days; last contact (if any) from
+    Collections Follow Up custom doctype (vcl_sales_dashboard)."""
+    _require_login()
+    if not frappe.has_permission("Sales Invoice", "read"):
+        return []
+    scope = _scope()
+    cust, params = _customer_filter_sql(scope, "customer")
+    try:
+        rows = frappe.db.sql(
+            f"""SELECT
+                    customer,
+                    SUM(outstanding_amount) AS outstanding,
+                    MAX(DATEDIFF(CURDATE(), posting_date)) AS oldest_age_days,
+                    COUNT(*) AS open_invoices
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1 AND outstanding_amount > 0
+                  AND DATEDIFF(CURDATE(), posting_date) > 30
+                  {cust}
+                GROUP BY customer
+                ORDER BY outstanding DESC
+                LIMIT %s""",
+            params + [int(limit)],
+            as_dict=True,
+        )
+    except Exception:
+        rows = []
+    # Last follow-up date from custom doctype if available
+    if rows and frappe.db.exists("DocType", "Collections Follow Up"):
+        names = [r["customer"] for r in rows]
+        ph = ", ".join(["%s"] * len(names))
+        try:
+            fu = frappe.db.sql(
+                f"""SELECT customer, MAX(creation) AS last_contact
+                    FROM `tabCollections Follow Up`
+                    WHERE customer IN ({ph})
+                    GROUP BY customer""",
+                names, as_dict=True,
+            )
+            fu_map = {f["customer"]: f["last_contact"] for f in fu}
+            for r in rows:
+                r["last_contact"] = fu_map.get(r["customer"])
+        except Exception:
+            pass
+    return rows
+
+
+@frappe.whitelist()
+def get_customer_360(customer=None):
+    """Per-customer summary: profile, outstanding, MTD revenue, last invoice,
+    last payment, last 5 invoices."""
+    _require_login()
+    if not customer:
+        # Return list of allowed customers for the picker
+        scope = _scope()
+        if scope["is_restricted"]:
+            return {"customers": [{"name": c} for c in (scope.get("customers") or [])][:200]}
+        try:
+            return {"customers": frappe.get_all(
+                "Customer",
+                filters={"disabled": 0},
+                fields=["name", "customer_name"],
+                limit=500,
+                order_by="customer_name",
+            )}
+        except Exception:
+            return {"customers": []}
+    if not frappe.has_permission("Customer", "read", customer):
+        return {"error": "no permission for " + customer}
+    scope = _scope()
+    if scope["is_restricted"] and customer not in (scope.get("customers") or []):
+        return {"error": "customer not in your scope"}
+    out = {"customer": customer}
+    try:
+        out["profile"] = frappe.db.get_value(
+            "Customer", customer,
+            ["customer_name", "territory", "default_currency", "customer_group", "credit_days"],
+            as_dict=True,
+        ) or {}
+    except Exception:
+        out["profile"] = {}
+    today_d = getdate(today())
+    mtd_start = today_d.replace(day=1)
+    try:
+        out["outstanding"] = float(frappe.db.sql(
+            """SELECT COALESCE(SUM(outstanding_amount), 0) FROM `tabSales Invoice`
+               WHERE docstatus = 1 AND customer = %s
+                 AND status IN ('Unpaid', 'Overdue', 'Partly Paid', 'Submitted')""",
+            [customer],
+        )[0][0] or 0)
+        out["mtd_revenue"] = float(frappe.db.sql(
+            """SELECT COALESCE(SUM(grand_total), 0) FROM `tabSales Invoice`
+               WHERE docstatus = 1 AND customer = %s
+                 AND posting_date BETWEEN %s AND %s""",
+            [customer, str(mtd_start), str(today_d)],
+        )[0][0] or 0)
+    except Exception:
+        out["outstanding"] = 0
+        out["mtd_revenue"] = 0
+    try:
+        out["recent_invoices"] = frappe.get_all(
+            "Sales Invoice",
+            filters={"customer": customer, "docstatus": 1},
+            fields=["name", "posting_date", "grand_total", "outstanding_amount", "status"],
+            order_by="posting_date desc",
+            limit=5,
+        )
+    except Exception:
+        out["recent_invoices"] = []
+    try:
+        out["recent_payments"] = frappe.get_all(
+            "Payment Entry",
+            filters={"party_type": "Customer", "party": customer, "docstatus": 1},
+            fields=["name", "posting_date", "paid_amount"],
+            order_by="posting_date desc",
+            limit=5,
+        )
+    except Exception:
+        out["recent_payments"] = []
+    return out
+
+
+@frappe.whitelist()
+def get_rep_performance():
+    """Per Sales Person target vs actual MTD. Uses custom Sales Target doctype
+    if available; otherwise just shows MTD actual."""
+    _require_login()
+    scope = _scope()
+    today_d = getdate(today())
+    mtd_start = today_d.replace(day=1)
+
+    # Determine the set of Sales Persons to report on
+    if scope["is_restricted"]:
+        sales_persons = scope.get("sales_persons") or []
+        if not sales_persons:
+            return []
+    else:
+        try:
+            sps = frappe.get_all("Sales Person", filters={"enabled": 1},
+                                 fields=["name"], limit=200)
+            sales_persons = [s["name"] for s in sps]
+        except Exception:
+            sales_persons = []
+
+    if not sales_persons:
+        return []
+
+    out = []
+    has_sales_target = frappe.db.exists("DocType", "Sales Target")
+
+    for sp in sales_persons:
+        row = {"sales_person": sp}
+        # Actual MTD — sum grand_total from Sales Invoice where this Sales Person is on the SI Sales Team
+        try:
+            actual = frappe.db.sql(
+                """SELECT COALESCE(SUM(si.grand_total), 0)
+                   FROM `tabSales Invoice` si
+                   JOIN `tabSales Team` st ON st.parent = si.name AND st.parenttype = 'Sales Invoice'
+                   WHERE si.docstatus = 1
+                     AND st.sales_person = %s
+                     AND si.posting_date BETWEEN %s AND %s""",
+                [sp, str(mtd_start), str(today_d)],
+            )[0][0] or 0
+            row["actual_mtd"] = float(actual)
+        except Exception:
+            row["actual_mtd"] = 0
+        # Target — use Sales Target doctype if installed
+        if has_sales_target:
+            try:
+                tgt = frappe.db.sql(
+                    """SELECT COALESCE(SUM(target_amount), 0)
+                       FROM `tabSales Target`
+                       WHERE sales_person = %s
+                         AND fiscal_year = %s""",
+                    [sp, today_d.year],
+                )[0][0] or 0
+                row["target_period"] = float(tgt)
+            except Exception:
+                row["target_period"] = None
+        else:
+            row["target_period"] = None
+        row["pct_achieved"] = (
+            round(100 * row["actual_mtd"] / row["target_period"], 1)
+            if row.get("target_period") else None
+        )
+        out.append(row)
+    out.sort(key=lambda r: r.get("actual_mtd", 0), reverse=True)
+    return out
+
+
+@frappe.whitelist()
+def get_sales_manager_view():
+    """Cross-rep aggregate. Returns total team MTD + per-rep summary + escalations
+    (overdue >60 days). Manager-level view; restricted users get their own scope."""
+    _require_login()
+    scope = _scope()
+    cust, params = _customer_filter_sql(scope, "customer")
+    today_d = getdate(today())
+    mtd_start = today_d.replace(day=1)
+    out = {}
+    try:
+        out["team_mtd"] = float(frappe.db.sql(
+            f"""SELECT COALESCE(SUM(grand_total), 0)
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1
+                  AND posting_date BETWEEN %s AND %s
+                  {cust}""",
+            [str(mtd_start), str(today_d)] + params,
+        )[0][0] or 0)
+    except Exception:
+        out["team_mtd"] = 0
+    try:
+        out["pipeline"] = float(frappe.db.sql(
+            f"""SELECT COALESCE(SUM(grand_total - advance_paid), 0)
+                FROM `tabSales Order`
+                WHERE docstatus = 1
+                  AND status NOT IN ('Closed', 'Cancelled', 'Completed')
+                  {_customer_filter_sql(scope, 'customer')[0]}""",
+            params,
+        )[0][0] or 0)
+    except Exception:
+        out["pipeline"] = 0
+    try:
+        out["escalations"] = int(frappe.db.sql(
+            f"""SELECT COUNT(DISTINCT customer)
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1 AND outstanding_amount > 0
+                  AND DATEDIFF(CURDATE(), posting_date) > 60
+                  {cust}""",
+            params,
+        )[0][0] or 0)
+    except Exception:
+        out["escalations"] = 0
+    return out
+
+
+@frappe.whitelist()
+def get_ar_detail(limit=50):
+    """AR view: per-customer outstanding + days-since-oldest. Sorted by outstanding."""
+    _require_login()
+    if not frappe.has_permission("Sales Invoice", "read"):
+        return []
+    scope = _scope()
+    cust, params = _customer_filter_sql(scope, "customer")
+    try:
+        return frappe.db.sql(
+            f"""SELECT
+                    customer,
+                    COUNT(*) AS open_invoices,
+                    SUM(outstanding_amount) AS outstanding,
+                    MAX(DATEDIFF(CURDATE(), posting_date)) AS oldest_age_days,
+                    MAX(DATEDIFF(CURDATE(), due_date)) AS oldest_overdue_days
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1 AND outstanding_amount > 0
+                {cust}
+                GROUP BY customer
+                ORDER BY outstanding DESC
+                LIMIT %s""",
+            params + [int(limit)], as_dict=True,
+        )
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_ap_detail(limit=50):
+    """AP view: per-supplier outstanding + days-since-oldest."""
+    _require_login()
+    if not frappe.has_permission("Purchase Invoice", "read"):
+        return []
+    try:
+        return frappe.db.sql(
+            """SELECT
+                    supplier,
+                    COUNT(*) AS open_invoices,
+                    SUM(outstanding_amount) AS outstanding,
+                    MAX(DATEDIFF(CURDATE(), posting_date)) AS oldest_age_days,
+                    MAX(DATEDIFF(CURDATE(), due_date)) AS oldest_overdue_days
+                FROM `tabPurchase Invoice`
+                WHERE docstatus = 1 AND outstanding_amount > 0
+                GROUP BY supplier
+                ORDER BY outstanding DESC
+                LIMIT %s""",
+            [int(limit)], as_dict=True,
+        )
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_vat_period(period_start=None, period_end=None):
+    """VAT input/output for a period. Sums tax-table rows on Sales/Purchase Invoices."""
+    _require_login()
+    if not frappe.has_permission("Sales Invoice", "read"):
+        return {"error": "no permission"}
+    today_d = getdate(today())
+    if not period_end:
+        period_end = today_d
+    else:
+        period_end = getdate(period_end)
+    if not period_start:
+        period_start = period_end.replace(day=1)
+    else:
+        period_start = getdate(period_start)
+    out = {"period_start": str(period_start), "period_end": str(period_end)}
+    # Output VAT (sales)
+    try:
+        row = frappe.db.sql(
+            """SELECT COALESCE(SUM(stx.tax_amount), 0)
+               FROM `tabSales Taxes and Charges` stx
+               JOIN `tabSales Invoice` si ON si.name = stx.parent
+               WHERE si.docstatus = 1
+                 AND si.posting_date BETWEEN %s AND %s""",
+            [str(period_start), str(period_end)],
+        )
+        out["output_vat"] = float(row[0][0] or 0)
+    except Exception:
+        out["output_vat"] = 0
+    # Input VAT (purchases)
+    try:
+        row = frappe.db.sql(
+            """SELECT COALESCE(SUM(ptx.tax_amount), 0)
+               FROM `tabPurchase Taxes and Charges` ptx
+               JOIN `tabPurchase Invoice` pi ON pi.name = ptx.parent
+               WHERE pi.docstatus = 1
+                 AND pi.posting_date BETWEEN %s AND %s""",
+            [str(period_start), str(period_end)],
+        )
+        out["input_vat"] = float(row[0][0] or 0)
+    except Exception:
+        out["input_vat"] = 0
+    out["net_vat_payable"] = (out["output_vat"] or 0) - (out["input_vat"] or 0)
+    return out
+
+
+@frappe.whitelist()
+def get_payroll_summary(period=None):
+    """Most recent Payroll Entry summary with statutory totals."""
+    _require_login()
+    if not frappe.has_permission("Payroll Entry", "read"):
+        return {"error": "no permission"}
+    out = {}
+    try:
+        latest = frappe.get_all(
+            "Payroll Entry",
+            filters={"docstatus": 1},
+            fields=["name", "start_date", "end_date", "posting_date", "status"],
+            order_by="posting_date desc",
+            limit=1,
+        )
+        out["latest"] = latest[0] if latest else None
+    except Exception:
+        out["latest"] = None
+    try:
+        out["all_count"] = frappe.db.count("Payroll Entry", {"docstatus": 1})
+    except Exception:
+        out["all_count"] = 0
+    try:
+        out["pending_count"] = frappe.db.count("Payroll Entry", {"docstatus": 0})
+    except Exception:
+        out["pending_count"] = 0
+    # MTD net pay total
+    try:
+        today_d = getdate(today())
+        mtd_start = today_d.replace(day=1)
+        row = frappe.db.sql(
+            """SELECT COALESCE(SUM(net_pay), 0)
+               FROM `tabSalary Slip`
+               WHERE docstatus = 1
+                 AND posting_date BETWEEN %s AND %s""",
+            [str(mtd_start), str(today_d)],
+        )
+        out["mtd_net_pay"] = float(row[0][0] or 0)
+    except Exception:
+        out["mtd_net_pay"] = 0
+    return out
+
+
+@frappe.whitelist()
+def get_trial_balance_link():
+    """Returns a deep link to ERPNext's standard Trial Balance report."""
+    _require_login()
+    today_d = getdate(today())
+    return {
+        "label": "Open Trial Balance in ERPNext",
+        "url": "/app/query-report/Trial Balance?company=" + (frappe.defaults.get_user_default("Company") or "")
+               + "&from_date=" + str(today_d.replace(day=1))
+               + "&to_date=" + str(today_d),
+    }
+
+
+@frappe.whitelist()
+def get_pre_audit_actions():
+    """Pre-audit action items. Uses custom 'Pre Audit Action' doctype if installed,
+    else returns a minimal placeholder."""
+    _require_login()
+    if frappe.db.exists("DocType", "Pre Audit Action"):
+        try:
+            return frappe.get_all(
+                "Pre Audit Action",
+                fields=["name", "title", "category", "owner", "status",
+                        "due_date", "creation"],
+                order_by="creation desc",
+                limit=50,
+            )
+        except Exception:
+            pass
+    return {"_no_doctype": True,
+            "note": "No 'Pre Audit Action' doctype installed. Track in spreadsheet "
+                    "until a doctype is added; then this endpoint will populate."}
+
+
+@frappe.whitelist()
+def create_leave_application(leave_type, from_date, to_date, half_day=0,
+                             half_day_date=None, description=None):
+    """Submit a Leave Application as the session user. Resolves Employee from
+    User. Applies basic validation; lets ERPNext validate the rest on insert."""
+    _require_login()
+    user = frappe.session.user
+    employee = _employee_for_session()
+    if not employee:
+        frappe.throw(_("No Employee record linked to your User account ({0})").format(user))
+    if not leave_type:
+        frappe.throw(_("Leave type is required"))
+    if not from_date or not to_date:
+        frappe.throw(_("From date and To date are required"))
+    if getdate(to_date) < getdate(from_date):
+        frappe.throw(_("To date cannot be before From date"))
+    doc = frappe.get_doc({
+        "doctype": "Leave Application",
+        "employee": employee,
+        "leave_type": leave_type,
+        "from_date": from_date,
+        "to_date": to_date,
+        "half_day": int(half_day or 0),
+        "half_day_date": half_day_date or None,
+        "description": description or "",
+        "status": "Open",
+    })
+    doc.insert(ignore_permissions=False)
+    return {"name": doc.name, "status": doc.status,
+            "url": "/app/leave-application/" + doc.name}
+
+
+@frappe.whitelist()
+def get_leave_types():
+    """List active Leave Types so the Apply form can populate its dropdown."""
+    _require_login()
+    try:
+        return frappe.get_all("Leave Type", fields=["name", "max_days_allowed"],
+                              order_by="name", limit=50)
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
 def get_sales_kpis():
     """Sales Desk top stat strip: MTD revenue, open SOs, overdue AR, customer count."""
     _require_login()
