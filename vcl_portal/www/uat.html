@@ -827,33 +827,29 @@
       <div class="info-box">Wired to ERPNext via <code>vcl_portal.api.get_my_profile / get_my_leave_balance / get_my_payslips / get_my_recent_activity</code>. Empty? Check that an Employee record exists for your User (<code>{{ user_email }}</code>).</div>
     </div>
 
-    <!-- ── APPROVALS ── -->
+    <!-- ── APPROVALS — LIVE ── -->
     <div id="page-approvals" class="page">
       <div class="page-header">
         <div class="page-header-eyebrow">My Work</div>
-        <h1>Approvals</h1>
-        <p>Items waiting on your approval across Sales Orders, Purchase Orders, Payment Entries, Leave Applications, and Job Cards.</p>
+        <h1>Approvals <span class="live-tag">LIVE</span></h1>
+        <p>Items waiting on your approval across Workflow Actions (any DocType) and Leave Applications where you are the approver.</p>
       </div>
 
       <div class="stat-strip">
-        <div class="stat-card warning"><div class="stat-label">Awaiting Me</div><div class="stat-value">3</div><div class="stat-change warn">Oldest 2 days</div></div>
-        <div class="stat-card"><div class="stat-label">Approved (MTD)</div><div class="stat-value">28</div><div class="stat-change">+4 this week</div></div>
-        <div class="stat-card"><div class="stat-label">Avg Turnaround</div><div class="stat-value">1.4 d</div><div class="stat-change">Within SLA</div></div>
+        <div class="stat-card warning"><div class="stat-label">Awaiting Me</div><div class="stat-value" id="ap-stat-count">—</div><div class="stat-change warn">All open queues</div></div>
+        <div class="stat-card"><div class="stat-label">Oldest</div><div class="stat-value" id="ap-stat-oldest" style="font-size:18px">—</div><div class="stat-change">Raised on</div></div>
+        <div class="stat-card"><div class="stat-label">By Type</div><div class="stat-value" id="ap-stat-types" style="font-size:14px">—</div><div class="stat-change">Doctype split</div></div>
       </div>
 
       <div class="table-wrap">
-        <div class="table-head"><div class="table-head-title">Awaiting Your Action</div><div><button class="btn btn-sm btn-outline">Filter</button></div></div>
+        <div class="table-head"><div class="table-head-title">Awaiting Your Action</div></div>
         <table>
-          <thead><tr><th>Doc</th><th>Type</th><th>Requester</th><th>Value</th><th>Age</th><th></th></tr></thead>
-          <tbody>
-            <tr><td>SO-2026-00328</td><td><span class="badge badge-blue">Sales Order</span></td><td>J. Otieno</td><td>KSh 412,500</td><td>2 d</td><td><button class="btn btn-sm btn-primary">Review</button></td></tr>
-            <tr><td>PO-2026-00177</td><td><span class="badge badge-blue">Purchase Order</span></td><td>M. Kariuki</td><td>KSh 1,180,000</td><td>1 d</td><td><button class="btn btn-sm btn-primary">Review</button></td></tr>
-            <tr><td>LA-2026-0094</td><td><span class="badge badge-amber">Leave</span></td><td>S. Wanjiru</td><td>3 days</td><td>4 h</td><td><button class="btn btn-sm btn-primary">Review</button></td></tr>
-          </tbody>
+          <thead><tr><th>Item</th><th>Type</th><th>Detail</th><th>Raised</th><th></th></tr></thead>
+          <tbody id="ap-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
         </table>
       </div>
 
-      <div class="info-box">Mock list. Real data: query ERPNext Workflow Action where transition_role ∈ user roles, plus Leave Application where leave_approver = session user. Phase A spec.</div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_approval_queue()</code>. Queries <code>Workflow Action</code> + <code>Leave Application</code> for the session user. To add a doctype to the queue, set up a Workflow with a transition assigned to the appropriate role.</div>
     </div>
 
     <!-- ── FINANCE ── -->
@@ -902,14 +898,14 @@
       </div>
     </div>
 
-    <!-- ── SALES ── -->
+    <!-- ── SALES — LIVE ── -->
     <div id="page-sales" class="page">
-      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Sales Desk</h1><p>Sales orders, collections, customer ageing, pipeline, rep performance.</p></div>
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Sales Desk <span class="live-tag">LIVE</span></h1><p>Sales orders, collections, customer ageing, rep performance. Stat strip + Ageing Summary wired; modules below still mock.</p></div>
       <div class="stat-strip">
-        <div class="stat-card positive"><div class="stat-label">MTD Revenue</div><div class="stat-value">KSh 4.2M</div><div class="stat-change">↑ 8%</div></div>
-        <div class="stat-card"><div class="stat-label">Open Orders</div><div class="stat-value">23</div><div class="stat-change">Active</div></div>
-        <div class="stat-card warning"><div class="stat-label">Overdue AR</div><div class="stat-value">KSh 2.1M</div><div class="stat-change warn">Action needed</div></div>
-        <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-value">147</div><div class="stat-change">Active</div></div>
+        <div class="stat-card positive"><div class="stat-label">MTD Revenue (KSh)</div><div class="stat-value" id="sa-mtd">—</div><div class="stat-change" id="sa-mtd-sub">Submitted invoices this month</div></div>
+        <div class="stat-card"><div class="stat-label">Open Sales Orders</div><div class="stat-value" id="sa-sos">—</div><div class="stat-change" id="sa-sos-sub">Submitted, not closed</div></div>
+        <div class="stat-card warning"><div class="stat-label">Overdue AR (KSh)</div><div class="stat-value" id="sa-overdue">—</div><div class="stat-change warn" id="sa-overdue-sub">Past due date</div></div>
+        <div class="stat-card"><div class="stat-label">Active Customers</div><div class="stat-value" id="sa-cust">—</div><div class="stat-change" id="sa-cust-sub">In your scope</div></div>
       </div>
       <div class="section-heading">Sales Modules</div>
       <div class="card-grid">
@@ -920,28 +916,24 @@
         <div class="card" onclick="navigate('sales-rep-dash')"><div class="card-icon">📊</div><div class="card-title">Rep Dashboard</div><div class="card-desc">Targets, actuals, collections, commission.</div></div>
         <div class="card" onclick="navigate('sales-mgr')"><div class="card-icon">🏆</div><div class="card-title">Manager View</div><div class="card-desc">Cross-rep comparison, escalations.</div></div>
       </div>
-      <div class="section-heading">Ageing Summary</div>
+      <div class="section-heading">Ageing Summary <span class="live-tag">LIVE</span></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Customer</th><th>0–30</th><th>31–60</th><th>61–90</th><th>90+</th><th>Total</th><th>Rep</th></tr></thead>
-          <tbody>
-            <tr><td>Mwangi Stationery</td><td>120,000</td><td>80,000</td><td>—</td><td>—</td><td>200,000</td><td><span class="badge badge-blue">Joan</span></td></tr>
-            <tr><td>Nairobi Schools Board</td><td>450,000</td><td>220,000</td><td>90,000</td><td>—</td><td>760,000</td><td><span class="badge badge-blue">Joyce</span></td></tr>
-            <tr><td>Equity Printing Ltd</td><td>—</td><td>150,000</td><td>200,000</td><td>310,000</td><td>660,000</td><td><span class="badge badge-amber">Raheel</span></td></tr>
-            <tr><td>Lake Basin Supplies</td><td>90,000</td><td>—</td><td>—</td><td>180,000</td><td>270,000</td><td><span class="badge badge-blue">Joan</span></td></tr>
-          </tbody>
+          <thead><tr><th>Customer</th><th>0–30</th><th>31–60</th><th>61–90</th><th>90+</th><th>Total</th></tr></thead>
+          <tbody id="sa-ageing-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
         </table>
       </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_sales_kpis</code> + <code>get_sales_ageing</code>. Buckets are <em>days since posting</em>. Customer scope from <code>Customer Sales Rep Assignment</code>.</div>
     </div>
 
-    <!-- ── PROCUREMENT ── -->
+    <!-- ── PROCUREMENT — LIVE ── -->
     <div id="page-procurement" class="page">
-      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Procurement Desk</h1><p>Purchase orders, supplier management, importation lifecycle, GRN, replenishment.</p></div>
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>Procurement Desk <span class="live-tag">LIVE</span></h1><p>Purchase orders, supplier management, importation lifecycle, GRN. Top stats wired; modules below still mock.</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">Open POs</div><div class="stat-value">14</div><div class="stat-change">↑ 3 this week</div></div>
-        <div class="stat-card warning"><div class="stat-label">Pending GRNs</div><div class="stat-value">6</div><div class="stat-change warn">Awaiting receipt</div></div>
-        <div class="stat-card"><div class="stat-label">Suppliers</div><div class="stat-value">38</div><div class="stat-change">Active</div></div>
-        <div class="stat-card"><div class="stat-label">Imports In Transit</div><div class="stat-value">2</div><div class="stat-change">Shipments</div></div>
+        <div class="stat-card"><div class="stat-label">Open POs</div><div class="stat-value" id="pc-open-pos">—</div><div class="stat-change">Submitted, not closed</div></div>
+        <div class="stat-card warning"><div class="stat-label">Pending GRNs</div><div class="stat-value" id="pc-pending-grns">—</div><div class="stat-change warn">POs &lt; 100% received</div></div>
+        <div class="stat-card"><div class="stat-label">Suppliers</div><div class="stat-value" id="pc-suppliers">—</div><div class="stat-change">Active</div></div>
+        <div class="stat-card"><div class="stat-label">Imports</div><div class="stat-value" id="pc-imports">—</div><div class="stat-change" id="pc-imports-sub">Pending wiring</div></div>
       </div>
       <div class="two-col">
         <div>
@@ -1018,14 +1010,14 @@
       </div>
     </div>
 
-    <!-- ── HR ── -->
+    <!-- ── HR — LIVE ── -->
     <div id="page-hr" class="page">
-      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>HR Desk</h1><p>Employee records, payroll, statutory deductions, leave, headcount.</p></div>
+      <div class="page-header"><div class="page-header-eyebrow">Desk</div><h1>HR Desk <span class="live-tag">LIVE</span></h1><p>Employee records, payroll, statutory deductions, leave. Top stats wired; modules below still mock.</p></div>
       <div class="stat-strip">
-        <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">~120</div><div class="stat-change">All depts</div></div>
-        <div class="stat-card"><div class="stat-label">Permanent</div><div class="stat-value">78</div><div class="stat-change">On payroll</div></div>
-        <div class="stat-card"><div class="stat-label">Casual</div><div class="stat-value">~42</div><div class="stat-change">Variable</div></div>
-        <div class="stat-card"><div class="stat-label">On Leave</div><div class="stat-value">5</div><div class="stat-change">This week</div></div>
+        <div class="stat-card"><div class="stat-label">Total Active</div><div class="stat-value" id="hr-total">—</div><div class="stat-change">All depts</div></div>
+        <div class="stat-card"><div class="stat-label">Permanent</div><div class="stat-value" id="hr-perm">—</div><div class="stat-change">On payroll</div></div>
+        <div class="stat-card"><div class="stat-label">Casual</div><div class="stat-value" id="hr-casual">—</div><div class="stat-change">Variable</div></div>
+        <div class="stat-card warning"><div class="stat-label">On Leave Today</div><div class="stat-value" id="hr-leave">—</div><div class="stat-change warn">Approved + active</div></div>
       </div>
       <div class="two-col">
         <div>
@@ -1464,9 +1456,17 @@
     </div>
 
     <div id="page-prod-plan" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>Daily Production Plan</h1><p>Plan vs Actual HTML report for 7 stations. A4 landscape, downloadable.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Stations</div><div class="stat-value">7</div><div class="stat-change">Active today</div></div><div class="stat-card warning"><div class="stat-label">Behind Plan</div><div class="stat-value">2</div><div class="stat-change warn">CP3, L2</div></div><div class="stat-card positive"><div class="stat-label">Ahead Plan</div><div class="stat-value">3</div><div class="stat-change">EB1, EB5, L4</div></div></div>
-      <div class="info-box">Mock. Custom: <code>production_log</code> Daily Schedule report. n8n daily reminder cron.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>CP Planning Board <span class="live-tag">LIVE</span></h1><p>The existing Computer Paper planning board (Frappe Page from <code>production_log</code>) embedded into the portal. Same auth session, same data — if it works in /app it works here.</p></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+        <a href="/app/cp_planning_board" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Open in new tab ↗</a>
+        <a href="/desk/cp_planning_board" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Open via /desk</a>
+        <span style="font-size:12px;color:var(--text-muted)">Embedded below. If the iframe is blocked or the layout cramps, use the new-tab button.</span>
+      </div>
+      <iframe id="planner-iframe" src="/app/cp_planning_board"
+              style="width:100%; height:80vh; min-height:600px; border:1px solid var(--grey-light); border-radius:10px; background:white"
+              title="CP Planning Board (Frappe desk page)"
+              loading="lazy"></iframe>
+      <div class="info-box">Embeds <code>/app/cp_planning_board</code> via iframe. Cookies carry over from the same Frappe Cloud domain so the embedded page authenticates as you. If you see an empty or login screen inside the iframe, refresh /uat (your session may have expired).</div>
     </div>
 
     <div id="page-prod-machines" class="page">
@@ -1734,7 +1734,7 @@
   }
 
   // ── Render: My Profile ──
-  const _loaded = { home: false, me: false, directory: false, finance: false, salesInvoices: false, jobCards: false };
+  const _loaded = { home: false, me: false, directory: false, finance: false, sales: false, salesDesk: false, approvals: false, hr: false, procurement: false, salesInvoices: false, jobCards: false };
 
   async function renderMyProfile(force) {
     if (_loaded.me && !force) return;
@@ -1952,12 +1952,124 @@
     }
   }
 
+  // ── Render: Sales Desk (KPIs + Ageing) ──
+  async function renderSalesDesk(force) {
+    if (_loaded.salesDesk && !force) return;
+    try {
+      const [k, ageing] = await Promise.all([
+        vclFetch('get_sales_kpis'),
+        vclFetch('get_sales_ageing', { limit: 25 }),
+      ]);
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = (v == null ? '—' : v); };
+      set('sa-mtd', fmtNum(k.mtd_revenue));
+      set('sa-sos', k.open_sos);
+      set('sa-overdue', fmtNum(k.overdue_ar));
+      set('sa-cust', k.customers);
+
+      const tb = document.getElementById('sa-ageing-tbody');
+      if (tb) {
+        if (!ageing || !ageing.length || ageing[0]._error) {
+          tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">' +
+            (ageing && ageing[0] && ageing[0]._error ? escHtml(ageing[0]._error) : 'No outstanding invoices in your scope') +
+            '</td></tr>';
+        } else {
+          tb.innerHTML = ageing.map(r => '<tr>' +
+            '<td>' + escHtml(r.customer || '—') + '</td>' +
+            '<td>' + fmtNum(r.b_0_30) + '</td>' +
+            '<td>' + fmtNum(r.b_31_60) + '</td>' +
+            '<td>' + fmtNum(r.b_61_90) + '</td>' +
+            '<td>' + fmtNum(r.b_90_plus) + '</td>' +
+            '<td><strong>' + fmtNum(r.total) + '</strong></td>' +
+            '</tr>').join('');
+        }
+      }
+      _loaded.salesDesk = true;
+    } catch (e) {
+      console.error('sales desk:', e);
+    }
+  }
+
+  // ── Render: Approvals ──
+  async function renderApprovals(force) {
+    if (_loaded.approvals && !force) return;
+    const tb = document.getElementById('ap-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_approval_queue');
+      document.getElementById('ap-stat-count').textContent = rows.length;
+      const oldest = rows.length ? rows[0].raised : '—';
+      document.getElementById('ap-stat-oldest').textContent = oldest;
+      const byType = rows.reduce((a, r) => { const k = r.doctype || 'Other'; a[k] = (a[k] || 0) + 1; return a; }, {});
+      document.getElementById('ap-stat-types').textContent =
+        Object.entries(byType).map(([k, v]) => k + ' ' + v).join(' · ') || '—';
+
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="' + escHtml(r.url || '#') + '">' + escHtml(r.name || '—') + '</a></td>' +
+            '<td><span class="badge badge-blue">' + escHtml(r.doctype || '—') + '</span></td>' +
+            '<td>' + escHtml(r.title || '') + '<small style="display:block;color:var(--text-muted);font-size:11px">' + escHtml(r.subtitle || '') + '</small></td>' +
+            '<td style="white-space:nowrap;color:var(--text-muted);font-size:12px">' + escHtml(fmtRelative(r.raised)) + '</td>' +
+            '<td><a target="_blank" href="' + escHtml(r.url || '#') + '" class="btn btn-sm btn-primary">Review</a></td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Nothing waiting on you. Nice.</td></tr>';
+      _loaded.approvals = true;
+    } catch (e) {
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  // ── Render: HR Desk ──
+  async function renderHrKpis(force) {
+    if (_loaded.hr && !force) return;
+    try {
+      const k = await vclFetch('get_hr_kpis');
+      if (k.error) {
+        ['hr-total', 'hr-perm', 'hr-casual', 'hr-leave'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = '—';
+        });
+        return;
+      }
+      document.getElementById('hr-total').textContent = k.total ?? '—';
+      document.getElementById('hr-perm').textContent = k.permanent ?? '—';
+      document.getElementById('hr-casual').textContent = k.casual ?? '—';
+      document.getElementById('hr-leave').textContent = k.on_leave_today ?? '—';
+      _loaded.hr = true;
+    } catch (e) {
+      console.error('hr kpis:', e);
+    }
+  }
+
+  // ── Render: Procurement Desk ──
+  async function renderProcurementKpis(force) {
+    if (_loaded.procurement && !force) return;
+    try {
+      const k = await vclFetch('get_procurement_kpis');
+      if (k.error) return;
+      document.getElementById('pc-open-pos').textContent = k.open_pos ?? '—';
+      document.getElementById('pc-pending-grns').textContent = k.pending_grns ?? '—';
+      document.getElementById('pc-suppliers').textContent = k.suppliers ?? '—';
+      document.getElementById('pc-imports').textContent = k.imports_in_transit == null ? '—' : k.imports_in_transit;
+      if (k.imports_in_transit == null) {
+        const sub = document.getElementById('pc-imports-sub');
+        if (sub) sub.textContent = 'Custom doctype pending';
+      }
+      _loaded.procurement = true;
+    } catch (e) {
+      console.error('procurement kpis:', e);
+    }
+  }
+
   // ── Lazy-load hook on tab activation ──
   const _renderers = {
     home: renderHomeStats,
     me: renderMyProfile,
+    approvals: renderApprovals,
     directory: () => { _bindDirSearch(); renderDirectory(); },
     finance: renderFinanceKpis,
+    sales: renderSalesDesk,
+    hr: renderHrKpis,
+    procurement: renderProcurementKpis,
     'sales-orders': renderSalesInvoices,
     'prod-jobcards': renderJobCards,
   };

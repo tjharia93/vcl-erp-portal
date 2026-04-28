@@ -311,6 +311,247 @@ def get_my_day():
     return out
 
 
+def _customer_filter_sql(scope, field="customer"):
+    """Return (where_fragment, params) to apply Customer Sales Rep Assignment scope to raw SQL.
+    Empty fragment for unrestricted users; '1=0' fragment if user has zero assigned customers."""
+    if not scope.get("is_restricted"):
+        return "", []
+    customers = scope.get("customers") or []
+    if not customers:
+        return "AND 1=0", []
+    ph = ", ".join(["%s"] * len(customers))
+    return f"AND {field} IN ({ph})", list(customers)
+
+
+@frappe.whitelist()
+def get_sales_kpis():
+    """Sales Desk top stat strip: MTD revenue, open SOs, overdue AR, customer count."""
+    _require_login()
+    if not frappe.has_permission("Sales Invoice", "read"):
+        return {"error": "no permission"}
+    scope = _scope()
+    out = {}
+    today_d = getdate(today())
+    mtd_start = today_d.replace(day=1)
+    cust_si, p_si = _customer_filter_sql(scope, "customer")
+
+    # MTD Revenue from submitted Sales Invoices
+    try:
+        row = frappe.db.sql(
+            f"""SELECT COALESCE(SUM(grand_total), 0)
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1
+                  AND posting_date >= %s AND posting_date <= %s
+                  {cust_si}""",
+            [str(mtd_start), str(today_d)] + p_si,
+        )
+        out["mtd_revenue"] = float(row[0][0] or 0)
+    except Exception as e:
+        out["mtd_revenue"] = 0.0
+        out["_rev_error"] = str(e)[:200]
+
+    # Open Sales Orders count
+    try:
+        cust_so, p_so = _customer_filter_sql(scope, "customer")
+        row = frappe.db.sql(
+            f"""SELECT COUNT(*) FROM `tabSales Order`
+                WHERE docstatus = 1
+                  AND status NOT IN ('Completed', 'Closed', 'Cancelled')
+                  {cust_so}""",
+            p_so,
+        )
+        out["open_sos"] = int(row[0][0] or 0)
+    except Exception:
+        out["open_sos"] = 0
+
+    # Overdue AR (outstanding past due date)
+    try:
+        cust_ar, p_ar = _customer_filter_sql(scope, "customer")
+        row = frappe.db.sql(
+            f"""SELECT COALESCE(SUM(outstanding_amount), 0)
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1
+                  AND status IN ('Unpaid', 'Overdue', 'Partly Paid', 'Submitted')
+                  AND due_date < CURDATE()
+                  {cust_ar}""",
+            p_ar,
+        )
+        out["overdue_ar"] = float(row[0][0] or 0)
+    except Exception:
+        out["overdue_ar"] = 0.0
+
+    # Active customer count (in scope)
+    if scope["is_restricted"]:
+        out["customers"] = len(scope.get("customers") or [])
+    else:
+        try:
+            out["customers"] = frappe.db.count("Customer", {"disabled": 0})
+        except Exception:
+            out["customers"] = 0
+
+    return out
+
+
+@frappe.whitelist()
+def get_sales_ageing(limit=25):
+    """Per-customer outstanding broken into 0-30 / 31-60 / 61-90 / 90+ buckets
+    based on posting_date age. Scoped via Customer Sales Rep Assignment."""
+    _require_login()
+    if not frappe.has_permission("Sales Invoice", "read"):
+        return []
+    scope = _scope()
+    cust, params = _customer_filter_sql(scope, "customer")
+    try:
+        rows = frappe.db.sql(
+            f"""SELECT
+                    customer,
+                    SUM(CASE WHEN DATEDIFF(CURDATE(), posting_date) BETWEEN 0 AND 30
+                             THEN outstanding_amount ELSE 0 END) AS b_0_30,
+                    SUM(CASE WHEN DATEDIFF(CURDATE(), posting_date) BETWEEN 31 AND 60
+                             THEN outstanding_amount ELSE 0 END) AS b_31_60,
+                    SUM(CASE WHEN DATEDIFF(CURDATE(), posting_date) BETWEEN 61 AND 90
+                             THEN outstanding_amount ELSE 0 END) AS b_61_90,
+                    SUM(CASE WHEN DATEDIFF(CURDATE(), posting_date) > 90
+                             THEN outstanding_amount ELSE 0 END) AS b_90_plus,
+                    SUM(outstanding_amount) AS total
+                FROM `tabSales Invoice`
+                WHERE docstatus = 1 AND outstanding_amount > 0
+                {cust}
+                GROUP BY customer
+                HAVING total > 0
+                ORDER BY total DESC
+                LIMIT %s""",
+            params + [int(limit)],
+            as_dict=True,
+        )
+        return rows
+    except Exception as e:
+        return [{"_error": str(e)[:200]}]
+
+
+@frappe.whitelist()
+def get_approval_queue(limit=50):
+    """Items waiting on the session user across Leave + Workflow."""
+    _require_login()
+    user = frappe.session.user
+    out = []
+
+    # Leave Applications where I'm the approver
+    try:
+        for la in frappe.get_all(
+            "Leave Application",
+            filters={"leave_approver": user, "status": "Open"},
+            fields=["name", "employee_name", "from_date", "to_date", "leave_type",
+                    "total_leave_days", "creation"],
+            order_by="creation asc",
+            limit=int(limit),
+        ):
+            out.append({
+                "doctype": "Leave Application",
+                "name": la.name,
+                "title": (la.employee_name or "") + " — " + (la.leave_type or ""),
+                "subtitle": str(la.total_leave_days or 0) + " day(s) · "
+                            + str(la.from_date) + " → " + str(la.to_date),
+                "raised": str(la.creation)[:10],
+                "url": "/app/leave-application/" + la.name,
+            })
+    except Exception:
+        pass
+
+    # Workflow Actions assigned to me (any DocType)
+    try:
+        for wa in frappe.get_all(
+            "Workflow Action",
+            filters={"user": user, "status": "Open"},
+            fields=["name", "reference_doctype", "reference_name", "creation"],
+            order_by="creation asc",
+            limit=int(limit),
+        ):
+            out.append({
+                "doctype": wa.reference_doctype,
+                "name": wa.reference_name,
+                "title": (wa.reference_doctype or "") + " · " + (wa.reference_name or ""),
+                "subtitle": "Workflow approval",
+                "raised": str(wa.creation)[:10],
+                "url": "/app/" + (wa.reference_doctype or "").lower().replace(" ", "-")
+                       + "/" + (wa.reference_name or ""),
+            })
+    except Exception:
+        pass
+
+    out.sort(key=lambda x: x.get("raised") or "")
+    return out
+
+
+@frappe.whitelist()
+def get_hr_kpis():
+    """HR Desk top stat strip. Gated on Employee read."""
+    _require_login()
+    if not frappe.has_permission("Employee", "read"):
+        return {"error": "no permission"}
+    out = {}
+    try:
+        out["total"] = frappe.db.count("Employee", {"status": "Active"})
+    except Exception:
+        out["total"] = 0
+    try:
+        # Permanent vs casual via employment_type contains 'Permanent'
+        out["permanent"] = frappe.db.count(
+            "Employee", {"status": "Active", "employment_type": ["like", "%ermanent%"]}
+        )
+    except Exception:
+        out["permanent"] = 0
+    out["casual"] = max(0, (out.get("total") or 0) - (out.get("permanent") or 0))
+
+    # On leave today
+    try:
+        td = today()
+        row = frappe.db.sql(
+            """SELECT COUNT(DISTINCT employee) FROM `tabLeave Application`
+               WHERE status = 'Approved' AND docstatus = 1
+                 AND from_date <= %s AND to_date >= %s""",
+            [td, td],
+        )
+        out["on_leave_today"] = int(row[0][0] or 0)
+    except Exception:
+        out["on_leave_today"] = 0
+
+    return out
+
+
+@frappe.whitelist()
+def get_procurement_kpis():
+    """Procurement Desk top stat strip. Gated on Purchase Order read."""
+    _require_login()
+    if not frappe.has_permission("Purchase Order", "read"):
+        return {"error": "no permission"}
+    out = {}
+    try:
+        out["open_pos"] = frappe.db.count(
+            "Purchase Order",
+            {"docstatus": 1, "status": ["not in", ["Completed", "Closed", "Cancelled"]]},
+        )
+    except Exception:
+        out["open_pos"] = 0
+    # POs not fully received
+    try:
+        row = frappe.db.sql(
+            """SELECT COUNT(*) FROM `tabPurchase Order`
+               WHERE docstatus = 1
+                 AND per_received < 100
+                 AND status NOT IN ('Completed', 'Closed', 'Cancelled')"""
+        )
+        out["pending_grns"] = int(row[0][0] or 0)
+    except Exception:
+        out["pending_grns"] = 0
+    try:
+        out["suppliers"] = frappe.db.count("Supplier", {"disabled": 0})
+    except Exception:
+        out["suppliers"] = 0
+    out["imports_in_transit"] = None
+    return out
+
+
 @frappe.whitelist()
 def get_finance_kpis():
     """Finance Desk top stat strip: Total AR, Total AP, Cash Balance, VAT Payable."""
