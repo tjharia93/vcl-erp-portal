@@ -1107,25 +1107,274 @@ def get_trial_balance_link():
     }
 
 
+# ── ToDo-backed Pre Audit Actions + Collections ──────────────────────────────
+#
+# We use the standard ERPNext ToDo doctype for both, with a description prefix
+# to distinguish (`[PRE-AUDIT]` and `[COLLECTIONS-FU]`). This means:
+#   - both flows show up in users' standard My Tasks queue + Approvals counts
+#   - no new doctypes needed, no migrations
+#   - assignment / due-date / priority all use Frappe's existing UI
+#   - mark-complete = close the ToDo (standard pattern)
+
+_PRE_AUDIT_PREFIX = "[PRE-AUDIT]"
+_COLLECTIONS_PREFIX = "[COLLECTIONS-FU]"
+
+
 @frappe.whitelist()
-def get_pre_audit_actions():
-    """Pre-audit action items. Uses custom 'Pre Audit Action' doctype if installed,
-    else returns a minimal placeholder."""
+def get_pre_audit_actions(status=None, limit=100):
+    """Return ToDos prefixed [PRE-AUDIT]. Optional status filter (Open/Closed)."""
     _require_login()
-    if frappe.db.exists("DocType", "Pre Audit Action"):
+    filters = {"description": ["like", _PRE_AUDIT_PREFIX + "%"]}
+    if status:
+        filters["status"] = status
+    try:
+        rows = frappe.get_all(
+            "ToDo",
+            filters=filters,
+            fields=["name", "description", "allocated_to", "assigned_by",
+                    "date", "priority", "status", "creation"],
+            order_by="date asc, creation desc",
+            limit=int(limit),
+        )
+    except Exception as e:
+        return {"error": str(e)[:200], "rows": []}
+    # Strip the prefix for display
+    for r in rows:
+        d = (r.get("description") or "").strip()
+        if d.startswith(_PRE_AUDIT_PREFIX):
+            r["title"] = d[len(_PRE_AUDIT_PREFIX):].strip()
+        else:
+            r["title"] = d
+    return rows
+
+
+@frappe.whitelist()
+def create_pre_audit_action(title, allocated_to=None, due_date=None,
+                            priority="Medium", details=None):
+    """Create a ToDo prefixed [PRE-AUDIT]. assigned_by = session user."""
+    _require_login()
+    if not title:
+        frappe.throw(_("Title is required"))
+    desc = _PRE_AUDIT_PREFIX + " " + title
+    if details:
+        desc += "\n\n" + details
+    doc = frappe.get_doc({
+        "doctype": "ToDo",
+        "description": desc,
+        "allocated_to": allocated_to or frappe.session.user,
+        "assigned_by": frappe.session.user,
+        "date": due_date or None,
+        "priority": priority or "Medium",
+        "status": "Open",
+    })
+    doc.insert(ignore_permissions=False)
+    return {"name": doc.name, "url": "/app/todo/" + doc.name}
+
+
+@frappe.whitelist()
+def update_todo_status(name, status):
+    """Open ↔ Closed. Used by Pre Audit + Collections pages to mark items done."""
+    _require_login()
+    if status not in ("Open", "Closed", "Cancelled"):
+        frappe.throw(_("Invalid status"))
+    doc = frappe.get_doc("ToDo", name)
+    doc.status = status
+    doc.save()
+    return {"name": name, "status": status}
+
+
+@frappe.whitelist()
+def get_collection_followups(customer=None, limit=50):
+    """Return ToDos prefixed [COLLECTIONS-FU]. Optional customer filter (matches
+    reference_name on the ToDo, since collections ToDos reference Sales Invoice
+    or Customer directly)."""
+    _require_login()
+    filters = {"description": ["like", _COLLECTIONS_PREFIX + "%"], "status": "Open"}
+    try:
+        rows = frappe.get_all(
+            "ToDo",
+            filters=filters,
+            fields=["name", "description", "allocated_to", "assigned_by",
+                    "date", "priority", "status", "creation",
+                    "reference_type", "reference_name"],
+            order_by="date asc, creation desc",
+            limit=int(limit),
+        )
+    except Exception as e:
+        return {"error": str(e)[:200], "rows": []}
+    for r in rows:
+        d = (r.get("description") or "").strip()
+        if d.startswith(_COLLECTIONS_PREFIX):
+            r["title"] = d[len(_COLLECTIONS_PREFIX):].strip()
+        else:
+            r["title"] = d
+    if customer:
+        rows = [r for r in rows if r.get("reference_name") == customer
+                or customer in (r.get("title") or "")]
+    return rows
+
+
+@frappe.whitelist()
+def create_collection_followup(customer, action_text, due_date=None,
+                               allocated_to=None, priority="Medium",
+                               invoice=None):
+    """Create a ToDo prefixed [COLLECTIONS-FU] linked to a Customer (or Sales
+    Invoice if `invoice` is provided)."""
+    _require_login()
+    if not customer or not action_text:
+        frappe.throw(_("Customer + action are required"))
+    desc = _COLLECTIONS_PREFIX + " " + customer + ": " + action_text
+    payload = {
+        "doctype": "ToDo",
+        "description": desc,
+        "allocated_to": allocated_to or frappe.session.user,
+        "assigned_by": frappe.session.user,
+        "date": due_date or None,
+        "priority": priority or "Medium",
+        "status": "Open",
+    }
+    if invoice:
+        payload["reference_type"] = "Sales Invoice"
+        payload["reference_name"] = invoice
+    else:
+        payload["reference_type"] = "Customer"
+        payload["reference_name"] = customer
+    doc = frappe.get_doc(payload)
+    doc.insert(ignore_permissions=False)
+    return {"name": doc.name, "url": "/app/todo/" + doc.name}
+
+
+# ── Notifications (header bell) ──────────────────────────────────────────────
+
+@frappe.whitelist()
+def get_my_notifications(limit=20, unread_only=0):
+    """Return Notification Log entries for the session user, newest first."""
+    _require_login()
+    user = frappe.session.user
+    filters = {"for_user": user}
+    if int(unread_only or 0):
+        filters["read"] = 0
+    try:
+        rows = frappe.get_all(
+            "Notification Log",
+            filters=filters,
+            fields=["name", "subject", "type", "document_type",
+                    "document_name", "read", "creation"],
+            order_by="creation desc",
+            limit=int(limit),
+        )
+        unread = frappe.db.count("Notification Log",
+                                 {"for_user": user, "read": 0})
+        return {"rows": rows, "unread": int(unread)}
+    except Exception:
+        return {"rows": [], "unread": 0}
+
+
+@frappe.whitelist()
+def mark_notification_read(name=None, all=0):
+    """Mark a single Notification Log entry as read, or `all=1` to mark all."""
+    _require_login()
+    user = frappe.session.user
+    if int(all or 0):
         try:
-            return frappe.get_all(
-                "Pre Audit Action",
-                fields=["name", "title", "category", "owner", "status",
-                        "due_date", "creation"],
-                order_by="creation desc",
-                limit=50,
-            )
+            frappe.db.sql("""UPDATE `tabNotification Log` SET `read` = 1
+                             WHERE for_user = %s AND `read` = 0""", [user])
+            frappe.db.commit()
+            return {"updated": "all"}
+        except Exception as e:
+            return {"error": str(e)[:200]}
+    if not name:
+        return {"error": "name or all=1 required"}
+    try:
+        doc = frappe.get_doc("Notification Log", name)
+        if doc.for_user != user:
+            return {"error": "not yours"}
+        doc.read = 1
+        doc.save()
+        return {"name": name, "read": 1}
+    except Exception as e:
+        return {"error": str(e)[:200]}
+
+
+# ── Automations console ──────────────────────────────────────────────────────
+
+@frappe.whitelist()
+def get_automations():
+    """Return the registered automations. If a custom 'Automation Run Log'
+    doctype exists, augment each entry with its latest run timestamp + status.
+    Otherwise, return the hardcoded registry (status fields blank)."""
+    _require_login()
+    registry = [
+        {"key": "qbo_sales_sync",
+         "name": "QBO Sales Sync",
+         "category": "Finance",
+         "schedule": "Nightly 02:00 EAT",
+         "source": "cron / TiDB",
+         "where": "/opt/vcl/CommandCentre/projects/sales_qbo_tidb_erp/run_nightly.sh",
+         "description": "Sales invoices ERPNext → TiDB → QBO. Watches for missing sales_person on customer assignment."},
+        {"key": "purchase_qbo_sync",
+         "name": "Purchase Invoice Sync",
+         "category": "Finance",
+         "schedule": "On-demand",
+         "source": "cron / TiDB",
+         "where": "/opt/vcl/CommandCentre/projects/purchase_erpnext_tidb_qbo/",
+         "description": "Purchase invoices ERPNext → TiDB → QBO. Go-live May 2026."},
+        {"key": "kra_cuin",
+         "name": "KRA CUIN Validation",
+         "category": "Compliance",
+         "schedule": "On-demand",
+         "source": "n8n",
+         "where": "n8n workflow kra-cuin-test-001",
+         "description": "Validates eTIMS invoice numbers via public iTax checker."},
+        {"key": "lpo_intake",
+         "name": "VCL LPO Intake Bot",
+         "category": "Sales",
+         "schedule": "Slack-triggered",
+         "source": "n8n + Slack + Claude Vision",
+         "where": "n8n vclLpoIntakeBot001 / /opt/vcl/runtime/files/lpo_intake_bot.json",
+         "description": "Slack DM photo → Item / CPS / JCL / SO drafts."},
+        {"key": "ruling_log",
+         "name": "Ruling Log Sync",
+         "category": "Production",
+         "schedule": "Daily 10:00 EAT",
+         "source": "n8n + Zoho REST + Claude Vision + Slack",
+         "where": "n8n daily cron",
+         "description": "Zoho REST → Claude → CSV → #ruling_department Slack post."},
+        {"key": "zoho_mcp",
+         "name": "Zoho Mail MCP Server",
+         "category": "IT",
+         "schedule": "Always-on (SSE on :3030)",
+         "source": "Tailscale + custom MCP server",
+         "where": "/opt/vcl/zoho-mcp",
+         "description": "8 mail tools + folder mgmt + 02:00 cron cleanup."},
+        {"key": "vcl_erpnext_bot",
+         "name": "VCL ERPNext Telegram Bot",
+         "category": "Operations",
+         "schedule": "Always-on",
+         "source": "n8n + Claude",
+         "where": "/opt/vcl/runtime/files/vcl_erpnext_bot.json",
+         "description": "Telegram → ERPNext via natural language."},
+    ]
+    if frappe.db.exists("DocType", "Automation Run Log"):
+        try:
+            for a in registry:
+                last = frappe.get_all(
+                    "Automation Run Log",
+                    filters={"automation_key": a["key"]},
+                    fields=["status", "creation", "duration_seconds", "note"],
+                    order_by="creation desc", limit=1,
+                )
+                if last:
+                    a["last_run"] = str(last[0].creation)
+                    a["last_status"] = last[0].status
+                    a["last_duration"] = last[0].get("duration_seconds")
+                    a["last_note"] = last[0].get("note")
         except Exception:
             pass
-    return {"_no_doctype": True,
-            "note": "No 'Pre Audit Action' doctype installed. Track in spreadsheet "
-                    "until a doctype is added; then this endpoint will populate."}
+    return registry
+
+
+# ── /home stats (lightweight, used by the public home page if we wire it) ────
 
 
 @frappe.whitelist()

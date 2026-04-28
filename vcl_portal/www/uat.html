@@ -119,6 +119,92 @@
     letter-spacing: 0.5px;
   }
   .header-logout:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.4); }
+
+  /* ── Header bell ── */
+  .header-bell {
+    position: relative;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9);
+    border-radius: 50%; cursor: pointer; user-select: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: var(--transition);
+  }
+  .header-bell:hover { background: rgba(255,255,255,0.18); }
+  .header-bell-count {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--amber); color: white;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 800;
+    border-radius: 8px; padding: 1px 5px; min-width: 16px; text-align: center;
+    border: 2px solid var(--blue);
+  }
+  .header-bell-count.hidden { display: none; }
+  .bell-dropdown {
+    position: absolute; top: calc(var(--header-h) + 4px); right: 18px;
+    width: 360px; max-height: 70vh;
+    background: white; border-radius: 10px;
+    border: 1px solid var(--grey-light);
+    box-shadow: 0 10px 32px rgba(28,28,30,0.18);
+    z-index: 200; overflow: hidden;
+    display: none;
+  }
+  .bell-dropdown.open { display: flex; flex-direction: column; }
+  .bell-dropdown-head {
+    padding: 12px 16px; border-bottom: 1px solid var(--grey-light);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    font-size: 14px; color: var(--blue-dark);
+  }
+  .bell-dropdown-list { overflow-y: auto; flex: 1; }
+  .bell-item {
+    padding: 10px 16px; border-bottom: 1px solid var(--grey-light);
+    cursor: pointer; transition: var(--transition);
+    font-size: 13px;
+  }
+  .bell-item.unread { background: var(--blue-pale); }
+  .bell-item:hover { background: var(--off-white); }
+  .bell-item .when { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .bell-empty {
+    padding: 28px 16px; text-align: center;
+    font-size: 13px; color: var(--text-muted);
+  }
+  .bell-mark-all {
+    background: none; border: none; cursor: pointer;
+    color: var(--blue); font-size: 11px; font-weight: 600;
+    padding: 4px 8px; border-radius: 4px; font-family: 'Barlow', sans-serif;
+  }
+  .bell-mark-all:hover { background: var(--blue-pale); }
+
+  /* ── Inline form blocks (Pre Audit / Collections) ── */
+  .inline-form {
+    background: var(--blue-pale); border: 1px solid rgba(43,57,144,0.18);
+    border-left: 4px solid var(--blue);
+    border-radius: 10px; padding: 16px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .inline-form.open { display: block; }
+  .inline-form h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; color: var(--blue-dark);
+    margin: 0 0 10px;
+  }
+  .inline-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .inline-form .row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .inline-form label {
+    display: block; font-size: 11px; color: var(--grey-dark);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+  }
+  .inline-form input,
+  .inline-form select,
+  .inline-form textarea {
+    width: 100%; padding: 8px 10px;
+    border: 1px solid var(--grey-light); border-radius: 6px;
+    font-family: 'Barlow', sans-serif; font-size: 13px; background: white;
+  }
+  .inline-form .actions { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .inline-form .msg { font-size: 12px; color: var(--text-muted); }
   .in-dev-banner {
     background: var(--amber-light);
     border: 1px solid rgba(184,107,0,0.18);
@@ -584,10 +670,24 @@
   <div class="header-right">
     <span class="role-pill" title="Your effective role for this session">{{ primary_role }}</span>
     <div class="header-time" id="headerTime"></div>
+    <div class="header-bell" id="bellBtn" title="Notifications">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      <span class="header-bell-count hidden" id="bellCount">0</span>
+    </div>
     <div class="header-user" title="{{ full_name }}">{{ user_initials }}</div>
     <a href="/api/method/logout" class="header-logout" title="Sign out of the portal">Logout</a>
   </div>
 </header>
+
+<div class="bell-dropdown" id="bellDropdown">
+  <div class="bell-dropdown-head">
+    <span>Notifications</span>
+    <button class="bell-mark-all" id="bellMarkAll">Mark all as read</button>
+  </div>
+  <div class="bell-dropdown-list" id="bellList">
+    <div class="bell-empty">Loading…</div>
+  </div>
+</div>
 
 <div class="layout">
   <!-- SIDEBAR -->
@@ -688,6 +788,9 @@
         <span class="nav-badge warn">!</span>
       </button>
       {% endif %}
+      <button class="nav-item" onclick="navigate('automations')" id="nav-automations">
+        <span class="nav-icon">⚙</span> Automations
+      </button>
       <button class="nav-item" onclick="navigate('testing')" id="nav-testing">
         <span class="nav-icon">🧪</span> Testing
       </button>
@@ -1245,6 +1348,13 @@
       <div class="info-box">Mock list. Real source: Frappe Knowledge Base or Notion-mirror DocType. Phase A spec.</div>
     </div>
 
+    <!-- ── AUTOMATIONS ── -->
+    <div id="page-automations" class="page">
+      <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Automations <span class="live-tag">LIVE</span></h1><p>VCL's automation stack — n8n workflows, cron jobs, Slack bots, MCP servers. Hardcoded registry today; once each automation writes to the recommended <code>Automation Run Log</code> doctype, this page surfaces live last-run status.</p></div>
+      <div class="info-box">Most automations run on Tanuj's local /opt/vcl infrastructure (not Frappe Cloud). To surface live status here, build a custom <code>Automation Run Log</code> doctype and have each n8n / cron job POST to it after each run. Until then, this page is a directory.</div>
+      <div id="auto-content"><div class="info-box">Loading…</div></div>
+    </div>
+
     <!-- ── TESTING ── -->
     <div id="page-testing" class="page">
       <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Testing</h1><p>UAT and OAT testing rounds for /uat. Results, defects, sign-off, and links to the live testing pages in Notion.</p></div>
@@ -1338,16 +1448,29 @@
     </div>
 
     <div id="page-sales-collections" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Collections Tracker <span class="live-tag">LIVE</span></h1><p>Customers with outstanding invoices &gt; 30 days, ranked by amount. Last contact pulled from <code>Collections Follow Up</code> if available.</p></div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Collections Tracker <span class="live-tag">LIVE</span></h1><p>Customers with outstanding invoices &gt; 30 days. Follow-ups are saved as ToDos prefixed <code>[COLLECTIONS-FU]</code> — they show up in My Tasks for the assignee.</p></div>
       <div class="stat-strip">
         <div class="stat-card warning"><div class="stat-label">Customers in Collections</div><div class="stat-value" id="cl-count">—</div><div class="stat-change warn">Outstanding &gt; 30 d</div></div>
         <div class="stat-card"><div class="stat-label">Total Overdue (KSh)</div><div class="stat-value" id="cl-total">—</div><div class="stat-change">Sum across customers</div></div>
-        <div class="stat-card"><div class="stat-label">Oldest Item</div><div class="stat-value" id="cl-oldest" style="font-size:18px">—</div><div class="stat-change">Days from posting</div></div>
+        <div class="stat-card"><div class="stat-label">Open Follow-Ups</div><div class="stat-value" id="cl-fu-count">—</div><div class="stat-change">My team's [COLLECTIONS-FU] ToDos</div></div>
       </div>
-      <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest (d)</th><th>Last Contact</th></tr></thead>
-        <tbody id="cl-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      <div style="margin-bottom:14px"><button class="btn btn-primary" id="cl-new-btn" type="button">+ Log Follow-Up</button></div>
+      <div class="inline-form" id="cl-form">
+        <h3>Log Follow-Up</h3>
+        <div class="row"><div><label>Customer</label><input type="text" id="cl-customer" placeholder="Customer name"></div><div><label>Sales Invoice (optional)</label><input type="text" id="cl-invoice" placeholder="SI-2026-…"></div></div>
+        <div><label>Action / next step</label><textarea id="cl-action" rows="2" placeholder="e.g. Call MD by 30 Apr, sent statement, promised payment Friday"></textarea></div>
+        <div class="row three"><div><label>Due Date</label><input type="date" id="cl-due"></div><div><label>Assign to (Frappe User)</label><input type="text" id="cl-owner" placeholder="me by default"></div><div><label>Priority</label><select id="cl-priority"><option>Low</option><option selected>Medium</option><option>High</option></select></div></div>
+        <div class="actions"><button class="btn btn-primary" id="cl-submit">Save Follow-Up</button><button class="btn btn-outline" id="cl-cancel">Cancel</button><span class="msg" id="cl-msg"></span></div>
+      </div>
+      <div class="section-heading">Customers with overdue (&gt; 30 d)</div>
+      <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest (d)</th><th>Last Contact</th><th></th></tr></thead>
+        <tbody id="cl-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
       </table></div>
-      <div class="info-box">Wired via <code>vcl_portal.api.get_sales_collections</code>. Customer scope from <code>Customer Sales Rep Assignment</code>. Logging follow-ups from this page = Phase A.4.</div>
+      <div class="section-heading">Open Follow-Ups</div>
+      <div class="table-wrap"><table><thead><tr><th>Action</th><th>Customer / Ref</th><th>Owner</th><th>Due</th><th>Priority</th><th></th></tr></thead>
+        <tbody id="cl-fu-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_sales_collections</code> + <code>get_collection_followups</code> + <code>create_collection_followup</code>. Closing a follow-up from this page closes the underlying ToDo.</div>
     </div>
 
     <div id="page-sales-ageing" class="page">
@@ -1466,8 +1589,27 @@
     </div>
 
     <div id="page-finance-preaudit" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Pre-Audit Actions <span id="preaudit-pill" class="live-tag">LIVE</span></h1><p>29 items identified in 2025 review. Loaded from the custom <code>Pre Audit Action</code> doctype if installed; otherwise shows a "needs doctype" placeholder.</p></div>
-      <div id="preaudit-content"><div class="info-box">Loading…</div></div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Pre-Audit Actions <span class="live-tag">LIVE</span></h1><p>Tracked as standard ERPNext ToDos with the prefix <code>[PRE-AUDIT]</code> — appear in everyone's My Tasks queue automatically. Each item = one ToDo; mark Complete to close.</p></div>
+      <div style="margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-primary" id="preaudit-new-btn" type="button">+ New Pre-Audit Action</button>
+        <select id="preaudit-filter" class="sop-search" style="max-width:200px;margin:0">
+          <option value="Open">Open</option>
+          <option value="Closed">Closed</option>
+          <option value="">All</option>
+        </select>
+        <span style="font-size:12px;color:var(--text-muted)">Closing here closes the underlying ToDo.</span>
+      </div>
+      <div class="inline-form" id="preaudit-form">
+        <h3>New Pre-Audit Action</h3>
+        <div class="row"><div><label>Title</label><input type="text" id="pa-title" placeholder="What's the action?"></div><div><label>Owner (Frappe User)</label><input type="text" id="pa-owner" placeholder="me by default"></div></div>
+        <div class="row three"><div><label>Due Date</label><input type="date" id="pa-due"></div><div><label>Priority</label><select id="pa-priority"><option>Low</option><option selected>Medium</option><option>High</option></select></div><div></div></div>
+        <div><label>Details (optional)</label><textarea id="pa-details" rows="2"></textarea></div>
+        <div class="actions"><button class="btn btn-primary" id="pa-submit">Create</button><button class="btn btn-outline" id="pa-cancel">Cancel</button><span class="msg" id="pa-msg"></span></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Priority</th><th>Status</th><th></th></tr></thead>
+        <tbody id="preaudit-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_pre_audit_actions(status)</code> + <code>create_pre_audit_action</code>. ToDos prefixed <code>[PRE-AUDIT]</code> show up here AND in everyone's My Tasks count.</div>
     </div>
 
     <!-- ── PROCUREMENT SUB-PAGES — LIVE ── -->
@@ -1714,6 +1856,7 @@
     projects: 'Projects',
     compliance: 'Compliance',
     testing: 'Testing',
+    automations: 'Automations',
     'sales-orders': 'Sales · Invoices',
     'sales-collections': 'Sales · Collections Tracker',
     'sales-ageing': 'Sales · Ageing Report',
@@ -1828,7 +1971,7 @@
     employees: false, hrPayroll: false, hrLeave: false, statutory: false,
     qi: false, qiIncoming: false, cps: false, ncr: false,
     fleet: false, delivery: false, vlog: false,
-    reports: false,
+    reports: false, automations: false,
   };
 
   async function renderMyProfile(force) {
@@ -2763,6 +2906,224 @@
     } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
   }
 
+  // ── Render: Pre-Audit Actions (ToDo-backed) ──
+  function _bindPreAuditForm() {
+    if (_bindPreAuditForm._done) return; _bindPreAuditForm._done = true;
+    const form = document.getElementById('preaudit-form');
+    document.getElementById('preaudit-new-btn').addEventListener('click', () => form.classList.toggle('open'));
+    document.getElementById('pa-cancel').addEventListener('click', () => { form.classList.remove('open'); });
+    document.getElementById('preaudit-filter').addEventListener('change', () => renderPreAudit(true));
+    document.getElementById('pa-submit').addEventListener('click', async () => {
+      const msg = document.getElementById('pa-msg');
+      const btn = document.getElementById('pa-submit');
+      const title = document.getElementById('pa-title').value.trim();
+      if (!title) { msg.textContent = 'Title required.'; msg.style.color = 'var(--amber)'; return; }
+      btn.disabled = true; msg.textContent = 'Creating…'; msg.style.color = 'var(--text-muted)';
+      try {
+        await vclFetch('create_pre_audit_action', {
+          title: title,
+          allocated_to: document.getElementById('pa-owner').value || null,
+          due_date: document.getElementById('pa-due').value || null,
+          priority: document.getElementById('pa-priority').value,
+          details: document.getElementById('pa-details').value || null,
+        });
+        msg.textContent = '✓ Created.'; msg.style.color = 'var(--green)';
+        ['pa-title', 'pa-owner', 'pa-due', 'pa-details'].forEach(id => document.getElementById(id).value = '');
+        renderPreAudit(true);
+      } catch (e) { msg.textContent = e.message; msg.style.color = 'var(--red)'; }
+      finally { btn.disabled = false; }
+    });
+  }
+  async function renderPreAudit(force) {
+    if (_loaded.preAudit && !force) return;
+    _bindPreAuditForm();
+    const tb = document.getElementById('preaudit-tbody');
+    if (!tb) return;
+    try {
+      const status = document.getElementById('preaudit-filter').value;
+      const r = await vclFetch('get_pre_audit_actions', { status: status || null });
+      const rows = Array.isArray(r) ? r : (r.rows || []);
+      tb.innerHTML = rows.length
+        ? rows.map(t => '<tr>' +
+            '<td><a target="_blank" href="/app/todo/' + encodeURIComponent(t.name) + '">' + escHtml(t.title) + '</a></td>' +
+            '<td>' + escHtml(t.allocated_to || '—') + '</td>' +
+            '<td>' + escHtml(fmtDate(t.date)) + '</td>' +
+            '<td><span class="badge ' + (t.priority === 'High' ? 'badge-red' : t.priority === 'Medium' ? 'badge-amber' : 'badge-grey') + '">' + escHtml(t.priority || '—') + '</span></td>' +
+            '<td>' + statusBadge(t.status) + '</td>' +
+            '<td>' + (t.status === 'Open'
+                ? '<button class="btn btn-sm btn-outline" onclick="closeTodo(\'' + escHtml(t.name) + '\', \'preaudit\')">Close</button>'
+                : '—') + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No pre-audit actions for this filter</td></tr>';
+      _loaded.preAudit = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+  window.closeTodo = async function(name, refresh) {
+    if (!confirm('Close ToDo ' + name + '?')) return;
+    try {
+      await vclFetch('update_todo_status', { name: name, status: 'Closed' });
+      if (refresh === 'preaudit') renderPreAudit(true);
+      else if (refresh === 'collections') renderSalesCollections(true);
+    } catch (e) { alert('Failed: ' + e.message); }
+  };
+
+  // ── Collections — augmented with ToDo follow-ups ──
+  function _bindCollectionsForm() {
+    if (_bindCollectionsForm._done) return; _bindCollectionsForm._done = true;
+    const form = document.getElementById('cl-form');
+    document.getElementById('cl-new-btn').addEventListener('click', () => form.classList.toggle('open'));
+    document.getElementById('cl-cancel').addEventListener('click', () => form.classList.remove('open'));
+    document.getElementById('cl-submit').addEventListener('click', async () => {
+      const msg = document.getElementById('cl-msg');
+      const btn = document.getElementById('cl-submit');
+      const customer = document.getElementById('cl-customer').value.trim();
+      const action = document.getElementById('cl-action').value.trim();
+      if (!customer || !action) { msg.textContent = 'Customer + action required.'; msg.style.color = 'var(--amber)'; return; }
+      btn.disabled = true; msg.textContent = 'Saving…'; msg.style.color = 'var(--text-muted)';
+      try {
+        await vclFetch('create_collection_followup', {
+          customer: customer,
+          action_text: action,
+          invoice: document.getElementById('cl-invoice').value || null,
+          due_date: document.getElementById('cl-due').value || null,
+          allocated_to: document.getElementById('cl-owner').value || null,
+          priority: document.getElementById('cl-priority').value,
+        });
+        msg.textContent = '✓ Saved.'; msg.style.color = 'var(--green)';
+        ['cl-customer', 'cl-invoice', 'cl-action', 'cl-due', 'cl-owner'].forEach(id => document.getElementById(id).value = '');
+        renderSalesCollections(true);
+      } catch (e) { msg.textContent = e.message; msg.style.color = 'var(--red)'; }
+      finally { btn.disabled = false; }
+    });
+  }
+  // Re-define renderSalesCollections to also load follow-ups + bind form
+  const _origRenderCollections = renderSalesCollections;
+  renderSalesCollections = async function(force) {
+    _bindCollectionsForm();
+    if (_loaded.salesCollections && !force) return;
+    const tb = document.getElementById('cl-tbody');
+    if (!tb) return;
+    try {
+      const [rows, fu] = await Promise.all([
+        vclFetch('get_sales_collections', { limit: 50 }),
+        vclFetch('get_collection_followups'),
+      ]);
+      document.getElementById('cl-count').textContent = rows.length;
+      const total = rows.reduce((a, r) => a + (Number(r.outstanding) || 0), 0);
+      document.getElementById('cl-total').textContent = fmtNum(total);
+      const fuRows = Array.isArray(fu) ? fu : (fu.rows || []);
+      document.getElementById('cl-fu-count').textContent = fuRows.length;
+
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td>' + escHtml(r.customer || '—') + '</td>' +
+            '<td>' + (r.open_invoices || 0) + '</td>' +
+            '<td>' + fmtNum(r.outstanding) + '</td>' +
+            '<td>' + (r.oldest_age_days || 0) + '</td>' +
+            '<td>' + escHtml(r.last_contact ? fmtRelative(r.last_contact) : '—') + '</td>' +
+            '<td><button class="btn btn-sm btn-outline" onclick="prefillCollectionForm(\'' + escHtml(r.customer) + '\')">+ Follow-up</button></td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No customers in collections</td></tr>';
+
+      const fuTb = document.getElementById('cl-fu-tbody');
+      fuTb.innerHTML = fuRows.length
+        ? fuRows.map(t => '<tr>' +
+            '<td><a target="_blank" href="/app/todo/' + encodeURIComponent(t.name) + '">' + escHtml(t.title) + '</a></td>' +
+            '<td>' + escHtml(t.reference_name || '—') + '</td>' +
+            '<td>' + escHtml(t.allocated_to || '—') + '</td>' +
+            '<td>' + escHtml(fmtDate(t.date)) + '</td>' +
+            '<td><span class="badge ' + (t.priority === 'High' ? 'badge-red' : t.priority === 'Medium' ? 'badge-amber' : 'badge-grey') + '">' + escHtml(t.priority || '—') + '</span></td>' +
+            '<td><button class="btn btn-sm btn-outline" onclick="closeTodo(\'' + escHtml(t.name) + '\', \'collections\')">Close</button></td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No open follow-ups</td></tr>';
+      _loaded.salesCollections = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  };
+  window.prefillCollectionForm = function(customer) {
+    document.getElementById('cl-form').classList.add('open');
+    document.getElementById('cl-customer').value = customer;
+    document.getElementById('cl-action').focus();
+  };
+
+  // ── Render: Automations registry ──
+  async function renderAutomations(force) {
+    if (_loaded.automations && !force) return;
+    const wrap = document.getElementById('auto-content');
+    if (!wrap) return;
+    try {
+      const rows = await vclFetch('get_automations');
+      const cats = {};
+      rows.forEach(r => { (cats[r.category] = cats[r.category] || []).push(r); });
+      let html = '';
+      Object.keys(cats).forEach(cat => {
+        html += '<div class="section-heading">' + escHtml(cat) + '</div>';
+        html += '<div class="card-grid">';
+        cats[cat].forEach(a => {
+          const status = a.last_status || '—';
+          const cls = !a.last_status ? 'badge-grey'
+            : /(success|ok|complete)/i.test(status) ? 'badge-green'
+            : /(fail|error)/i.test(status) ? 'badge-red'
+            : 'badge-amber';
+          html += '<div class="card" style="cursor:default">' +
+            '<div class="card-title">' + escHtml(a.name) + ' <span class="badge ' + cls + '" style="margin-left:6px">' + escHtml(status) + '</span></div>' +
+            '<div class="card-desc">' + escHtml(a.description) + '</div>' +
+            '<div style="margin-top:10px;font-size:11px;color:var(--text-muted)">' +
+              '<div><strong>Schedule:</strong> ' + escHtml(a.schedule) + '</div>' +
+              '<div><strong>Source:</strong> ' + escHtml(a.source) + '</div>' +
+              '<div><strong>Where:</strong> <code style="font-size:10px">' + escHtml(a.where) + '</code></div>' +
+              (a.last_run ? '<div><strong>Last run:</strong> ' + escHtml(fmtRelative(a.last_run)) + '</div>' : '') +
+            '</div></div>';
+        });
+        html += '</div>';
+      });
+      wrap.innerHTML = html;
+      _loaded.automations = true;
+    } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
+  }
+
+  // ── Notifications bell ──
+  let _bellOpen = false;
+  async function refreshBell() {
+    try {
+      const r = await vclFetch('get_my_notifications', { limit: 20 });
+      const count = r.unread || 0;
+      const el = document.getElementById('bellCount');
+      if (count > 0) { el.textContent = count > 99 ? '99+' : count; el.classList.remove('hidden'); }
+      else { el.classList.add('hidden'); }
+      const list = document.getElementById('bellList');
+      const rows = r.rows || [];
+      list.innerHTML = rows.length
+        ? rows.map(n => '<div class="bell-item' + (n.read ? '' : ' unread') + '" onclick="' +
+            (n.document_type ? 'window.open(\'/app/' + n.document_type.toLowerCase().replace(/\s+/g, '-') + '/' + encodeURIComponent(n.document_name) + '\',\'_blank\')' : '') +
+            '">' +
+            '<div>' + escHtml(n.subject || '—') + '</div>' +
+            '<div class="when">' + escHtml(fmtRelative(n.creation)) + '</div>' +
+            '</div>').join('')
+        : '<div class="bell-empty">No notifications.</div>';
+    } catch (e) { console.error('bell:', e); }
+  }
+  function _initBell() {
+    if (_initBell._done) return; _initBell._done = true;
+    document.getElementById('bellBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      _bellOpen = !_bellOpen;
+      document.getElementById('bellDropdown').classList.toggle('open', _bellOpen);
+      if (_bellOpen) refreshBell();
+    });
+    document.addEventListener('click', (e) => {
+      if (_bellOpen && !document.getElementById('bellDropdown').contains(e.target)) {
+        _bellOpen = false;
+        document.getElementById('bellDropdown').classList.remove('open');
+      }
+    });
+    document.getElementById('bellMarkAll').addEventListener('click', async () => {
+      try { await vclFetch('mark_notification_read', { all: 1 }); refreshBell(); }
+      catch (e) { console.error(e); }
+    });
+    refreshBell();
+    setInterval(refreshBell, 60000);  // poll every minute
+  }
+
   // ── Render: Reports (deep-link list) ──
   async function renderReports(force) {
     if (_loaded.reports && !force) return;
@@ -2823,9 +3184,11 @@
     'log-schedule': renderDelivery,
     'log-maintenance': renderVehicleLogs,
     'prod-jobcards': renderJobCards,
+    automations: renderAutomations,
   };
 
-  function navigate(id) {
+  function navigate(id, fromHash) {
+    if (!id || !pages[id]) id = 'home';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
@@ -2838,9 +3201,28 @@
     document.getElementById('headerTitle').textContent = pages[id] || 'Internal Portal';
     window.scrollTo(0, 0);
 
+    // Update URL hash so refresh + back/forward + bookmarking work
+    if (!fromHash) {
+      const newHash = '#' + id;
+      if (window.location.hash !== newHash) {
+        // Use replaceState for the initial load, pushState for subsequent
+        if (_initialNav) {
+          history.replaceState(null, '', newHash);
+          _initialNav = false;
+        } else {
+          history.pushState(null, '', newHash);
+        }
+      }
+    }
+
     const r = _renderers[id];
     if (r) try { r(); } catch (e) { console.error(e); }
   }
+  let _initialNav = true;
+  window.addEventListener('hashchange', () => {
+    const id = (window.location.hash || '').replace(/^#/, '') || 'home';
+    navigate(id, true);
+  });
 
   function updateTime() {
     const now = new Date();
@@ -2852,8 +3234,16 @@
   updateTime();
   setInterval(updateTime, 30000);
 
-  // Kick off the home dashboard fetch on first paint (it's the active page).
-  document.addEventListener('DOMContentLoaded', () => { renderHomeStats(); });
+  // First paint: bell + initial route from URL hash (or home).
+  document.addEventListener('DOMContentLoaded', () => {
+    _initBell();
+    const initialId = (window.location.hash || '').replace(/^#/, '') || 'home';
+    if (initialId !== 'home' && pages[initialId]) {
+      navigate(initialId);
+    } else {
+      renderHomeStats();
+    }
+  });
 </script>
 </body>
 </html>
