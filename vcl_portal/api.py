@@ -323,6 +323,398 @@ def _customer_filter_sql(scope, field="customer"):
     return f"AND {field} IN ({ph})", list(customers)
 
 
+# ── Procurement ──────────────────────────────────────────────────────────────
+
+@frappe.whitelist()
+def get_purchase_orders(limit=50):
+    _require_login()
+    if not frappe.has_permission("Purchase Order", "read"):
+        return []
+    try:
+        return frappe.get_all(
+            "Purchase Order",
+            filters={"docstatus": 1,
+                     "status": ["not in", ["Completed", "Closed", "Cancelled"]]},
+            fields=["name", "supplier", "transaction_date", "grand_total",
+                    "status", "per_received", "schedule_date"],
+            order_by="transaction_date desc", limit=int(limit),
+        )
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_suppliers(search=None, limit=200):
+    _require_login()
+    if not frappe.has_permission("Supplier", "read"):
+        return []
+    try:
+        rows = frappe.get_all(
+            "Supplier", filters={"disabled": 0},
+            fields=["name", "supplier_name", "supplier_group", "country",
+                    "default_currency"],
+            order_by="supplier_name", limit=int(limit),
+        )
+    except Exception:
+        return []
+    if search:
+        s = (search or "").strip().lower()
+        if s:
+            rows = [r for r in rows if s in (r.get("supplier_name") or "").lower()
+                    or s in (r.get("country") or "").lower()
+                    or s in (r.get("supplier_group") or "").lower()]
+    return rows
+
+
+@frappe.whitelist()
+def get_pending_grns(limit=50):
+    _require_login()
+    if not frappe.has_permission("Purchase Order", "read"):
+        return []
+    try:
+        return frappe.db.sql(
+            """SELECT name, supplier, transaction_date, grand_total,
+                      per_received, status, schedule_date
+               FROM `tabPurchase Order`
+               WHERE docstatus = 1
+                 AND per_received < 100
+                 AND status NOT IN ('Completed', 'Closed', 'Cancelled')
+               ORDER BY transaction_date DESC LIMIT %s""",
+            [int(limit)], as_dict=True,
+        )
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_imports(limit=30):
+    """Custom Importation tracker if installed; otherwise a placeholder."""
+    _require_login()
+    for dt in ("Importation Tracker", "Import Tracker", "Vcl Importation"):
+        if frappe.db.exists("DocType", dt) and frappe.has_permission(dt, "read"):
+            try:
+                return {"doctype": dt, "rows": frappe.get_all(
+                    dt, fields=["*"], order_by="creation desc", limit=int(limit))}
+            except Exception:
+                pass
+    return {"_no_doctype": True,
+            "note": "No custom Importation Tracker doctype installed. "
+                    "Tracker still in Excel; build a doctype to wire."}
+
+
+# ── HR ───────────────────────────────────────────────────────────────────────
+
+@frappe.whitelist()
+def get_employees(search=None, limit=200):
+    """HR view of Employees — more fields than the public Directory."""
+    _require_login()
+    if not frappe.has_permission("Employee", "read"):
+        return []
+    try:
+        rows = frappe.get_all(
+            "Employee", filters={"status": "Active"},
+            fields=["name", "employee_name", "designation", "department",
+                    "branch", "employment_type", "date_of_joining",
+                    "company_email", "personal_email", "cell_number"],
+            order_by="employee_name", limit=int(limit),
+        )
+    except Exception:
+        return []
+    if search:
+        s = (search or "").strip().lower()
+        if s:
+            rows = [r for r in rows if any(
+                s in (r.get(f) or "").lower()
+                for f in ("employee_name", "designation", "department", "branch",
+                          "employment_type")
+            )]
+    return rows
+
+
+@frappe.whitelist()
+def get_leave_admin(limit=50):
+    _require_login()
+    out = {"open": [], "active": []}
+    if not frappe.has_permission("Leave Application", "read"):
+        return out
+    try:
+        out["open"] = frappe.get_all(
+            "Leave Application",
+            filters={"status": "Open"},
+            fields=["name", "employee_name", "leave_type", "from_date",
+                    "to_date", "total_leave_days", "leave_approver", "creation"],
+            order_by="from_date desc", limit=int(limit),
+        )
+    except Exception:
+        pass
+    try:
+        td = today()
+        out["active"] = frappe.get_all(
+            "Leave Application",
+            filters={"status": "Approved", "docstatus": 1,
+                     "from_date": ["<=", td], "to_date": [">=", td]},
+            fields=["name", "employee_name", "leave_type", "from_date", "to_date"],
+            order_by="from_date desc", limit=int(limit),
+        )
+    except Exception:
+        pass
+    return out
+
+
+@frappe.whitelist()
+def get_statutory_summary():
+    """Statutory deduction totals (PAYE / NSSF / SHIF / Housing) from
+    submitted Salary Slips for the current month, summed via Salary Detail."""
+    _require_login()
+    if not frappe.has_permission("Salary Slip", "read"):
+        return {"error": "no permission"}
+    out = {}
+    td = getdate(today())
+    period_start = td.replace(day=1)
+    components = {
+        "paye": ["PAYE", "Income Tax", "Tax", "P.A.Y.E"],
+        "nssf": ["NSSF"],
+        "shif": ["SHIF", "NHIF", "S.H.I.F"],
+        "housing": ["Housing Levy", "Housing", "AHL"],
+    }
+    for key, names in components.items():
+        try:
+            ph = ", ".join(["%s"] * len(names))
+            row = frappe.db.sql(
+                f"""SELECT COALESCE(SUM(sd.amount), 0)
+                    FROM `tabSalary Detail` sd
+                    JOIN `tabSalary Slip` ss ON ss.name = sd.parent
+                    WHERE ss.docstatus = 1
+                      AND sd.parentfield = 'deductions'
+                      AND ss.posting_date BETWEEN %s AND %s
+                      AND sd.salary_component IN ({ph})""",
+                [str(period_start), str(td)] + names,
+            )
+            out[key] = float(row[0][0] or 0)
+        except Exception:
+            out[key] = 0.0
+    out["period_start"] = str(period_start)
+    out["period_end"] = str(td)
+    return out
+
+
+# ── Quality ──────────────────────────────────────────────────────────────────
+
+@frappe.whitelist()
+def get_quality_inspections(limit=50):
+    _require_login()
+    if not frappe.db.exists("DocType", "Quality Inspection"):
+        return []
+    if not frappe.has_permission("Quality Inspection", "read"):
+        return []
+    try:
+        return frappe.get_all(
+            "Quality Inspection",
+            fields=["name", "reference_type", "reference_name", "status",
+                    "inspection_type", "report_date", "item_code"],
+            order_by="report_date desc", limit=int(limit),
+        )
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_product_specs(limit=50):
+    _require_login()
+    if not frappe.db.exists("DocType", "Customer Product Specification"):
+        return {"_no_doctype": True,
+                "note": "Customer Product Specification (vcl_job_cards) not installed."}
+    if not frappe.has_permission("Customer Product Specification", "read"):
+        return []
+    try:
+        meta = frappe.get_meta("Customer Product Specification")
+        fields = ["name", "customer", "creation"]
+        for opt in ("product_type", "size_mm", "gsm", "substrate", "colour",
+                    "no_of_colours", "plate_status", "plate_code"):
+            if meta.has_field(opt):
+                fields.append(opt)
+        return frappe.get_all(
+            "Customer Product Specification",
+            fields=fields, order_by="creation desc", limit=int(limit),
+        )
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_ncr_list(limit=50):
+    """Custom NCR doctype if installed; else fall back to Issue (priority=High)."""
+    _require_login()
+    for dt in ("NCR", "Non Conformance", "Non Conformance Report"):
+        if frappe.db.exists("DocType", dt) and frappe.has_permission(dt, "read"):
+            try:
+                return {"doctype": dt, "rows": frappe.get_all(
+                    dt, fields=["name", "creation", "status"],
+                    order_by="creation desc", limit=int(limit))}
+            except Exception:
+                pass
+    if frappe.db.exists("DocType", "Issue") and frappe.has_permission("Issue", "read"):
+        try:
+            return {"doctype": "Issue (fallback)", "rows": frappe.get_all(
+                "Issue",
+                filters={"status": ["!=", "Closed"], "priority": ["in", ["High", "Urgent"]]},
+                fields=["name", "subject", "customer", "status", "priority", "creation"],
+                order_by="creation desc", limit=int(limit))}
+        except Exception:
+            pass
+    return {"_no_doctype": True, "note": "No NCR / Issue doctype available."}
+
+
+# ── Logistics ────────────────────────────────────────────────────────────────
+
+@frappe.whitelist()
+def get_vehicles(limit=50):
+    _require_login()
+    if not frappe.db.exists("DocType", "Vehicle"):
+        return {"_no_doctype": True}
+    if not frappe.has_permission("Vehicle", "read"):
+        return []
+    try:
+        meta = frappe.get_meta("Vehicle")
+        fields = ["name"]
+        for opt in ("license_plate", "make", "model", "fuel_type",
+                    "last_odometer", "carrying_capacity", "vehicle_value"):
+            if meta.has_field(opt):
+                fields.append(opt)
+        return frappe.get_all("Vehicle", fields=fields, limit=int(limit))
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_delivery_schedule(limit=30):
+    _require_login()
+    if not frappe.has_permission("Delivery Note", "read"):
+        return []
+    try:
+        return frappe.get_all(
+            "Delivery Note",
+            filters={"docstatus": 1},
+            fields=["name", "customer", "posting_date", "status", "grand_total"],
+            order_by="posting_date desc", limit=int(limit),
+        )
+    except Exception:
+        return []
+
+
+@frappe.whitelist()
+def get_vehicle_logs(limit=50):
+    _require_login()
+    if not frappe.db.exists("DocType", "Vehicle Log"):
+        return {"_no_doctype": True}
+    if not frappe.has_permission("Vehicle Log", "read"):
+        return []
+    try:
+        meta = frappe.get_meta("Vehicle Log")
+        fields = ["name"]
+        for opt in ("license_plate", "date", "odometer", "fuel_qty",
+                    "fuel_price", "price"):
+            if meta.has_field(opt):
+                fields.append(opt)
+        return frappe.get_all("Vehicle Log", fields=fields,
+                              order_by="date desc", limit=int(limit))
+    except Exception:
+        return []
+
+
+# ── Reports (deep-link list) ─────────────────────────────────────────────────
+
+@frappe.whitelist()
+def get_report_links():
+    _require_login()
+    company = frappe.defaults.get_user_default("Company") or ""
+    td = getdate(today())
+    mtd_start = td.replace(day=1)
+    yr_start = td.replace(month=1, day=1)
+    enc = frappe.utils.cstr
+
+    def url(name, **params):
+        from urllib.parse import urlencode
+        params.setdefault("company", company)
+        return "/app/query-report/" + name + "?" + urlencode(params)
+
+    return {
+        "Financial": [
+            {"label": "Trial Balance", "url": url("Trial Balance",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Profit and Loss", "url": url("Profit and Loss Statement",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Balance Sheet", "url": url("Balance Sheet",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Accounts Receivable", "url": url("Accounts Receivable")},
+            {"label": "Accounts Payable", "url": url("Accounts Payable")},
+            {"label": "General Ledger", "url": url("General Ledger",
+                from_date=str(mtd_start), to_date=str(td))},
+        ],
+        "Sales": [
+            {"label": "Sales Register", "url": url("Sales Register",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Sales Analytics", "url": url("Sales Analytics",
+                range="Monthly", from_date=str(yr_start), to_date=str(td))},
+            {"label": "Sales Order Trends", "url": url("Sales Order Trends",
+                period="Monthly", from_date=str(yr_start), to_date=str(td))},
+            {"label": "Customer Acquisition and Loyalty",
+                "url": url("Customer Acquisition and Loyalty",
+                from_date=str(yr_start), to_date=str(td))},
+        ],
+        "Purchase": [
+            {"label": "Purchase Register", "url": url("Purchase Register",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Purchase Analytics", "url": url("Purchase Analytics",
+                range="Monthly", from_date=str(yr_start), to_date=str(td))},
+        ],
+        "Stock": [
+            {"label": "Stock Balance", "url": url("Stock Balance")},
+            {"label": "Stock Ledger", "url": url("Stock Ledger",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Stock Ageing", "url": url("Stock Ageing")},
+        ],
+        "HR": [
+            {"label": "Employee Information", "url": url("Employee Information")},
+            {"label": "Salary Register", "url": url("Salary Register",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Monthly Attendance Sheet", "url": url("Monthly Attendance Sheet",
+                month=td.strftime("%m"), year=td.year)},
+        ],
+        "Production": [
+            {"label": "Job Card Summary", "url": url("Job Card Summary",
+                from_date=str(mtd_start), to_date=str(td))},
+            {"label": "Production Analytics", "url": url("Production Analytics",
+                range="Monthly", from_date=str(yr_start), to_date=str(td))},
+            {"label": "BOM Stock Report", "url": url("BOM Stock Report")},
+        ],
+    }
+
+
+# ── Stock (used by quality + production sub-pages) ───────────────────────────
+
+@frappe.whitelist()
+def get_stock_alerts(limit=30):
+    _require_login()
+    if not frappe.has_permission("Item", "read"):
+        return []
+    try:
+        return frappe.db.sql(
+            """SELECT b.item_code, b.warehouse, b.actual_qty, b.projected_qty,
+                      i.reorder_level, i.item_name
+               FROM `tabBin` b
+               JOIN `tabItem` i ON i.name = b.item_code
+               WHERE i.disabled = 0
+                 AND i.reorder_level IS NOT NULL AND i.reorder_level > 0
+                 AND b.actual_qty <= i.reorder_level
+               ORDER BY (i.reorder_level - b.actual_qty) DESC
+               LIMIT %s""",
+            [int(limit)], as_dict=True,
+        )
+    except Exception:
+        return []
+
+
 @frappe.whitelist()
 def get_sales_collections(limit=30):
     """Customers with outstanding > 30 days; last contact (if any) from

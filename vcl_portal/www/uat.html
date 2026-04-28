@@ -1150,23 +1150,10 @@
       </div>
     </div>
 
-    <!-- ── REPORTS ── -->
+    <!-- ── REPORTS — LIVE (deep-link list) ── -->
     <div id="page-reports" class="page">
-      <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Reports</h1><p>Financial, operational, and compliance reports across all departments.</p></div>
-      <div class="section-heading">Financial Reports</div>
-      <div class="card-grid">
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">📊</div><div class="card-title">Trial Balance</div><div class="card-desc">Monthly TB from QBO. Reconciled vs ERPNext.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">🧾</div><div class="card-title">VAT Reconciliation</div><div class="card-desc">QBO vs iTax. 12-month tabs.</div></div>
-        <div class="card" onclick="navigate('sales')"><div class="card-icon">📈</div><div class="card-title">Ageing Report</div><div class="card-desc">AR ageing by customer. 0–90+ buckets.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">💸</div><div class="card-title">Payroll Summary</div><div class="card-desc">Permanent + casual. PAYE/NSSF/SHIF/Housing totals.</div></div>
-      </div>
-      <div class="section-heading">Operational Reports</div>
-      <div class="card-grid">
-        <div class="card" onclick="navigate('production')"><div class="card-icon">🏭</div><div class="card-title">Daily Production Plan</div><div class="card-desc">Plan vs Actual for 7 stations. A4 landscape.</div></div>
-        <div class="card" onclick="navigate('production')"><div class="card-icon">⚙️</div><div class="card-title">OEE Dashboard</div><div class="card-desc">Availability × Performance × Quality per cost centre.</div></div>
-        <div class="card" onclick="navigate('procurement')"><div class="card-icon">🛒</div><div class="card-title">PO Tracker</div><div class="card-desc">Open POs, pending GRNs, supplier perf.</div></div>
-        <div class="card" onclick="navigate('logistics')"><div class="card-icon">🚚</div><div class="card-title">Fleet Report</div><div class="card-desc">Utilisation, fuel, maintenance, deliveries.</div></div>
-      </div>
+      <div class="page-header"><div class="page-header-eyebrow">Management</div><h1>Reports <span class="live-tag">LIVE</span></h1><p>Direct deep-links into the standard ERPNext query reports. Each opens in a new tab pre-filled with current month + your default Company.</p></div>
+      <div id="reports-content"><div class="info-box">Loading…</div></div>
     </div>
 
     <!-- ── PROJECTS ── -->
@@ -1483,30 +1470,36 @@
       <div id="preaudit-content"><div class="info-box">Loading…</div></div>
     </div>
 
-    <!-- ── PROCUREMENT SUB-PAGES ── -->
+    <!-- ── PROCUREMENT SUB-PAGES — LIVE ── -->
     <div id="page-proc-pos" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Purchase Orders</h1><p>Raise, approve, and track POs. Linked to Material Request workflow.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Open POs</div><div class="stat-value">14</div><div class="stat-change">↑ 3 this week</div></div><div class="stat-card warning"><div class="stat-label">Pending Approval</div><div class="stat-value">2</div><div class="stat-change warn">Above threshold</div></div><div class="stat-card"><div class="stat-label">Created MTD</div><div class="stat-value">38</div><div class="stat-change">↑ 6%</div></div></div>
-      <div style="margin:14px 0"><button class="btn btn-primary">+ New PO</button></div>
-      <div class="info-box">Mock. ERPNext: <code>Purchase Order</code> + <code>Material Request</code>. API: standard ERPNext.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Purchase Orders <span class="live-tag">LIVE</span></h1><p>Open Purchase Orders (submitted, not closed/cancelled).</p></div>
+      <div style="margin:14px 0"><a class="btn btn-primary" href="/app/purchase-order/new" target="_blank" rel="noopener">+ New PO ↗</a></div>
+      <div class="table-wrap"><table><thead><tr><th>PO No.</th><th>Supplier</th><th>Date</th><th>Schedule</th><th>Total (KSh)</th><th>Received</th><th>Status</th></tr></thead>
+        <tbody id="po-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_purchase_orders</code>.</div>
     </div>
 
     <div id="page-proc-suppliers" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Supplier Register</h1><p>Supplier database — contact, banking, credit terms, performance ratings.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Active Suppliers</div><div class="stat-value">38</div><div class="stat-change">All categories</div></div><div class="stat-card"><div class="stat-label">Top 5 Spend</div><div class="stat-value">68%</div><div class="stat-change">Of MTD</div></div><div class="stat-card warning"><div class="stat-label">Overdue Reviews</div><div class="stat-value">6</div><div class="stat-change warn">Need annual check</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Supplier</code>. API: standard ERPNext.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Supplier Register <span class="live-tag">LIVE</span></h1><p>Active suppliers with debounced search by name / country / group.</p></div>
+      <input type="text" class="sop-search" id="sup-search" placeholder="Search by name, country, or group…">
+      <div class="table-wrap"><table><thead><tr><th>Supplier</th><th>Group</th><th>Country</th><th>Currency</th></tr></thead>
+        <tbody id="sup-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_suppliers(search)</code>.</div>
     </div>
 
     <div id="page-proc-imports" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Importation Tracker</h1><p>Five-stage import lifecycle: Order → Shipment → Customs → Clearance → Stock.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">In Transit</div><div class="stat-value">2</div><div class="stat-change">Habo + Awanad</div></div><div class="stat-card warning"><div class="stat-label">At Customs</div><div class="stat-value">1</div><div class="stat-change warn">3 days at port</div></div><div class="stat-card positive"><div class="stat-label">Cleared MTD</div><div class="stat-value">3</div><div class="stat-change">All on time</div></div></div>
-      <div class="info-box">Mock. Custom: <code>vcl_importation</code> tracker. Excel at \\finance\apps\06. DATA\Imports.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Importation Tracker <span id="imp-pill" class="live-tag">LIVE</span></h1><p>Five-stage import lifecycle: Order → Shipment → Customs → Clearance → Stock.</p></div>
+      <div id="imp-content"><div class="info-box">Loading…</div></div>
     </div>
 
     <div id="page-proc-grn" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Goods Receipt (GRN)</h1><p>Receive goods against PO, quality check, and post to stock.</p></div>
-      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Pending GRNs</div><div class="stat-value">6</div><div class="stat-change warn">Awaiting receipt</div></div><div class="stat-card positive"><div class="stat-label">Posted MTD</div><div class="stat-value">32</div><div class="stat-change">100% quality pass</div></div><div class="stat-card"><div class="stat-label">Avg PO→GRN</div><div class="stat-value">18 d</div><div class="stat-change">Local + import blend</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Purchase Receipt</code>. API: standard ERPNext.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Pending Goods Receipt <span class="live-tag">LIVE</span></h1><p>Submitted POs not yet 100% received (per_received &lt; 100).</p></div>
+      <div class="table-wrap"><table><thead><tr><th>PO No.</th><th>Supplier</th><th>Date</th><th>Total (KSh)</th><th>Received %</th><th>Status</th></tr></thead>
+        <tbody id="grn-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_pending_grns</code>. Click any PO to open it in ERPNext to post the receipt.</div>
     </div>
 
     <!-- ── PRODUCTION SUB-PAGES ── -->
@@ -1562,84 +1555,106 @@
       <div class="info-box">Mock. TiDB warehouse: standard cost vs <code>Stock Entry</code> + <code>Job Card</code> actuals.</div>
     </div>
 
-    <!-- ── HR SUB-PAGES ── -->
+    <!-- ── HR SUB-PAGES — LIVE ── -->
     <div id="page-hr-employees" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Employee Records</h1><p>Personal details, department, cost centre allocation, employment terms.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">~120</div><div class="stat-change">Active</div></div><div class="stat-card"><div class="stat-label">New (MTD)</div><div class="stat-value">3</div><div class="stat-change">Joiners</div></div><div class="stat-card warning"><div class="stat-label">Exits (MTD)</div><div class="stat-value">2</div><div class="stat-change warn">Includes 1 casual</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Employee</code> grouped by department, status, employment_type.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Employee Records <span class="live-tag">LIVE</span></h1><p>Active Employees with HR-level fields: department, branch, employment type, contact.</p></div>
+      <input type="text" class="sop-search" id="emp-search" placeholder="Search by name, designation, department, branch, employment type…">
+      <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Designation</th><th>Department</th><th>Branch</th><th>Type</th><th>Joined</th></tr></thead>
+        <tbody id="emp-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_employees(search)</code>. Restricted to users with Employee read permission.</div>
     </div>
 
     <div id="page-hr-payroll" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Payroll Processing</h1><p>Separate permanent and casual payroll schedules. Piecework reconciliation for production.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Permanent Pay Run</div><div class="stat-value">9th</div><div class="stat-change">Monthly</div></div><div class="stat-card"><div class="stat-label">Casual Pay Run</div><div class="stat-value">Weekly</div><div class="stat-change">Fri</div></div><div class="stat-card warning"><div class="stat-label">April Status</div><div class="stat-value">In Progress</div><div class="stat-change warn">Awaiting timesheet</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Payroll Entry</code> + <code>Salary Slip</code> for permanent. Casual via piecework reconciled vs Job Cards.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Payroll Processing <span class="live-tag">LIVE</span></h1><p>Latest Payroll Entry + month-to-date Salary Slip net pay. Permanent vs casual split from HR Desk stat strip.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card"><div class="stat-label">Latest Run</div><div class="stat-value" id="hrp-latest" style="font-size:14px">—</div><div class="stat-change" id="hrp-latest-period">—</div></div>
+        <div class="stat-card positive"><div class="stat-label">MTD Net Pay (KSh)</div><div class="stat-value" id="hrp-mtd">—</div><div class="stat-change">Submitted Salary Slips</div></div>
+        <div class="stat-card"><div class="stat-label">Submitted</div><div class="stat-value" id="hrp-all">—</div><div class="stat-change">All-time runs</div></div>
+        <div class="stat-card warning"><div class="stat-label">In Draft</div><div class="stat-value" id="hrp-pending">—</div><div class="stat-change warn">Awaiting submission</div></div>
+      </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_payroll_summary</code> (same source as Finance → Payroll).</div>
     </div>
 
     <div id="page-hr-leave" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Leave Management</h1><p>Annual, sick, maternity/paternity, unpaid leave tracking + approvals.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">On Leave Today</div><div class="stat-value">5</div><div class="stat-change">Out of office</div></div><div class="stat-card warning"><div class="stat-label">Pending Approval</div><div class="stat-value">3</div><div class="stat-change warn">Oldest 2 d</div></div><div class="stat-card"><div class="stat-label">YTD Used</div><div class="stat-value">~38%</div><div class="stat-change">Of allowance</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Leave Application</code> + <code>Leave Allocation</code>. API: <code>vcl_portal.api.get_pending_leave_approvals()</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Leave Management <span class="live-tag">LIVE</span></h1><p>Open leave applications + employees currently on approved leave.</p></div>
+      <div class="two-col">
+        <div>
+          <div class="section-heading">Open (awaiting approval)</div>
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Type</th><th>From → To</th><th>Days</th><th>Approver</th></tr></thead>
+            <tbody id="hrl-open-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+        <div>
+          <div class="section-heading">Active today</div>
+          <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Type</th><th>From → To</th></tr></thead>
+            <tbody id="hrl-active-tbody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:14px">Loading…</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_leave_admin</code>.</div>
     </div>
 
     <div id="page-hr-statutory" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Statutory Schedules</h1><p>PAYE, NSSF, SHIF, Housing Levy. Reconciliation against KRA portal.</p></div>
-      <div class="table-wrap"><table><thead><tr><th>Filing</th><th>Employee</th><th>Employer</th><th>Due</th><th>Status</th></tr></thead><tbody>
-        <tr><td>PAYE</td><td>Graduated</td><td>—</td><td>9th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
-        <tr><td>NSSF</td><td>KSh 200</td><td>KSh 200</td><td>15th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
-        <tr><td>SHIF</td><td>2.75%</td><td>—</td><td>15th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
-        <tr><td>Housing Levy</td><td>1.5%</td><td>1.5%</td><td>9th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
-      </tbody></table></div>
-      <div class="info-box">Mock. ERPNext: <code>Salary Slip</code> deductions + custom statutory tracker.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Statutory Schedules <span class="live-tag">LIVE</span></h1><p>MTD totals for PAYE / NSSF / SHIF / Housing Levy from submitted Salary Slip deductions.</p></div>
+      <div class="stat-strip">
+        <div class="stat-card"><div class="stat-label">PAYE</div><div class="stat-value" id="stat-paye">—</div><div class="stat-change">Due 9th</div></div>
+        <div class="stat-card"><div class="stat-label">NSSF</div><div class="stat-value" id="stat-nssf">—</div><div class="stat-change">Due 15th</div></div>
+        <div class="stat-card"><div class="stat-label">SHIF</div><div class="stat-value" id="stat-shif">—</div><div class="stat-change">Due 15th</div></div>
+        <div class="stat-card"><div class="stat-label">Housing Levy</div><div class="stat-value" id="stat-housing">—</div><div class="stat-change">Due 9th</div></div>
+      </div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_statutory_summary</code>. Looks up Salary Detail rows where component matches PAYE/NSSF/SHIF/Housing variants. If your custom components have different names, edit <code>_ROLE_GROUPS</code>-style component-name list in api.py.</div>
     </div>
 
-    <!-- ── QUALITY SUB-PAGES ── -->
+    <!-- ── QUALITY SUB-PAGES — LIVE ── -->
     <div id="page-qual-checklists" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>QC Checklists</h1><p>Per-product checklists for labels, computer paper, exercise books, and cartons.</p></div>
-      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Pending</div><div class="stat-value">3</div><div class="stat-change warn">Awaiting sign-off</div></div><div class="stat-card positive"><div class="stat-label">Pass Rate</div><div class="stat-value">97.4%</div><div class="stat-change">This month</div></div><div class="stat-card"><div class="stat-label">Inspections MTD</div><div class="stat-value">142</div><div class="stat-change">Across all CCs</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Quality Inspection</code> + <code>Quality Inspection Reading</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Quality Inspections <span class="live-tag">LIVE</span></h1><p>Recent Quality Inspection records across all reference doctypes.</p></div>
+      <div class="table-wrap"><table><thead><tr><th>QI No.</th><th>Reference Type</th><th>Reference</th><th>Item</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="qi-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_quality_inspections</code>.</div>
     </div>
 
     <div id="page-qual-specs" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Product Specifications</h1><p>Customer Product Specification doctype. GSM, dimensions, colour, substrate.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Active CPS</div><div class="stat-value">~480</div><div class="stat-change">Live specs</div></div><div class="stat-card"><div class="stat-label">Created MTD</div><div class="stat-value">12</div><div class="stat-change">From new SOs</div></div></div>
-      <div class="info-box">Mock. Custom: <code>Customer Product Specification</code> (vcl_job_cards). Created inline by JCL if missing.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Product Specifications <span id="cps-pill" class="live-tag">LIVE</span></h1><p>Customer Product Specifications from <code>vcl_job_cards</code>. Created inline by Job Card Label if missing.</p></div>
+      <div id="cps-content"><div class="info-box">Loading…</div></div>
     </div>
 
     <div id="page-qual-ncr" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>NCR Management</h1><p>Non-conformance reports, root-cause analysis, corrective actions, closure tracking.</p></div>
-      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Open NCRs</div><div class="stat-value">2</div><div class="stat-change warn">In root-cause</div></div><div class="stat-card positive"><div class="stat-label">Closed MTD</div><div class="stat-value">5</div><div class="stat-change">Avg 4 d to close</div></div><div class="stat-card"><div class="stat-label">Repeat Issues</div><div class="stat-value">1</div><div class="stat-change">Same root cause</div></div></div>
-      <div class="info-box warn">Recommended: build custom <code>NCR</code> doctype if not using <code>Issue</code>. API: <code>vcl_portal.api.raise_ncr(payload)</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>NCR Management <span id="ncr-pill" class="live-tag">LIVE</span></h1><p>Non-conformance reports. Uses custom NCR doctype if installed; falls back to High/Urgent Issues.</p></div>
+      <div id="ncr-content"><div class="info-box">Loading…</div></div>
     </div>
 
     <div id="page-qual-incoming" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Incoming Inspection</h1><p>Raw material inspection on GRN. Carbonless paper CB/CFB/CF grade verification.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value">6</div><div class="stat-change">GRNs to inspect</div></div><div class="stat-card positive"><div class="stat-label">Pass Rate</div><div class="stat-value">99%</div><div class="stat-change">Suppliers reliable</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Quality Inspection</code> on incoming <code>Purchase Receipt</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Incoming Inspection <span class="live-tag">LIVE</span></h1><p>Quality Inspections where reference is a Purchase Receipt (incoming material checks).</p></div>
+      <div class="table-wrap"><table><thead><tr><th>QI No.</th><th>Purchase Receipt</th><th>Item</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody id="qi-incoming-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_quality_inspections</code> filtered to Purchase Receipt references.</div>
     </div>
 
-    <!-- ── LOGISTICS SUB-PAGES ── -->
+    <!-- ── LOGISTICS SUB-PAGES — LIVE ── -->
     <div id="page-log-fleet" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Fleet Register</h1><p>Vehicle details, registration, insurance, service schedules, driver assignments.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Vehicles</div><div class="stat-value">6</div><div class="stat-change">All categories</div></div><div class="stat-card warning"><div class="stat-label">Insurance Renewal</div><div class="stat-value">2</div><div class="stat-change warn">Within 30 d</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Vehicle</code> + <code>Vehicle Log</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Fleet Register <span id="fleet-pill" class="live-tag">LIVE</span></h1><p>Vehicles from ERPNext core <code>Vehicle</code> doctype.</p></div>
+      <div id="fleet-content"><div class="info-box">Loading…</div></div>
     </div>
 
     <div id="page-log-track" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Track &amp; Trace</h1><p>Daily Track &amp; Trace emails parsed from web@trackntrace.co.ke. Dashboard view.</p></div>
-      <div class="stat-strip"><div class="stat-card positive"><div class="stat-label">Live Vehicles</div><div class="stat-value">5</div><div class="stat-change">Reporting OK</div></div><div class="stat-card warning"><div class="stat-label">Stale Reports</div><div class="stat-value">1</div><div class="stat-change warn">No update 2h</div></div></div>
-      <div class="info-box">Mock. External: daily emails from web@trackntrace.co.ke parsed via n8n.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Track &amp; Trace <span class="in-dev-tag">IN DEV</span></h1><p>Daily Track &amp; Trace emails parsed from <code>web@trackntrace.co.ke</code> via n8n.</p></div>
+      <div class="info-box warn">External email-parsing pipeline. Wiring requires either a custom doctype to log parsed updates, or a TiDB query into the existing parsed table. Pick a path and I'll wire it.</div>
     </div>
 
     <div id="page-log-schedule" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Delivery Schedule</h1><p>Plan and dispatch deliveries linked to completed sales orders and job cards.</p></div>
-      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Today</div><div class="stat-value">4</div><div class="stat-change">Scheduled</div></div><div class="stat-card positive"><div class="stat-label">Completed MTD</div><div class="stat-value">89</div><div class="stat-change">↑ 6%</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Delivery Note</code> + custom dispatch scheduler.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Delivery Schedule <span class="live-tag">LIVE</span></h1><p>Submitted Delivery Notes (recent first).</p></div>
+      <div class="table-wrap"><table><thead><tr><th>Delivery</th><th>Customer</th><th>Posting</th><th>Total (KSh)</th><th>Status</th></tr></thead>
+        <tbody id="dn-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+      </table></div>
+      <div class="info-box">Wired via <code>vcl_portal.api.get_delivery_schedule</code>.</div>
     </div>
 
     <div id="page-log-maintenance" class="page">
-      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Vehicle Maintenance</h1><p>Service log, fuel consumption, tyre replacements, insurance renewals.</p></div>
-      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">In Service</div><div class="stat-value">1</div><div class="stat-change warn">3-day repair</div></div><div class="stat-card"><div class="stat-label">Fuel Spend MTD</div><div class="stat-value">KSh 380K</div><div class="stat-change">14% of opex</div></div></div>
-      <div class="info-box">Mock. ERPNext: <code>Vehicle Log</code>.</div>
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Vehicle Maintenance <span id="vlog-pill" class="live-tag">LIVE</span></h1><p>Vehicle Log entries (service, fuel, expenses).</p></div>
+      <div id="vlog-content"><div class="info-box">Loading…</div></div>
     </div>
 
     <!-- ── COMPLIANCE SUB-PAGES ── -->
@@ -1809,6 +1824,11 @@
     salesInvoices: false, jobCards: false,
     salesCollections: false, repDash: false, salesMgr: false,
     arDetail: false, apDetail: false, vat: false, payroll: false, tbLink: false, preAudit: false,
+    po: false, suppliers: false, imports: false, grn: false,
+    employees: false, hrPayroll: false, hrLeave: false, statutory: false,
+    qi: false, qiIncoming: false, cps: false, ncr: false,
+    fleet: false, delivery: false, vlog: false,
+    reports: false,
   };
 
   async function renderMyProfile(force) {
@@ -2422,6 +2442,349 @@
     });
   }
 
+  // ── Render: Procurement sub-pages ──
+  async function renderPurchaseOrders(force) {
+    if (_loaded.po && !force) return;
+    const tb = document.getElementById('po-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_purchase_orders', { limit: 100 });
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/purchase-order/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+            '<td>' + escHtml(r.supplier) + '</td>' +
+            '<td>' + escHtml(fmtDate(r.transaction_date)) + '</td>' +
+            '<td>' + escHtml(fmtDate(r.schedule_date)) + '</td>' +
+            '<td>' + fmtNum(r.grand_total) + '</td>' +
+            '<td>' + (r.per_received != null ? Math.round(r.per_received) + '%' : '—') + '</td>' +
+            '<td>' + statusBadge(r.status) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">No open POs</td></tr>';
+      _loaded.po = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+  let _supTimer = null;
+  async function renderSuppliers(force) {
+    if (_loaded.suppliers && !force) return;
+    const tb = document.getElementById('sup-tbody');
+    if (!tb) return;
+    try {
+      const search = (document.getElementById('sup-search') || {}).value || '';
+      const rows = await vclFetch('get_suppliers', { search: search });
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/supplier/' + encodeURIComponent(r.name) + '">' + escHtml(r.supplier_name || r.name) + '</a></td>' +
+            '<td>' + escHtml(r.supplier_group || '—') + '</td>' +
+            '<td>' + escHtml(r.country || '—') + '</td>' +
+            '<td>' + escHtml(r.default_currency || '—') + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">No suppliers found</td></tr>';
+      _loaded.suppliers = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="4" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+  function _bindSupSearch() {
+    const i = document.getElementById('sup-search');
+    if (!i || i._bound) return; i._bound = true;
+    i.addEventListener('input', () => { clearTimeout(_supTimer); _supTimer = setTimeout(() => renderSuppliers(true), 250); });
+  }
+  async function renderImports(force) {
+    if (_loaded.imports && !force) return;
+    const wrap = document.getElementById('imp-content');
+    if (!wrap) return;
+    try {
+      const r = await vclFetch('get_imports');
+      if (r && r._no_doctype) {
+        const pill = document.getElementById('imp-pill');
+        if (pill) { pill.className = 'in-dev-tag'; pill.textContent = 'IN DEV'; }
+        wrap.innerHTML = '<div class="info-box warn">' + escHtml(r.note) + '</div>';
+      } else if (r && r.rows && r.rows.length) {
+        const cols = Object.keys(r.rows[0]).filter(k => !k.startsWith('_')).slice(0, 8);
+        wrap.innerHTML = '<div class="info-box">Source doctype: <code>' + escHtml(r.doctype) + '</code></div>'
+          + '<div class="table-wrap"><table>'
+          + '<thead><tr>' + cols.map(c => '<th>' + escHtml(c) + '</th>').join('') + '</tr></thead>'
+          + '<tbody>' + r.rows.map(row => '<tr>' + cols.map(c => '<td>' + escHtml(row[c]) + '</td>').join('') + '</tr>').join('') + '</tbody>'
+          + '</table></div>';
+      } else {
+        wrap.innerHTML = '<div class="info-box">No records.</div>';
+      }
+      _loaded.imports = true;
+    } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
+  }
+  async function renderPendingGrns(force) {
+    if (_loaded.grn && !force) return;
+    const tb = document.getElementById('grn-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_pending_grns', { limit: 100 });
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/purchase-order/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+            '<td>' + escHtml(r.supplier) + '</td>' +
+            '<td>' + escHtml(fmtDate(r.transaction_date)) + '</td>' +
+            '<td>' + fmtNum(r.grand_total) + '</td>' +
+            '<td>' + (r.per_received != null ? Math.round(r.per_received) + '%' : '0%') + '</td>' +
+            '<td>' + statusBadge(r.status) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">All POs fully received</td></tr>';
+      _loaded.grn = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+
+  // ── Render: HR sub-pages ──
+  let _empTimer = null;
+  async function renderEmployees(force) {
+    if (_loaded.employees && !force) return;
+    const tb = document.getElementById('emp-tbody');
+    if (!tb) return;
+    try {
+      const search = (document.getElementById('emp-search') || {}).value || '';
+      const rows = await vclFetch('get_employees', { search: search });
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/employee/' + encodeURIComponent(r.name) + '">' + escHtml(r.employee_name || r.name) + '</a></td>' +
+            '<td>' + escHtml(r.designation || '—') + '</td>' +
+            '<td>' + escHtml(r.department || '—') + '</td>' +
+            '<td>' + escHtml(r.branch || '—') + '</td>' +
+            '<td>' + escHtml(r.employment_type || '—') + '</td>' +
+            '<td>' + escHtml(fmtDate(r.date_of_joining)) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No employees</td></tr>';
+      _loaded.employees = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+  function _bindEmpSearch() {
+    const i = document.getElementById('emp-search');
+    if (!i || i._bound) return; i._bound = true;
+    i.addEventListener('input', () => { clearTimeout(_empTimer); _empTimer = setTimeout(() => renderEmployees(true), 250); });
+  }
+  async function renderHrPayroll(force) {
+    if (_loaded.hrPayroll && !force) return;
+    try {
+      const d = await vclFetch('get_payroll_summary');
+      const latest = d.latest;
+      document.getElementById('hrp-latest').textContent = latest ? latest.name : 'No runs';
+      document.getElementById('hrp-latest-period').textContent = latest
+        ? (fmtDate(latest.start_date) + ' → ' + fmtDate(latest.end_date)) : '—';
+      document.getElementById('hrp-mtd').textContent = fmtNum(d.mtd_net_pay);
+      document.getElementById('hrp-all').textContent = d.all_count ?? '—';
+      document.getElementById('hrp-pending').textContent = d.pending_count ?? '—';
+      _loaded.hrPayroll = true;
+    } catch (e) { console.error(e); }
+  }
+  async function renderHrLeave(force) {
+    if (_loaded.hrLeave && !force) return;
+    try {
+      const d = await vclFetch('get_leave_admin');
+      const ot = document.getElementById('hrl-open-tbody');
+      ot.innerHTML = (d.open || []).length
+        ? d.open.map(l => '<tr>' +
+            '<td><a target="_blank" href="/app/leave-application/' + encodeURIComponent(l.name) + '">' + escHtml(l.employee_name || l.name) + '</a></td>' +
+            '<td>' + escHtml(l.leave_type) + '</td>' +
+            '<td>' + escHtml(fmtDate(l.from_date)) + ' → ' + escHtml(fmtDate(l.to_date)) + '</td>' +
+            '<td>' + (l.total_leave_days || 0) + '</td>' +
+            '<td>' + escHtml(l.leave_approver || '—') + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px">No open applications</td></tr>';
+      const at = document.getElementById('hrl-active-tbody');
+      at.innerHTML = (d.active || []).length
+        ? d.active.map(l => '<tr>' +
+            '<td>' + escHtml(l.employee_name) + '</td>' +
+            '<td>' + escHtml(l.leave_type) + '</td>' +
+            '<td>' + escHtml(fmtDate(l.from_date)) + ' → ' + escHtml(fmtDate(l.to_date)) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:14px">Nobody on leave today</td></tr>';
+      _loaded.hrLeave = true;
+    } catch (e) { console.error(e); }
+  }
+  async function renderStatutory(force) {
+    if (_loaded.statutory && !force) return;
+    try {
+      const d = await vclFetch('get_statutory_summary');
+      if (d.error) return;
+      document.getElementById('stat-paye').textContent = fmtNum(d.paye);
+      document.getElementById('stat-nssf').textContent = fmtNum(d.nssf);
+      document.getElementById('stat-shif').textContent = fmtNum(d.shif);
+      document.getElementById('stat-housing').textContent = fmtNum(d.housing);
+      _loaded.statutory = true;
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Render: Quality sub-pages ──
+  async function renderQualityInspections(force) {
+    if (_loaded.qi && !force) return;
+    const tb = document.getElementById('qi-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_quality_inspections');
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/quality-inspection/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+            '<td>' + escHtml(r.reference_type || '—') + '</td>' +
+            '<td>' + escHtml(r.reference_name || '—') + '</td>' +
+            '<td>' + escHtml(r.item_code || '—') + '</td>' +
+            '<td>' + escHtml(r.inspection_type || '—') + '</td>' +
+            '<td>' + escHtml(fmtDate(r.report_date)) + '</td>' +
+            '<td>' + statusBadge(r.status) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">No inspections</td></tr>';
+      _loaded.qi = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+  async function renderIncoming(force) {
+    if (_loaded.qiIncoming && !force) return;
+    const tb = document.getElementById('qi-incoming-tbody');
+    if (!tb) return;
+    try {
+      const all = await vclFetch('get_quality_inspections');
+      const rows = (all || []).filter(r => r.reference_type === 'Purchase Receipt');
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/quality-inspection/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+            '<td>' + escHtml(r.reference_name || '—') + '</td>' +
+            '<td>' + escHtml(r.item_code || '—') + '</td>' +
+            '<td>' + escHtml(fmtDate(r.report_date)) + '</td>' +
+            '<td>' + statusBadge(r.status) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No incoming inspections</td></tr>';
+      _loaded.qiIncoming = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+  async function renderCps(force) {
+    if (_loaded.cps && !force) return;
+    const wrap = document.getElementById('cps-content');
+    if (!wrap) return;
+    try {
+      const r = await vclFetch('get_product_specs');
+      if (r && r._no_doctype) {
+        const pill = document.getElementById('cps-pill');
+        if (pill) { pill.className = 'in-dev-tag'; pill.textContent = 'IN DEV'; }
+        wrap.innerHTML = '<div class="info-box warn">' + escHtml(r.note) + '</div>';
+      } else if (Array.isArray(r) && r.length) {
+        const cols = Object.keys(r[0]).filter(k => !k.startsWith('_')).slice(0, 8);
+        wrap.innerHTML = '<div class="table-wrap"><table>'
+          + '<thead><tr>' + cols.map(c => '<th>' + escHtml(c) + '</th>').join('') + '</tr></thead>'
+          + '<tbody>' + r.map(row => '<tr>' + cols.map(c => '<td>' + escHtml(c === 'name' ? '' : row[c]) +
+              (c === 'name' ? '<a target="_blank" href="/app/customer-product-specification/' + encodeURIComponent(row[c]) + '">' + escHtml(row[c]) + '</a>' : '') +
+              '</td>').join('') + '</tr>').join('') + '</tbody></table></div>';
+      } else {
+        wrap.innerHTML = '<div class="info-box">No specs yet.</div>';
+      }
+      _loaded.cps = true;
+    } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
+  }
+  async function renderNcr(force) {
+    if (_loaded.ncr && !force) return;
+    const wrap = document.getElementById('ncr-content');
+    if (!wrap) return;
+    try {
+      const r = await vclFetch('get_ncr_list');
+      if (r && r._no_doctype) {
+        const pill = document.getElementById('ncr-pill');
+        if (pill) { pill.className = 'in-dev-tag'; pill.textContent = 'IN DEV'; }
+        wrap.innerHTML = '<div class="info-box warn">' + escHtml(r.note) + '</div>';
+      } else if (r && r.rows) {
+        const cols = Object.keys(r.rows[0] || {}).filter(k => !k.startsWith('_')).slice(0, 8);
+        if (!cols.length) { wrap.innerHTML = '<div class="info-box">No records.</div>'; return; }
+        wrap.innerHTML = '<div class="info-box">Source doctype: <code>' + escHtml(r.doctype) + '</code></div>'
+          + '<div class="table-wrap"><table>'
+          + '<thead><tr>' + cols.map(c => '<th>' + escHtml(c) + '</th>').join('') + '</tr></thead>'
+          + '<tbody>' + r.rows.map(row => '<tr>' + cols.map(c => '<td>' + escHtml(row[c]) + '</td>').join('') + '</tr>').join('') + '</tbody>'
+          + '</table></div>';
+      }
+      _loaded.ncr = true;
+    } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
+  }
+
+  // ── Render: Logistics sub-pages ──
+  function _genericTable(wrap, data, doctype, urlBase) {
+    if (data && data._no_doctype) return false;
+    if (!Array.isArray(data) || !data.length) {
+      wrap.innerHTML = '<div class="info-box">No records.</div>';
+      return true;
+    }
+    const cols = Object.keys(data[0]).filter(k => !k.startsWith('_')).slice(0, 8);
+    wrap.innerHTML = '<div class="table-wrap"><table>'
+      + '<thead><tr>' + cols.map(c => '<th>' + escHtml(c) + '</th>').join('') + '</tr></thead>'
+      + '<tbody>' + data.map(row => '<tr>' + cols.map((c, i) => {
+          const v = row[c];
+          if (i === 0 && urlBase) return '<td><a target="_blank" href="' + urlBase + encodeURIComponent(v) + '">' + escHtml(v) + '</a></td>';
+          return '<td>' + escHtml(v) + '</td>';
+        }).join('') + '</tr>').join('') + '</tbody></table></div>';
+    return true;
+  }
+  async function renderFleet(force) {
+    if (_loaded.fleet && !force) return;
+    const wrap = document.getElementById('fleet-content');
+    if (!wrap) return;
+    try {
+      const r = await vclFetch('get_vehicles');
+      if (r && r._no_doctype) {
+        const pill = document.getElementById('fleet-pill');
+        if (pill) { pill.className = 'in-dev-tag'; pill.textContent = 'IN DEV'; }
+        wrap.innerHTML = '<div class="info-box warn">Vehicle doctype not installed on this site. Install/enable the Fleet Management module to populate.</div>';
+      } else {
+        _genericTable(wrap, r, 'Vehicle', '/app/vehicle/');
+      }
+      _loaded.fleet = true;
+    } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
+  }
+  async function renderDelivery(force) {
+    if (_loaded.delivery && !force) return;
+    const tb = document.getElementById('dn-tbody');
+    if (!tb) return;
+    try {
+      const rows = await vclFetch('get_delivery_schedule');
+      tb.innerHTML = rows.length
+        ? rows.map(r => '<tr>' +
+            '<td><a target="_blank" href="/app/delivery-note/' + encodeURIComponent(r.name) + '">' + escHtml(r.name) + '</a></td>' +
+            '<td>' + escHtml(r.customer) + '</td>' +
+            '<td>' + escHtml(fmtDate(r.posting_date)) + '</td>' +
+            '<td>' + fmtNum(r.grand_total) + '</td>' +
+            '<td>' + statusBadge(r.status) + '</td>' +
+            '</tr>').join('')
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No delivery notes</td></tr>';
+      _loaded.delivery = true;
+    } catch (e) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+  }
+  async function renderVehicleLogs(force) {
+    if (_loaded.vlog && !force) return;
+    const wrap = document.getElementById('vlog-content');
+    if (!wrap) return;
+    try {
+      const r = await vclFetch('get_vehicle_logs');
+      if (r && r._no_doctype) {
+        const pill = document.getElementById('vlog-pill');
+        if (pill) { pill.className = 'in-dev-tag'; pill.textContent = 'IN DEV'; }
+        wrap.innerHTML = '<div class="info-box warn">Vehicle Log doctype not installed.</div>';
+      } else {
+        _genericTable(wrap, r, 'Vehicle Log', '/app/vehicle-log/');
+      }
+      _loaded.vlog = true;
+    } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
+  }
+
+  // ── Render: Reports (deep-link list) ──
+  async function renderReports(force) {
+    if (_loaded.reports && !force) return;
+    const wrap = document.getElementById('reports-content');
+    if (!wrap) return;
+    try {
+      const groups = await vclFetch('get_report_links');
+      let html = '';
+      Object.keys(groups).forEach(cat => {
+        html += '<div class="section-heading">' + escHtml(cat) + '</div>';
+        html += '<div class="card-grid card-grid-3">';
+        groups[cat].forEach(r => {
+          html += '<a class="quick-link" href="' + escHtml(r.url) + '" target="_blank" rel="noopener">' +
+            '<span class="quick-link-icon">↗</span> ' + escHtml(r.label) + '</a>';
+        });
+        html += '</div>';
+      });
+      wrap.innerHTML = html;
+      _loaded.reports = true;
+    } catch (e) { wrap.innerHTML = '<div class="info-box critical">' + escHtml(e.message) + '</div>'; }
+  }
+
   // ── Lazy-load hook on tab activation ──
   const _renderers = {
     home: renderHomeStats,
@@ -2432,6 +2795,7 @@
     sales: renderSalesDesk,
     hr: renderHrKpis,
     procurement: renderProcurementKpis,
+    reports: renderReports,
     'sales-orders': renderSalesInvoices,
     'sales-collections': renderSalesCollections,
     'sales-customer360': renderCustomer360,
@@ -2443,6 +2807,21 @@
     'finance-payroll': renderPayroll,
     'finance-tb': renderTbLink,
     'finance-preaudit': renderPreAudit,
+    'proc-pos': renderPurchaseOrders,
+    'proc-suppliers': () => { _bindSupSearch(); renderSuppliers(); },
+    'proc-imports': renderImports,
+    'proc-grn': renderPendingGrns,
+    'hr-employees': () => { _bindEmpSearch(); renderEmployees(); },
+    'hr-payroll': renderHrPayroll,
+    'hr-leave': renderHrLeave,
+    'hr-statutory': renderStatutory,
+    'qual-checklists': renderQualityInspections,
+    'qual-specs': renderCps,
+    'qual-ncr': renderNcr,
+    'qual-incoming': renderIncoming,
+    'log-fleet': renderFleet,
+    'log-schedule': renderDelivery,
+    'log-maintenance': renderVehicleLogs,
     'prod-jobcards': renderJobCards,
   };
 
