@@ -783,12 +783,12 @@
         <div>
           <div class="section-heading">Key Modules</div>
           <div class="card-grid">
-            <div class="card"><div class="card-icon">📥</div><div class="card-title">Accounts Receivable</div><div class="card-desc">Customer invoices, ageing, collections, bad debt.</div></div>
-            <div class="card"><div class="card-icon">📤</div><div class="card-title">Accounts Payable</div><div class="card-desc">Supplier invoices, payment runs, sub-ledger reconciliation.</div></div>
-            <div class="card"><div class="card-icon">🧾</div><div class="card-title">VAT Reconciliation</div><div class="card-desc">QBO vs KRA iTax across 12 monthly tabs.</div></div>
-            <div class="card"><div class="card-icon">💸</div><div class="card-title">Payroll</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. Permanent + casual splits.</div></div>
-            <div class="card"><div class="card-icon">📊</div><div class="card-title">Trial Balance</div><div class="card-desc">Monthly TB review, year-end close.</div></div>
-            <div class="card warn-accent"><div class="card-icon">⚠</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table covering AR/AP/VAT/TB.</div><span class="card-tag">29 items</span></div>
+            <div class="card" onclick="navigate('finance-ar')"><div class="card-icon">📥</div><div class="card-title">Accounts Receivable</div><div class="card-desc">Customer invoices, ageing, collections, bad debt.</div></div>
+            <div class="card" onclick="navigate('finance-ap')"><div class="card-icon">📤</div><div class="card-title">Accounts Payable</div><div class="card-desc">Supplier invoices, payment runs, sub-ledger reconciliation.</div></div>
+            <div class="card" onclick="navigate('finance-vat')"><div class="card-icon">🧾</div><div class="card-title">VAT Reconciliation</div><div class="card-desc">QBO vs KRA iTax across 12 monthly tabs.</div></div>
+            <div class="card" onclick="navigate('finance-payroll')"><div class="card-icon">💸</div><div class="card-title">Payroll</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. Permanent + casual splits.</div></div>
+            <div class="card" onclick="navigate('finance-tb')"><div class="card-icon">📊</div><div class="card-title">Trial Balance</div><div class="card-desc">Monthly TB review, year-end close.</div></div>
+            <div class="card warn-accent" onclick="navigate('finance-preaudit')"><div class="card-icon">⚠</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table covering AR/AP/VAT/TB.</div><span class="card-tag">29 items</span></div>
           </div>
         </div>
         <div>
@@ -827,12 +827,12 @@
       </div>
       <div class="section-heading">Sales Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">🛍️</div><div class="card-title">Sales Orders</div><div class="card-desc">Create + track SOs, delivery notes, invoices.</div></div>
-        <div class="card"><div class="card-icon">💳</div><div class="card-title">Collections Tracker</div><div class="card-desc">Weekly collections by rep with ageing/payment status.</div></div>
-        <div class="card"><div class="card-icon">📋</div><div class="card-title">Ageing Report</div><div class="card-desc">0–30, 31–60, 61–90, 90+ buckets per customer.</div></div>
-        <div class="card"><div class="card-icon">👤</div><div class="card-title">Customer 360</div><div class="card-desc">Outstanding, history, behaviour, contacts.</div></div>
-        <div class="card"><div class="card-icon">📊</div><div class="card-title">Rep Dashboard</div><div class="card-desc">Targets, actuals, collections, commission.</div></div>
-        <div class="card"><div class="card-icon">🏆</div><div class="card-title">Manager View</div><div class="card-desc">Cross-rep comparison, escalations.</div></div>
+        <div class="card" onclick="navigate('sales-orders')"><div class="card-icon">🛍️</div><div class="card-title">Sales Orders</div><div class="card-desc">Create + track SOs, delivery notes, invoices.</div></div>
+        <div class="card" onclick="navigate('sales-collections')"><div class="card-icon">💳</div><div class="card-title">Collections Tracker</div><div class="card-desc">Weekly collections by rep with ageing/payment status.</div></div>
+        <div class="card" onclick="navigate('sales-ageing')"><div class="card-icon">📋</div><div class="card-title">Ageing Report</div><div class="card-desc">0–30, 31–60, 61–90, 90+ buckets per customer.</div></div>
+        <div class="card" onclick="navigate('sales-customer360')"><div class="card-icon">👤</div><div class="card-title">Customer 360</div><div class="card-desc">Outstanding, history, behaviour, contacts.</div></div>
+        <div class="card" onclick="navigate('sales-rep-dash')"><div class="card-icon">📊</div><div class="card-title">Rep Dashboard</div><div class="card-desc">Targets, actuals, collections, commission.</div></div>
+        <div class="card" onclick="navigate('sales-mgr')"><div class="card-icon">🏆</div><div class="card-title">Manager View</div><div class="card-desc">Cross-rep comparison, escalations.</div></div>
       </div>
       <div class="section-heading">Ageing Summary</div>
       <div class="table-wrap">
@@ -861,10 +861,10 @@
         <div>
           <div class="section-heading">Procurement Modules</div>
           <div class="card-grid">
-            <div class="card"><div class="card-icon">📋</div><div class="card-title">Purchase Orders</div><div class="card-desc">Raise, approve, track POs against MR workflow.</div></div>
-            <div class="card"><div class="card-icon">🏪</div><div class="card-title">Supplier Register</div><div class="card-desc">Contact, banking, terms, performance.</div></div>
-            <div class="card"><div class="card-icon">✈️</div><div class="card-title">Importation SOP</div><div class="card-desc">Order → Shipment → Customs → Clearance → Stock.</div></div>
-            <div class="card"><div class="card-icon">📦</div><div class="card-title">Goods Receipt (GRN)</div><div class="card-desc">Receive against PO, QC, post to stock.</div></div>
+            <div class="card" onclick="navigate('proc-pos')"><div class="card-icon">📋</div><div class="card-title">Purchase Orders</div><div class="card-desc">Raise, approve, track POs against MR workflow.</div></div>
+            <div class="card" onclick="navigate('proc-suppliers')"><div class="card-icon">🏪</div><div class="card-title">Supplier Register</div><div class="card-desc">Contact, banking, terms, performance.</div></div>
+            <div class="card" onclick="navigate('proc-imports')"><div class="card-icon">✈️</div><div class="card-title">Importation SOP</div><div class="card-desc">Order → Shipment → Customs → Clearance → Stock.</div></div>
+            <div class="card" onclick="navigate('proc-grn')"><div class="card-icon">📦</div><div class="card-title">Goods Receipt (GRN)</div><div class="card-desc">Receive against PO, QC, post to stock.</div></div>
           </div>
         </div>
         <div>
@@ -911,12 +911,12 @@
       </div>
       <div class="section-heading">Production Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">📝</div><div class="card-title">Job Cards</div><div class="card-desc">CPS + Job Card. CP/Label/Carton variants.</div></div>
-        <div class="card"><div class="card-icon">📅</div><div class="card-title">Daily Plan</div><div class="card-desc">Plan vs Actual, 7 stations, A4 landscape.</div></div>
-        <div class="card"><div class="card-icon">⚙️</div><div class="card-title">Machine Register</div><div class="card-desc">Fixed assets + spares.</div></div>
-        <div class="card"><div class="card-icon">📈</div><div class="card-title">OEE Tracking</div><div class="card-desc">A × P × Q from Pi sensors.</div></div>
-        <div class="card"><div class="card-icon">🔁</div><div class="card-title">MRP / Reorder</div><div class="card-desc">Reorder, FIFO, capacity planning.</div></div>
-        <div class="card"><div class="card-icon">📊</div><div class="card-title">Variance Reports</div><div class="card-desc">Standard vs actual. TiDB nightly sync.</div></div>
+        <div class="card" onclick="navigate('prod-jobcards')"><div class="card-icon">📝</div><div class="card-title">Job Cards</div><div class="card-desc">CPS + Job Card. CP/Label/Carton variants.</div></div>
+        <div class="card" onclick="navigate('prod-plan')"><div class="card-icon">📅</div><div class="card-title">Daily Plan</div><div class="card-desc">Plan vs Actual, 7 stations, A4 landscape.</div></div>
+        <div class="card" onclick="navigate('prod-machines')"><div class="card-icon">⚙️</div><div class="card-title">Machine Register</div><div class="card-desc">Fixed assets + spares.</div></div>
+        <div class="card" onclick="navigate('prod-oee')"><div class="card-icon">📈</div><div class="card-title">OEE Tracking</div><div class="card-desc">A × P × Q from Pi sensors.</div></div>
+        <div class="card" onclick="navigate('prod-mrp')"><div class="card-icon">🔁</div><div class="card-title">MRP / Reorder</div><div class="card-desc">Reorder, FIFO, capacity planning.</div></div>
+        <div class="card" onclick="navigate('prod-variance')"><div class="card-icon">📊</div><div class="card-title">Variance Reports</div><div class="card-desc">Standard vs actual. TiDB nightly sync.</div></div>
       </div>
       <div class="section-heading">Active Job Cards</div>
       <div class="table-wrap">
@@ -945,10 +945,10 @@
         <div>
           <div class="section-heading">HR Modules</div>
           <div class="card-grid">
-            <div class="card"><div class="card-icon">👤</div><div class="card-title">Employee Records</div><div class="card-desc">Personal, dept, cost centre, terms.</div></div>
-            <div class="card"><div class="card-icon">💰</div><div class="card-title">Payroll Processing</div><div class="card-desc">Permanent + casual schedules. Piecework recon.</div></div>
-            <div class="card"><div class="card-icon">📅</div><div class="card-title">Leave Management</div><div class="card-desc">Annual, sick, maternity/paternity, unpaid.</div></div>
-            <div class="card"><div class="card-icon">📋</div><div class="card-title">Statutory Schedules</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. KRA recon.</div></div>
+            <div class="card" onclick="navigate('hr-employees')"><div class="card-icon">👤</div><div class="card-title">Employee Records</div><div class="card-desc">Personal, dept, cost centre, terms.</div></div>
+            <div class="card" onclick="navigate('hr-payroll')"><div class="card-icon">💰</div><div class="card-title">Payroll Processing</div><div class="card-desc">Permanent + casual schedules. Piecework recon.</div></div>
+            <div class="card" onclick="navigate('hr-leave')"><div class="card-icon">📅</div><div class="card-title">Leave Management</div><div class="card-desc">Annual, sick, maternity/paternity, unpaid.</div></div>
+            <div class="card" onclick="navigate('hr-statutory')"><div class="card-icon">📋</div><div class="card-title">Statutory Schedules</div><div class="card-desc">PAYE, NSSF, SHIF, Housing Levy. KRA recon.</div></div>
           </div>
         </div>
         <div>
@@ -980,10 +980,10 @@
       </div>
       <div class="section-heading">Quality Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">📋</div><div class="card-title">QC Checklists</div><div class="card-desc">Per-product checklists for label / CP / EB / carton.</div></div>
-        <div class="card"><div class="card-icon">📐</div><div class="card-title">Product Specifications</div><div class="card-desc">CPS doctype. GSM, dimensions, colour, substrate.</div></div>
-        <div class="card warn-accent"><div class="card-icon">⚠</div><div class="card-title">NCR Management</div><div class="card-desc">Root cause, corrective actions, closure.</div></div>
-        <div class="card"><div class="card-icon">🔬</div><div class="card-title">Incoming Inspection</div><div class="card-desc">Raw material on GRN. CB/CFB/CF grade verification.</div></div>
+        <div class="card" onclick="navigate('qual-checklists')"><div class="card-icon">📋</div><div class="card-title">QC Checklists</div><div class="card-desc">Per-product checklists for label / CP / EB / carton.</div></div>
+        <div class="card" onclick="navigate('qual-specs')"><div class="card-icon">📐</div><div class="card-title">Product Specifications</div><div class="card-desc">CPS doctype. GSM, dimensions, colour, substrate.</div></div>
+        <div class="card warn-accent" onclick="navigate('qual-ncr')"><div class="card-icon">⚠</div><div class="card-title">NCR Management</div><div class="card-desc">Root cause, corrective actions, closure.</div></div>
+        <div class="card" onclick="navigate('qual-incoming')"><div class="card-icon">🔬</div><div class="card-title">Incoming Inspection</div><div class="card-desc">Raw material on GRN. CB/CFB/CF grade verification.</div></div>
       </div>
       <div class="info-box">CPS link to Job Cards. CB/CFB/CF GSM rules and colour-of-parts logic enforced at JC creation. QC sign-off required before delivery note.</div>
     </div>
@@ -999,10 +999,10 @@
       </div>
       <div class="section-heading">Logistics Modules</div>
       <div class="card-grid">
-        <div class="card"><div class="card-icon">🚛</div><div class="card-title">Fleet Register</div><div class="card-desc">Vehicle details, insurance, schedules, drivers.</div></div>
-        <div class="card"><div class="card-icon">📍</div><div class="card-title">Track &amp; Trace</div><div class="card-desc">Daily emails parsed. Dashboard view.</div></div>
-        <div class="card"><div class="card-icon">🗓️</div><div class="card-title">Delivery Schedule</div><div class="card-desc">Plan and dispatch linked to SOs and job cards.</div></div>
-        <div class="card"><div class="card-icon">🔧</div><div class="card-title">Vehicle Maintenance</div><div class="card-desc">Service log, fuel, tyres, insurance renewals.</div></div>
+        <div class="card" onclick="navigate('log-fleet')"><div class="card-icon">🚛</div><div class="card-title">Fleet Register</div><div class="card-desc">Vehicle details, insurance, schedules, drivers.</div></div>
+        <div class="card" onclick="navigate('log-track')"><div class="card-icon">📍</div><div class="card-title">Track &amp; Trace</div><div class="card-desc">Daily emails parsed. Dashboard view.</div></div>
+        <div class="card" onclick="navigate('log-schedule')"><div class="card-icon">🗓️</div><div class="card-title">Delivery Schedule</div><div class="card-desc">Plan and dispatch linked to SOs and job cards.</div></div>
+        <div class="card" onclick="navigate('log-maintenance')"><div class="card-icon">🔧</div><div class="card-title">Vehicle Maintenance</div><div class="card-desc">Service log, fuel, tyres, insurance renewals.</div></div>
       </div>
       <div class="info-box">Track &amp; Trace dashboard ingests daily emails from web@trackntrace.co.ke. Handwritten delivery notes processed via Claude Vision OCR.</div>
     </div>
@@ -1083,12 +1083,12 @@
       <div class="info-box warn"><strong>29 pre-audit action items</strong> identified in the 2025 review — AR bad debt, AP sub-ledger, director payables, investments, VAT suspense, TB issues.</div>
       <div class="section-heading">Compliance Areas</div>
       <div class="card-grid">
-        <div class="card warn-accent"><div class="card-icon">⚠</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table. Needs formal Notion project + assignments.</div><span class="card-tag">29 items</span></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">🧾</div><div class="card-title">VAT Filing</div><div class="card-desc">Monthly by 20th. QBO vs iTax. Suspense clearance.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">📁</div><div class="card-title">Monthly Close</div><div class="card-desc">Monthly + year-end checklists per Kenyan statutory.</div></div>
-        <div class="card" onclick="navigate('finance')"><div class="card-icon">💼</div><div class="card-title">Corporate Tax</div><div class="card-desc">Return due June 30. Instalment schedule.</div></div>
-        <div class="card" onclick="navigate('hr')"><div class="card-icon">👥</div><div class="card-title">Employment Compliance</div><div class="card-desc">NSSF/SHIF/PAYE/Housing. Casual contracts.</div></div>
-        <div class="card"><div class="card-icon">📜</div><div class="card-title">Business Permits</div><div class="card-desc">Nairobi County, NEMA, fire safety renewals.</div></div>
+        <div class="card warn-accent" onclick="navigate('comp-preaudit')"><div class="card-icon">⚠</div><div class="card-title">Pre-Audit Actions</div><div class="card-desc">29-item action table. Needs formal Notion project + assignments.</div><span class="card-tag">29 items</span></div>
+        <div class="card" onclick="navigate('comp-vat')"><div class="card-icon">🧾</div><div class="card-title">VAT Filing</div><div class="card-desc">Monthly by 20th. QBO vs iTax. Suspense clearance.</div></div>
+        <div class="card" onclick="navigate('comp-close')"><div class="card-icon">📁</div><div class="card-title">Monthly Close</div><div class="card-desc">Monthly + year-end checklists per Kenyan statutory.</div></div>
+        <div class="card" onclick="navigate('comp-corp')"><div class="card-icon">💼</div><div class="card-title">Corporate Tax</div><div class="card-desc">Return due June 30. Instalment schedule.</div></div>
+        <div class="card" onclick="navigate('comp-employment')"><div class="card-icon">👥</div><div class="card-title">Employment Compliance</div><div class="card-desc">NSSF/SHIF/PAYE/Housing. Casual contracts.</div></div>
+        <div class="card" onclick="navigate('comp-permits')"><div class="card-icon">📜</div><div class="card-title">Business Permits</div><div class="card-desc">Nairobi County, NEMA, fire safety renewals.</div></div>
       </div>
     </div>
 
@@ -1224,6 +1224,296 @@
       <div class="info-box">All testing pages live as sub-pages under <strong>PRJ-8 | VCL UI — Unified Employee Portal</strong> in the Notion Projects DB. The full v4 plan (data contracts per section, build sequencing) is also a sub-page there.</div>
     </div>
 
+    <!-- ────────────── SUB-PAGES ────────────── -->
+
+    <!-- ── SALES SUB-PAGES ── -->
+    <div id="page-sales-orders" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Sales Orders</h1><p>Open SOs, drafts, fulfilment status, and the create-SO workflow.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Open</div><div class="stat-value">23</div><div class="stat-change">All reps</div></div><div class="stat-card warning"><div class="stat-label">Awaiting Artwork</div><div class="stat-value">5</div><div class="stat-change warn">Blocking JC</div></div><div class="stat-card"><div class="stat-label">Created MTD</div><div class="stat-value">68</div><div class="stat-change">↑ 14%</div></div></div>
+      <div style="margin:14px 0"><button class="btn btn-primary">+ New Sales Order</button></div>
+      <div class="table-wrap"><table><thead><tr><th>SO No.</th><th>Customer</th><th>Value (KSh)</th><th>Status</th><th>Rep</th></tr></thead><tbody>
+        <tr><td>SO-2026-00328</td><td>Mwangi Stationery</td><td>412,500</td><td><span class="badge badge-amber">Pending Approval</span></td><td>Joan</td></tr>
+        <tr><td>SO-2026-00327</td><td>Bidco Africa</td><td>1,840,000</td><td><span class="badge badge-blue">Confirmed</span></td><td>Joyce</td></tr>
+        <tr><td>SO-2026-00326</td><td>Equity Printing</td><td>620,000</td><td><span class="badge badge-amber">Awaiting Artwork</span></td><td>Raheel</td></tr>
+        <tr><td>SO-2026-00325</td><td>Lake Basin Supplies</td><td>185,000</td><td><span class="badge badge-green">In Production</span></td><td>Joan</td></tr>
+      </tbody></table></div>
+      <div class="info-box">Mock. ERPNext: <code>Sales Order</code> with sales_person scope. API: <code>vcl_portal.api.get_open_sales_orders(filters)</code>.</div>
+    </div>
+
+    <div id="page-sales-collections" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Collections Tracker</h1><p>Weekly follow-up workflow for outstanding receivables by sales rep.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Total Overdue</div><div class="stat-value">KSh 2.1M</div><div class="stat-change warn">Needs action</div></div><div class="stat-card"><div class="stat-label">Promises This Wk</div><div class="stat-value">8</div><div class="stat-change">From follow-ups</div></div><div class="stat-card positive"><div class="stat-label">Collected Wk</div><div class="stat-value">KSh 740K</div><div class="stat-change">Above target</div></div></div>
+      <div style="margin:14px 0;display:flex;gap:8px"><button class="btn btn-primary">+ Log Follow-Up</button><button class="btn btn-outline">+ Payment Promise</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Outstanding</th><th>Last Contact</th><th>Next Action</th><th>Rep</th></tr></thead><tbody>
+        <tr><td>Equity Printing Ltd</td><td>KSh 660,000</td><td>Yesterday</td><td>Call MD by 30 Apr</td><td>Raheel</td></tr>
+        <tr><td>Nairobi Schools Board</td><td>KSh 760,000</td><td>3 days ago</td><td>Email reminder</td><td>Joyce</td></tr>
+        <tr><td>Lake Basin Supplies</td><td>KSh 270,000</td><td>1 week ago</td><td>Site visit</td><td>Joan</td></tr>
+      </tbody></table></div>
+      <div class="info-box">Mock. Custom doctypes from vcl_sales_dashboard: <code>Collections Follow Up</code>, <code>Collections Submission</code>. API: <code>vcl_portal.api.log_follow_up()</code>.</div>
+    </div>
+
+    <div id="page-sales-ageing" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Ageing Report</h1><p>AR ageing across 0–30, 31–60, 61–90, and 90+ day buckets per customer.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Total AR</div><div class="stat-value">KSh 8.4M</div><div class="stat-change">147 customers</div></div><div class="stat-card warning"><div class="stat-label">31–90 Days</div><div class="stat-value">KSh 3.8M</div><div class="stat-change warn">45% of AR</div></div><div class="stat-card critical"><div class="stat-label">90+ Days</div><div class="stat-value">KSh 720K</div><div class="stat-change down">Bad debt risk</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Bucket</th><th>Amount (KSh)</th><th>% of AR</th><th># Customers</th></tr></thead><tbody>
+        <tr><td>0–30 days</td><td>3,920,000</td><td>47%</td><td>89</td></tr>
+        <tr><td>31–60 days</td><td>2,420,000</td><td>29%</td><td>34</td></tr>
+        <tr><td>61–90 days</td><td>1,340,000</td><td>16%</td><td>18</td></tr>
+        <tr><td>90+ days</td><td>720,000</td><td>8%</td><td>6</td></tr>
+      </tbody></table></div>
+      <div class="info-box">Mock. ERPNext: <code>Sales Invoice</code> outstanding_amount grouped by customer + bucket. API: <code>vcl_portal.api.get_ageing_summary(grouping='bucket')</code>.</div>
+    </div>
+
+    <div id="page-sales-customer360" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Customer 360</h1><p>Full customer profile: outstanding, order history, payment behaviour, contacts.</p></div>
+      <input type="text" class="sop-search" placeholder="Search customer by name or code…">
+      <div class="card-grid card-grid-3">
+        <div class="card"><div class="card-title">Mwangi Stationery</div><div class="card-desc">Outstanding KSh 200K · 24 SOs YTD · Pays in ~28 days · Rep: Joan</div></div>
+        <div class="card"><div class="card-title">Bidco Africa</div><div class="card-desc">Outstanding KSh 0 · 89 SOs YTD · Pays in ~14 days · Rep: Joyce</div></div>
+        <div class="card"><div class="card-title">Equity Printing</div><div class="card-desc">Outstanding KSh 660K · 12 SOs YTD · Pays in ~78 days · Rep: Raheel</div></div>
+      </div>
+      <div class="info-box">Mock. ERPNext: <code>Customer</code> + <code>Sales Invoice</code> + <code>Payment Entry</code> joined. API: <code>vcl_portal.api.get_customer_360(customer)</code>.</div>
+    </div>
+
+    <div id="page-sales-rep-dash" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Rep Dashboard</h1><p>Per-rep performance: targets, actuals, collections, commission tracking.</p></div>
+      <div class="table-wrap"><table><thead><tr><th>Rep</th><th>Target (KSh)</th><th>Actual MTD</th><th>%</th><th>Collections</th></tr></thead><tbody>
+        <tr><td>Joan Mwangi</td><td>1,500,000</td><td>1,420,000</td><td><span class="badge badge-amber">95%</span></td><td>KSh 380K</td></tr>
+        <tr><td>Joyce Otieno</td><td>1,500,000</td><td>1,820,000</td><td><span class="badge badge-green">121%</span></td><td>KSh 510K</td></tr>
+        <tr><td>Raheel Ahmed</td><td>1,200,000</td><td>980,000</td><td><span class="badge badge-amber">82%</span></td><td>KSh 250K</td></tr>
+      </tbody></table></div>
+      <div class="info-box">Mock. ERPNext: <code>Sales Order</code> + <code>Sales Person</code> + custom <code>Sales Target</code>. API: <code>vcl_portal.api.get_rep_performance(period)</code>.</div>
+    </div>
+
+    <div id="page-sales-mgr" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Manager View</h1><p>Cross-rep comparison, territory management, and escalations.</p></div>
+      <div class="stat-strip"><div class="stat-card positive"><div class="stat-label">Team MTD</div><div class="stat-value">KSh 4.2M</div><div class="stat-change">↑ 8% vs target</div></div><div class="stat-card warning"><div class="stat-label">Escalations</div><div class="stat-value">2</div><div class="stat-change warn">Needs your call</div></div><div class="stat-card"><div class="stat-label">Pipeline</div><div class="stat-value">KSh 6.8M</div><div class="stat-change">31 active SOs</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Sales Person</code> hierarchy + aggregations. API: <code>vcl_portal.api.get_team_performance()</code>.</div>
+    </div>
+
+    <!-- ── FINANCE SUB-PAGES ── -->
+    <div id="page-finance-ar" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Receivable</h1><p>Customer invoices, ageing, collections workflow, bad-debt provisioning.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Total AR</div><div class="stat-value">KSh 8.4M</div><div class="stat-change warn">↑ 12% MoM</div></div><div class="stat-card warning"><div class="stat-label">Overdue</div><div class="stat-value">KSh 2.1M</div><div class="stat-change warn">25% of AR</div></div><div class="stat-card critical"><div class="stat-label">Bad Debt Provision</div><div class="stat-value">KSh 720K</div><div class="stat-change down">90+ days</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Sales Invoice</code> outstanding_amount + <code>Customer</code>. API: <code>vcl_portal.api.get_ar_summary()</code>.</div>
+    </div>
+
+    <div id="page-finance-ap" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Payable</h1><p>Supplier invoices, payment runs, sub-ledger reconciliation, director payables.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Total AP</div><div class="stat-value">KSh 3.2M</div><div class="stat-change">↓ 5% MoM</div></div><div class="stat-card warning"><div class="stat-label">Due This Wk</div><div class="stat-value">KSh 1.4M</div><div class="stat-change warn">14 invoices</div></div><div class="stat-card"><div class="stat-label">Director Payables</div><div class="stat-value">KSh 480K</div><div class="stat-change">Tracked separately</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Purchase Invoice</code> + <code>Payment Entry</code> workflow. API: <code>vcl_portal.api.get_ap_summary()</code>.</div>
+    </div>
+
+    <div id="page-finance-vat" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>VAT Reconciliation</h1><p>QBO vs KRA iTax comparison across 12 monthly tabs. Habo, Awanad, local suppliers.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">VAT Payable</div><div class="stat-value">KSh 420K</div><div class="stat-change warn">Due 20th</div></div><div class="stat-card"><div class="stat-label">Output VAT MTD</div><div class="stat-value">KSh 720K</div><div class="stat-change">From sales</div></div><div class="stat-card"><div class="stat-label">Input VAT MTD</div><div class="stat-value">KSh 300K</div><div class="stat-change">From purchases</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Sales Invoice</code> + <code>Purchase Invoice</code> tax tables, plus QBO ledger. API: <code>vcl_portal.api.get_vat_payable_for_period(start, end)</code>.</div>
+    </div>
+
+    <div id="page-finance-payroll" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Payroll</h1><p>PAYE, NSSF, SHIF, Housing Levy. Permanent and casual worker splits.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Headcount</div><div class="stat-value">~120</div><div class="stat-change">78 perm + 42 casual</div></div><div class="stat-card"><div class="stat-label">March Net</div><div class="stat-value">KSh 4.6M</div><div class="stat-change">Filed 9 Apr</div></div><div class="stat-card warning"><div class="stat-label">April Run</div><div class="stat-value">In Progress</div><div class="stat-change warn">Due 9 May</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Payroll Entry</code> + <code>Salary Slip</code>. API: <code>vcl_portal.api.get_payroll_summary(month)</code>.</div>
+    </div>
+
+    <div id="page-finance-tb" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Trial Balance</h1><p>Monthly TB review, year-end close, statutory financial preparation.</p></div>
+      <div class="stat-strip"><div class="stat-card positive"><div class="stat-label">March TB</div><div class="stat-value">Balanced</div><div class="stat-change">As at 31 Mar</div></div><div class="stat-card"><div class="stat-label">YTD Net</div><div class="stat-value">KSh 12.4M</div><div class="stat-change">Pre-tax</div></div><div class="stat-card warning"><div class="stat-label">Year-End</div><div class="stat-value">Dec 31</div><div class="stat-change warn">8 mo to close</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>GL Entry</code> aggregations per <code>Account</code>. Standard ERPNext Trial Balance report.</div>
+    </div>
+
+    <div id="page-finance-preaudit" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Pre-Audit Actions</h1><p>29 items identified in 2025 financial review covering AR, AP, VAT suspense, investments, and TB issues.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Total Items</div><div class="stat-value">29</div><div class="stat-change warn">Open</div></div><div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value">7</div><div class="stat-change">Assigned</div></div><div class="stat-card"><div class="stat-label">Closed</div><div class="stat-value">3</div><div class="stat-change">Of 29</div></div></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Area</th><th>Item</th><th>Owner</th><th>Status</th></tr></thead><tbody>
+        <tr><td>01</td><td>AR</td><td>Bad debt provision review for 90+ accounts</td><td>Radhika</td><td><span class="badge badge-amber">In Progress</span></td></tr>
+        <tr><td>02</td><td>AP</td><td>Sub-ledger reconciliation gap (KSh 180K variance)</td><td>Radhika</td><td><span class="badge badge-grey">Open</span></td></tr>
+        <tr><td>03</td><td>Director</td><td>Director payables documentation</td><td>Tanuj</td><td><span class="badge badge-amber">In Progress</span></td></tr>
+        <tr><td>04</td><td>Investments</td><td>Long-term investments documentation</td><td>Tanuj</td><td><span class="badge badge-grey">Open</span></td></tr>
+        <tr><td>05</td><td>VAT</td><td>VAT suspense account clearance</td><td>Radhika</td><td><span class="badge badge-amber">In Progress</span></td></tr>
+        <tr><td colspan="5" style="text-align:center;color:var(--text-muted)">… 24 more items</td></tr>
+      </tbody></table></div>
+      <div class="info-box warn">Recommended: build a custom <code>Pre Audit Action</code> doctype to replace Excel tracking. API: <code>vcl_portal.api.get_pre_audit_actions(status='Open')</code>.</div>
+    </div>
+
+    <!-- ── PROCUREMENT SUB-PAGES ── -->
+    <div id="page-proc-pos" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Purchase Orders</h1><p>Raise, approve, and track POs. Linked to Material Request workflow.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Open POs</div><div class="stat-value">14</div><div class="stat-change">↑ 3 this week</div></div><div class="stat-card warning"><div class="stat-label">Pending Approval</div><div class="stat-value">2</div><div class="stat-change warn">Above threshold</div></div><div class="stat-card"><div class="stat-label">Created MTD</div><div class="stat-value">38</div><div class="stat-change">↑ 6%</div></div></div>
+      <div style="margin:14px 0"><button class="btn btn-primary">+ New PO</button></div>
+      <div class="info-box">Mock. ERPNext: <code>Purchase Order</code> + <code>Material Request</code>. API: standard ERPNext.</div>
+    </div>
+
+    <div id="page-proc-suppliers" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Supplier Register</h1><p>Supplier database — contact, banking, credit terms, performance ratings.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Active Suppliers</div><div class="stat-value">38</div><div class="stat-change">All categories</div></div><div class="stat-card"><div class="stat-label">Top 5 Spend</div><div class="stat-value">68%</div><div class="stat-change">Of MTD</div></div><div class="stat-card warning"><div class="stat-label">Overdue Reviews</div><div class="stat-value">6</div><div class="stat-change warn">Need annual check</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Supplier</code>. API: standard ERPNext.</div>
+    </div>
+
+    <div id="page-proc-imports" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Importation Tracker</h1><p>Five-stage import lifecycle: Order → Shipment → Customs → Clearance → Stock.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">In Transit</div><div class="stat-value">2</div><div class="stat-change">Habo + Awanad</div></div><div class="stat-card warning"><div class="stat-label">At Customs</div><div class="stat-value">1</div><div class="stat-change warn">3 days at port</div></div><div class="stat-card positive"><div class="stat-label">Cleared MTD</div><div class="stat-value">3</div><div class="stat-change">All on time</div></div></div>
+      <div class="info-box">Mock. Custom: <code>vcl_importation</code> tracker. Excel at \\finance\apps\06. DATA\Imports.</div>
+    </div>
+
+    <div id="page-proc-grn" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Goods Receipt (GRN)</h1><p>Receive goods against PO, quality check, and post to stock.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Pending GRNs</div><div class="stat-value">6</div><div class="stat-change warn">Awaiting receipt</div></div><div class="stat-card positive"><div class="stat-label">Posted MTD</div><div class="stat-value">32</div><div class="stat-change">100% quality pass</div></div><div class="stat-card"><div class="stat-label">Avg PO→GRN</div><div class="stat-value">18 d</div><div class="stat-change">Local + import blend</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Purchase Receipt</code>. API: standard ERPNext.</div>
+    </div>
+
+    <!-- ── PRODUCTION SUB-PAGES ── -->
+    <div id="page-prod-jobcards" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>Job Cards</h1><p>CP / Label / Carton variants. Customer Product Spec + Job Card workflow.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Active</div><div class="stat-value">8</div><div class="stat-change">All depts</div></div><div class="stat-card warning"><div class="stat-label">Pending QC</div><div class="stat-value">3</div><div class="stat-change warn">Block delivery</div></div><div class="stat-card positive"><div class="stat-label">Closed MTD</div><div class="stat-value">142</div><div class="stat-change">↑ 9%</div></div></div>
+      <div style="margin:14px 0;display:flex;gap:8px"><button class="btn btn-primary">+ Job Card Label</button><button class="btn btn-outline">+ JC Computer Paper</button></div>
+      <div class="info-box">Mock. ERPNext: custom <code>Job Card Label</code> / <code>Job Card CP</code> / <code>Job Card Carton</code> (vcl_job_cards). plate_status='Old' needs non-empty plate_code; 'New' needs empty.</div>
+    </div>
+
+    <div id="page-prod-plan" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>Daily Production Plan</h1><p>Plan vs Actual HTML report for 7 stations. A4 landscape, downloadable.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Stations</div><div class="stat-value">7</div><div class="stat-change">Active today</div></div><div class="stat-card warning"><div class="stat-label">Behind Plan</div><div class="stat-value">2</div><div class="stat-change warn">CP3, L2</div></div><div class="stat-card positive"><div class="stat-label">Ahead Plan</div><div class="stat-value">3</div><div class="stat-change">EB1, EB5, L4</div></div></div>
+      <div class="info-box">Mock. Custom: <code>production_log</code> Daily Schedule report. n8n daily reminder cron.</div>
+    </div>
+
+    <div id="page-prod-machines" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>Machine Register</h1><p>Fixed assets machine register with spares tracking.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Machines</div><div class="stat-value">21</div><div class="stat-change">All depts</div></div><div class="stat-card positive"><div class="stat-label">In Service</div><div class="stat-value">19</div><div class="stat-change">90% uptime</div></div><div class="stat-card warning"><div class="stat-label">Maintenance Due</div><div class="stat-value">4</div><div class="stat-change warn">Within 2 weeks</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Workstation</code> + custom fields (max_speed_per_hour, location_note, product_line).</div>
+    </div>
+
+    <div id="page-prod-oee" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>OEE Tracking</h1><p>Availability × Performance × Quality per machine. Raspberry Pi IR sensor data.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Today OEE</div><div class="stat-value">74%</div><div class="stat-change warn">Target: 85%</div></div><div class="stat-card"><div class="stat-label">Availability</div><div class="stat-value">88%</div><div class="stat-change">Above target</div></div><div class="stat-card"><div class="stat-label">Performance</div><div class="stat-value">92%</div><div class="stat-change">On par</div></div></div>
+      <div class="info-box">Mock. Pi sensors → TiDB → API. Composite from Stock Entry + Workstation + Quality Inspection.</div>
+    </div>
+
+    <div id="page-prod-mrp" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>MRP / Reorder</h1><p>Reorder logic, reel-level FIFO, and capacity planning for corrugation department.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Below Reorder</div><div class="stat-value">12</div><div class="stat-change warn">Materials</div></div><div class="stat-card"><div class="stat-label">Open MRs</div><div class="stat-value">7</div><div class="stat-change">From auto-trigger</div></div><div class="stat-card"><div class="stat-label">Capacity Wk</div><div class="stat-value">82%</div><div class="stat-change">Within tolerance</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Bin</code> + <code>Item.reorder_level</code> + <code>Material Request</code>.</div>
+    </div>
+
+    <div id="page-prod-variance" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('production')">← Back to Production</span> · Module</div><h1>Variance Reports</h1><p>Standard vs actual costing variance. TiDB nightly sync. n8n daily reminder.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Material Variance</div><div class="stat-value">+3.2%</div><div class="stat-change warn">Above standard</div></div><div class="stat-card positive"><div class="stat-label">Labour Variance</div><div class="stat-value">-1.4%</div><div class="stat-change">Better than std</div></div><div class="stat-card"><div class="stat-label">Overhead</div><div class="stat-value">±0.8%</div><div class="stat-change">Within tolerance</div></div></div>
+      <div class="info-box">Mock. TiDB warehouse: standard cost vs <code>Stock Entry</code> + <code>Job Card</code> actuals.</div>
+    </div>
+
+    <!-- ── HR SUB-PAGES ── -->
+    <div id="page-hr-employees" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Employee Records</h1><p>Personal details, department, cost centre allocation, employment terms.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">~120</div><div class="stat-change">Active</div></div><div class="stat-card"><div class="stat-label">New (MTD)</div><div class="stat-value">3</div><div class="stat-change">Joiners</div></div><div class="stat-card warning"><div class="stat-label">Exits (MTD)</div><div class="stat-value">2</div><div class="stat-change warn">Includes 1 casual</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Employee</code> grouped by department, status, employment_type.</div>
+    </div>
+
+    <div id="page-hr-payroll" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Payroll Processing</h1><p>Separate permanent and casual payroll schedules. Piecework reconciliation for production.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Permanent Pay Run</div><div class="stat-value">9th</div><div class="stat-change">Monthly</div></div><div class="stat-card"><div class="stat-label">Casual Pay Run</div><div class="stat-value">Weekly</div><div class="stat-change">Fri</div></div><div class="stat-card warning"><div class="stat-label">April Status</div><div class="stat-value">In Progress</div><div class="stat-change warn">Awaiting timesheet</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Payroll Entry</code> + <code>Salary Slip</code> for permanent. Casual via piecework reconciled vs Job Cards.</div>
+    </div>
+
+    <div id="page-hr-leave" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Leave Management</h1><p>Annual, sick, maternity/paternity, unpaid leave tracking + approvals.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">On Leave Today</div><div class="stat-value">5</div><div class="stat-change">Out of office</div></div><div class="stat-card warning"><div class="stat-label">Pending Approval</div><div class="stat-value">3</div><div class="stat-change warn">Oldest 2 d</div></div><div class="stat-card"><div class="stat-label">YTD Used</div><div class="stat-value">~38%</div><div class="stat-change">Of allowance</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Leave Application</code> + <code>Leave Allocation</code>. API: <code>vcl_portal.api.get_pending_leave_approvals()</code>.</div>
+    </div>
+
+    <div id="page-hr-statutory" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Statutory Schedules</h1><p>PAYE, NSSF, SHIF, Housing Levy. Reconciliation against KRA portal.</p></div>
+      <div class="table-wrap"><table><thead><tr><th>Filing</th><th>Employee</th><th>Employer</th><th>Due</th><th>Status</th></tr></thead><tbody>
+        <tr><td>PAYE</td><td>Graduated</td><td>—</td><td>9th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
+        <tr><td>NSSF</td><td>KSh 200</td><td>KSh 200</td><td>15th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
+        <tr><td>SHIF</td><td>2.75%</td><td>—</td><td>15th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
+        <tr><td>Housing Levy</td><td>1.5%</td><td>1.5%</td><td>9th</td><td><span class="badge badge-green">Filed Apr</span></td></tr>
+      </tbody></table></div>
+      <div class="info-box">Mock. ERPNext: <code>Salary Slip</code> deductions + custom statutory tracker.</div>
+    </div>
+
+    <!-- ── QUALITY SUB-PAGES ── -->
+    <div id="page-qual-checklists" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>QC Checklists</h1><p>Per-product checklists for labels, computer paper, exercise books, and cartons.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Pending</div><div class="stat-value">3</div><div class="stat-change warn">Awaiting sign-off</div></div><div class="stat-card positive"><div class="stat-label">Pass Rate</div><div class="stat-value">97.4%</div><div class="stat-change">This month</div></div><div class="stat-card"><div class="stat-label">Inspections MTD</div><div class="stat-value">142</div><div class="stat-change">Across all CCs</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Quality Inspection</code> + <code>Quality Inspection Reading</code>.</div>
+    </div>
+
+    <div id="page-qual-specs" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Product Specifications</h1><p>Customer Product Specification doctype. GSM, dimensions, colour, substrate.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Active CPS</div><div class="stat-value">~480</div><div class="stat-change">Live specs</div></div><div class="stat-card"><div class="stat-label">Created MTD</div><div class="stat-value">12</div><div class="stat-change">From new SOs</div></div></div>
+      <div class="info-box">Mock. Custom: <code>Customer Product Specification</code> (vcl_job_cards). Created inline by JCL if missing.</div>
+    </div>
+
+    <div id="page-qual-ncr" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>NCR Management</h1><p>Non-conformance reports, root-cause analysis, corrective actions, closure tracking.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Open NCRs</div><div class="stat-value">2</div><div class="stat-change warn">In root-cause</div></div><div class="stat-card positive"><div class="stat-label">Closed MTD</div><div class="stat-value">5</div><div class="stat-change">Avg 4 d to close</div></div><div class="stat-card"><div class="stat-label">Repeat Issues</div><div class="stat-value">1</div><div class="stat-change">Same root cause</div></div></div>
+      <div class="info-box warn">Recommended: build custom <code>NCR</code> doctype if not using <code>Issue</code>. API: <code>vcl_portal.api.raise_ncr(payload)</code>.</div>
+    </div>
+
+    <div id="page-qual-incoming" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Incoming Inspection</h1><p>Raw material inspection on GRN. Carbonless paper CB/CFB/CF grade verification.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value">6</div><div class="stat-change">GRNs to inspect</div></div><div class="stat-card positive"><div class="stat-label">Pass Rate</div><div class="stat-value">99%</div><div class="stat-change">Suppliers reliable</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Quality Inspection</code> on incoming <code>Purchase Receipt</code>.</div>
+    </div>
+
+    <!-- ── LOGISTICS SUB-PAGES ── -->
+    <div id="page-log-fleet" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Fleet Register</h1><p>Vehicle details, registration, insurance, service schedules, driver assignments.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Vehicles</div><div class="stat-value">6</div><div class="stat-change">All categories</div></div><div class="stat-card warning"><div class="stat-label">Insurance Renewal</div><div class="stat-value">2</div><div class="stat-change warn">Within 30 d</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Vehicle</code> + <code>Vehicle Log</code>.</div>
+    </div>
+
+    <div id="page-log-track" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Track &amp; Trace</h1><p>Daily Track &amp; Trace emails parsed from web@trackntrace.co.ke. Dashboard view.</p></div>
+      <div class="stat-strip"><div class="stat-card positive"><div class="stat-label">Live Vehicles</div><div class="stat-value">5</div><div class="stat-change">Reporting OK</div></div><div class="stat-card warning"><div class="stat-label">Stale Reports</div><div class="stat-value">1</div><div class="stat-change warn">No update 2h</div></div></div>
+      <div class="info-box">Mock. External: daily emails from web@trackntrace.co.ke parsed via n8n.</div>
+    </div>
+
+    <div id="page-log-schedule" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Delivery Schedule</h1><p>Plan and dispatch deliveries linked to completed sales orders and job cards.</p></div>
+      <div class="stat-strip"><div class="stat-card"><div class="stat-label">Today</div><div class="stat-value">4</div><div class="stat-change">Scheduled</div></div><div class="stat-card positive"><div class="stat-label">Completed MTD</div><div class="stat-value">89</div><div class="stat-change">↑ 6%</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Delivery Note</code> + custom dispatch scheduler.</div>
+    </div>
+
+    <div id="page-log-maintenance" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Vehicle Maintenance</h1><p>Service log, fuel consumption, tyre replacements, insurance renewals.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">In Service</div><div class="stat-value">1</div><div class="stat-change warn">3-day repair</div></div><div class="stat-card"><div class="stat-label">Fuel Spend MTD</div><div class="stat-value">KSh 380K</div><div class="stat-change">14% of opex</div></div></div>
+      <div class="info-box">Mock. ERPNext: <code>Vehicle Log</code>.</div>
+    </div>
+
+    <!-- ── COMPLIANCE SUB-PAGES ── -->
+    <div id="page-comp-preaudit" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('compliance')">← Back to Compliance</span> · Module</div><h1>Pre-Audit Actions</h1><p>29-item action table covering AR, AP, VAT suspense, investments, TB issues.</p></div>
+      <div class="info-box warn">Same content as <span style="cursor:pointer;text-decoration:underline" onclick="navigate('finance-preaudit')">Finance → Pre-Audit Actions</span>. Linked from both desks.</div>
+    </div>
+
+    <div id="page-comp-vat" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('compliance')">← Back to Compliance</span> · Module</div><h1>VAT Filing</h1><p>Monthly VAT return by 20th. QBO vs iTax reconciliation. Suspense account clearance.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Due</div><div class="stat-value">20 May</div><div class="stat-change warn">Review Apr</div></div><div class="stat-card"><div class="stat-label">Last Filed</div><div class="stat-value">20 Apr</div><div class="stat-change">For Mar period</div></div></div>
+      <div class="info-box">Mock. KRA iTax + QBO + ERPNext tax tables.</div>
+    </div>
+
+    <div id="page-comp-close" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('compliance')">← Back to Compliance</span> · Module</div><h1>Monthly Close Checklist</h1><p>Monthly and year-end checklists aligned to Kenyan statutory requirements.</p></div>
+      <div class="info-box">Mock. Recommended: custom <code>Month End Checklist</code> doctype with auto-generated tasks per month.</div>
+    </div>
+
+    <div id="page-comp-corp" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('compliance')">← Back to Compliance</span> · Module</div><h1>Corporate Tax</h1><p>Corporation tax return due June 30. Instalment tax schedule.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Annual Return</div><div class="stat-value">June 30</div><div class="stat-change warn">2 months</div></div><div class="stat-card"><div class="stat-label">Instalments</div><div class="stat-value">Quarterly</div><div class="stat-change">On schedule</div></div></div>
+      <div class="info-box">Mock. KRA portal + <code>Journal Entry</code> for tax accruals.</div>
+    </div>
+
+    <div id="page-comp-employment" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('compliance')">← Back to Compliance</span> · Module</div><h1>Employment Compliance</h1><p>NSSF, SHIF, PAYE, Housing Levy. Employment Act compliance. Casual worker contracts.</p></div>
+      <div class="info-box">Mock. ERPNext: <code>Employee</code> + statutory deductions + custom Employment Contract tracker.</div>
+    </div>
+
+    <div id="page-comp-permits" class="page">
+      <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('compliance')">← Back to Compliance</span> · Module</div><h1>Business Permits</h1><p>Nairobi County business permit, NEMA, fire safety certificate renewals.</p></div>
+      <div class="stat-strip"><div class="stat-card warning"><div class="stat-label">Renewals Due</div><div class="stat-value">2</div><div class="stat-change warn">Within 60 d</div></div><div class="stat-card"><div class="stat-label">Active Permits</div><div class="stat-value">7</div><div class="stat-change">All statutory</div></div></div>
+      <div class="info-box warn">Recommended: custom <code>Business Permit Renewal</code> doctype with auto-reminder cron.</div>
+    </div>
+
   </main>
 </div>
 
@@ -1247,6 +1537,46 @@
     projects: 'Projects',
     compliance: 'Compliance',
     testing: 'Testing',
+    'sales-orders': 'Sales · Orders',
+    'sales-collections': 'Sales · Collections Tracker',
+    'sales-ageing': 'Sales · Ageing Report',
+    'sales-customer360': 'Sales · Customer 360',
+    'sales-rep-dash': 'Sales · Rep Dashboard',
+    'sales-mgr': 'Sales · Manager View',
+    'finance-ar': 'Finance · AR',
+    'finance-ap': 'Finance · AP',
+    'finance-vat': 'Finance · VAT Recon',
+    'finance-payroll': 'Finance · Payroll',
+    'finance-tb': 'Finance · Trial Balance',
+    'finance-preaudit': 'Finance · Pre-Audit Actions',
+    'proc-pos': 'Procurement · POs',
+    'proc-suppliers': 'Procurement · Suppliers',
+    'proc-imports': 'Procurement · Importation',
+    'proc-grn': 'Procurement · GRN',
+    'prod-jobcards': 'Production · Job Cards',
+    'prod-plan': 'Production · Daily Plan',
+    'prod-machines': 'Production · Machines',
+    'prod-oee': 'Production · OEE',
+    'prod-mrp': 'Production · MRP',
+    'prod-variance': 'Production · Variance',
+    'hr-employees': 'HR · Employees',
+    'hr-payroll': 'HR · Payroll',
+    'hr-leave': 'HR · Leave',
+    'hr-statutory': 'HR · Statutory',
+    'qual-checklists': 'Quality · Checklists',
+    'qual-specs': 'Quality · Specifications',
+    'qual-ncr': 'Quality · NCRs',
+    'qual-incoming': 'Quality · Incoming Inspection',
+    'log-fleet': 'Logistics · Fleet',
+    'log-track': 'Logistics · Track & Trace',
+    'log-schedule': 'Logistics · Delivery Schedule',
+    'log-maintenance': 'Logistics · Maintenance',
+    'comp-preaudit': 'Compliance · Pre-Audit',
+    'comp-vat': 'Compliance · VAT',
+    'comp-close': 'Compliance · Monthly Close',
+    'comp-corp': 'Compliance · Corporate Tax',
+    'comp-employment': 'Compliance · Employment',
+    'comp-permits': 'Compliance · Permits',
   };
 
   function navigate(id) {
