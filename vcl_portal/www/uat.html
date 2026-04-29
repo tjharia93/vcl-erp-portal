@@ -293,7 +293,7 @@
   .sidebar::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
 
   .sidebar-section { padding: 22px 0 4px; }
-  .sidebar-section + .sidebar-section { border-top: 1px solid var(--hairline); margin-top: 4px; }
+  .sidebar-section:not(:first-of-type) { border-top: 1px solid var(--hairline); margin-top: 4px; }
   .sidebar-section-label {
     font-size: 9px; font-weight: 600; letter-spacing: 1.8px;
     color: var(--grey-mid); text-transform: uppercase;
@@ -966,7 +966,7 @@
             <table>
               <thead><tr><th>Period</th><th>Net Pay (KSh)</th><th></th></tr></thead>
               <tbody id="me-payslips-tbody">
-                <tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr>
+                <tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr>
               </tbody>
             </table>
           </div>
@@ -977,7 +977,7 @@
             <table>
               <thead><tr><th>When</th><th>Activity</th></tr></thead>
               <tbody id="me-activity-tbody">
-                <tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr>
+                <tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr>
               </tbody>
             </table>
           </div>
@@ -1005,7 +1005,7 @@
         <div class="table-head"><div class="table-head-title">Awaiting Your Action</div></div>
         <table>
           <thead><tr><th>Item</th><th>Type</th><th>Detail</th><th>Raised</th><th></th></tr></thead>
-          <tbody id="ap-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+          <tbody id="ap-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
         </table>
       </div>
 
@@ -1081,7 +1081,7 @@
       <div class="table-wrap">
         <table>
           <thead><tr><th>Customer</th><th>0–30</th><th>31–60</th><th>61–90</th><th>90+</th><th>Total</th></tr></thead>
-          <tbody id="sa-ageing-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+          <tbody id="sa-ageing-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
         </table>
       </div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_sales_kpis</code> + <code>get_sales_ageing</code>. Buckets are <em>days since posting</em>. Customer scope from <code>Customer Sales Rep Assignment</code>.</div>
@@ -1462,12 +1462,12 @@
 
       <div class="section-heading">Submitted &middot; outstanding</div>
       <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Posting</th><th>Due</th><th>Outstanding</th><th>Status</th></tr></thead>
-        <tbody id="si-submitted-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="si-submitted-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
 
       <div class="section-heading">Drafts</div>
       <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Posting</th><th>Total</th></tr></thead>
-        <tbody id="si-drafts-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="si-drafts-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
 
       <div class="info-box">Wired via <code>vcl_portal.api.get_open_sales_invoices()</code>. Sales Reps see only their territory; Finance / CFO see all. Empty? Check that Sales Invoices exist or that you have permission.</div>
@@ -1490,11 +1490,11 @@
       </div>
       <div class="section-heading">Customers with overdue (&gt; 30 d)</div>
       <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest (d)</th><th>Last Contact</th><th></th></tr></thead>
-        <tbody id="cl-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="cl-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="section-heading">Open Follow-Ups</div>
       <div class="table-wrap"><table><thead><tr><th>Action</th><th>Customer / Ref</th><th>Owner</th><th>Due</th><th>Priority</th><th></th></tr></thead>
-        <tbody id="cl-fu-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="cl-fu-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_sales_collections</code> + <code>get_collection_followups</code> + <code>create_collection_followup</code>. Closing a follow-up from this page closes the underlying ToDo.</div>
     </div>
@@ -1552,7 +1552,7 @@
     <div id="page-sales-rep-dash" class="page">
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('sales')">← Back to Sales</span> · Module</div><h1>Rep Dashboard <span class="live-tag">LIVE</span></h1><p>Per-Sales-Person actual MTD vs target (from custom <code>Sales Target</code> doctype, if available). Restricted users see only their permitted reps.</p></div>
       <div class="table-wrap"><table><thead><tr><th>Sales Person</th><th>Target (KSh)</th><th>Actual MTD (KSh)</th><th>%</th></tr></thead>
-        <tbody id="rd-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="rd-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_rep_performance</code>. Actual = sum of grand_total on Sales Invoices via Sales Team for current month. Target requires custom <code>Sales Target</code> doctype (will show — if absent).</div>
     </div>
@@ -1571,7 +1571,7 @@
     <div id="page-finance-ar" class="page">
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Receivable <span class="live-tag">LIVE</span></h1><p>Per-customer outstanding with oldest age + oldest overdue days. Top 50 by amount.</p></div>
       <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest age (d)</th><th>Oldest overdue (d)</th></tr></thead>
-        <tbody id="ar-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="ar-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_ar_detail</code>. Customer scope from <code>Customer Sales Rep Assignment</code>.</div>
     </div>
@@ -1579,7 +1579,7 @@
     <div id="page-finance-ap" class="page">
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('finance')">← Back to Finance</span> · Module</div><h1>Accounts Payable <span class="live-tag">LIVE</span></h1><p>Per-supplier outstanding with oldest age + oldest overdue days.</p></div>
       <div class="table-wrap"><table><thead><tr><th>Supplier</th><th>Open</th><th>Outstanding (KSh)</th><th>Oldest age (d)</th><th>Oldest overdue (d)</th></tr></thead>
-        <tbody id="ap-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="ap-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_ap_detail</code>. Director payables (separate tracking) requires custom doctype tagging — Phase A.4.</div>
     </div>
@@ -1633,7 +1633,7 @@
         <div class="actions"><button class="btn btn-primary" id="pa-submit">Create</button><button class="btn btn-outline" id="pa-cancel">Cancel</button><span class="msg" id="pa-msg"></span></div>
       </div>
       <div class="table-wrap"><table><thead><tr><th>Action</th><th>Owner</th><th>Due</th><th>Priority</th><th>Status</th><th></th></tr></thead>
-        <tbody id="preaudit-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="preaudit-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_pre_audit_actions(status)</code> + <code>create_pre_audit_action</code>. ToDos prefixed <code>[PRE-AUDIT]</code> show up here AND in everyone's My Tasks count.</div>
     </div>
@@ -1643,7 +1643,7 @@
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Purchase Orders <span class="live-tag">LIVE</span></h1><p>Open Purchase Orders (submitted, not closed/cancelled).</p></div>
       <div style="margin:14px 0"><a class="btn btn-primary" href="/app/purchase-order/new" target="_blank" rel="noopener">+ New PO ↗</a></div>
       <div class="table-wrap"><table><thead><tr><th>PO No.</th><th>Supplier</th><th>Date</th><th>Schedule</th><th>Total (KSh)</th><th>Received</th><th>Status</th></tr></thead>
-        <tbody id="po-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="po-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_purchase_orders</code>.</div>
     </div>
@@ -1652,7 +1652,7 @@
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Supplier Register <span class="live-tag">LIVE</span></h1><p>Active suppliers with debounced search by name / country / group.</p></div>
       <input type="text" class="sop-search" id="sup-search" placeholder="Search by name, country, or group…">
       <div class="table-wrap"><table><thead><tr><th>Supplier</th><th>Group</th><th>Country</th><th>Currency</th></tr></thead>
-        <tbody id="sup-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="sup-tbody"><tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_suppliers(search)</code>.</div>
     </div>
@@ -1665,7 +1665,7 @@
     <div id="page-proc-grn" class="page">
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('procurement')">← Back to Procurement</span> · Module</div><h1>Pending Goods Receipt <span class="live-tag">LIVE</span></h1><p>Submitted POs not yet 100% received (per_received &lt; 100).</p></div>
       <div class="table-wrap"><table><thead><tr><th>PO No.</th><th>Supplier</th><th>Date</th><th>Total (KSh)</th><th>Received %</th><th>Status</th></tr></thead>
-        <tbody id="grn-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="grn-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_pending_grns</code>. Click any PO to open it in ERPNext to post the receipt.</div>
     </div>
@@ -1680,7 +1680,7 @@
       </div>
       <div style="margin:14px 0;display:flex;gap:8px"><button class="btn btn-primary" disabled title="JCL form coming Phase A.3">+ Job Card Label</button><button class="btn btn-outline" disabled>+ JC Computer Paper</button></div>
       <div class="table-wrap"><table><thead><tr><th>Job Card</th><th>Type</th><th>Customer</th><th>Status</th><th>Created</th></tr></thead>
-        <tbody id="jc-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="jc-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_open_job_cards()</code> across <code>Job Card</code>, <code>Job Card Label</code>, <code>Job Card Computer Paper</code>, <code>Job Card Carton</code>. Degrades gracefully if a variant is not installed.</div>
     </div>
@@ -1728,7 +1728,7 @@
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('hr')">← Back to HR</span> · Module</div><h1>Employee Records <span class="live-tag">LIVE</span></h1><p>Active Employees with HR-level fields: department, branch, employment type, contact.</p></div>
       <input type="text" class="sop-search" id="emp-search" placeholder="Search by name, designation, department, branch, employment type…">
       <div class="table-wrap"><table><thead><tr><th>Employee</th><th>Designation</th><th>Department</th><th>Branch</th><th>Type</th><th>Joined</th></tr></thead>
-        <tbody id="emp-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="emp-tbody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_employees(search)</code>. Restricted to users with Employee read permission.</div>
     </div>
@@ -1778,7 +1778,7 @@
     <div id="page-qual-checklists" class="page">
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Quality Inspections <span class="live-tag">LIVE</span></h1><p>Recent Quality Inspection records across all reference doctypes.</p></div>
       <div class="table-wrap"><table><thead><tr><th>QI No.</th><th>Reference Type</th><th>Reference</th><th>Item</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody id="qi-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="qi-tbody"><tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_quality_inspections</code>.</div>
     </div>
@@ -1796,7 +1796,7 @@
     <div id="page-qual-incoming" class="page">
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('quality')">← Back to Quality</span> · Module</div><h1>Incoming Inspection <span class="live-tag">LIVE</span></h1><p>Quality Inspections where reference is a Purchase Receipt (incoming material checks).</p></div>
       <div class="table-wrap"><table><thead><tr><th>QI No.</th><th>Purchase Receipt</th><th>Item</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody id="qi-incoming-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="qi-incoming-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_quality_inspections</code> filtered to Purchase Receipt references.</div>
     </div>
@@ -1815,7 +1815,7 @@
     <div id="page-log-schedule" class="page">
       <div class="page-header"><div class="page-header-eyebrow"><span style="cursor:pointer" onclick="navigate('logistics')">← Back to Logistics</span> · Module</div><h1>Delivery Schedule <span class="live-tag">LIVE</span></h1><p>Submitted Delivery Notes (recent first).</p></div>
       <div class="table-wrap"><table><thead><tr><th>Delivery</th><th>Customer</th><th>Posting</th><th>Total (KSh)</th><th>Status</th></tr></thead>
-        <tbody id="dn-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Loading…</td></tr></tbody>
+        <tbody id="dn-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Loading…</td></tr></tbody>
       </table></div>
       <div class="info-box">Wired via <code>vcl_portal.api.get_delivery_schedule</code>.</div>
     </div>
@@ -1861,6 +1861,13 @@
 
   </main>
 </div>
+
+<script>
+  // Server-injected CSRF token (DEF-R4-01 fix). Frappe Cloud doesn't reliably set
+  // the csrf_token cookie on www pages; reading it from get_context() is the
+  // proven pattern used by vcl_sales_dashboard.
+  window.vcl_csrf_token = {{ (csrf_token or "") | tojson }};
+</script>
 
 <script>
   const pages = {
@@ -1926,7 +1933,11 @@
   };
 
   // ── Generic fetch helper for whitelisted vcl_portal.api.* methods ──
+  // Prefer the server-injected token (window.vcl_csrf_token from get_context),
+  // fall back to the csrf_token cookie. Frappe Cloud doesn't always set the
+  // cookie on www pages, which broke every API call in Round 4 (DEF-R4-01).
   function csrf() {
+    if (window.vcl_csrf_token) return window.vcl_csrf_token;
     const m = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/);
     return m ? decodeURIComponent(m[1]) : '';
   }
@@ -2032,7 +2043,7 @@
       const pt = document.getElementById('me-payslips-tbody');
       if (pt) {
         if (!payslips || !payslips.length) {
-          pt.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:18px">No payslips on record</td></tr>';
+          pt.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:14px 22px">No payslips on record</td></tr>';
         } else {
           pt.innerHTML = payslips.map(p =>
             '<tr><td>' + escHtml(p.start_date ? (fmtDate(p.start_date) + ' — ' + fmtDate(p.end_date)) : fmtDate(p.posting_date)) +
@@ -2045,7 +2056,7 @@
       const at = document.getElementById('me-activity-tbody');
       if (at) {
         if (!activity || !activity.length) {
-          at.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:18px">No recent activity</td></tr>';
+          at.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:14px 22px">No recent activity</td></tr>';
         } else {
           at.innerHTML = activity.map(a =>
             '<tr><td style="white-space:nowrap;color:var(--text-muted);font-size:12px">' + escHtml(fmtRelative(a.when)) +
@@ -2056,7 +2067,7 @@
       _loaded.me = true;
     } catch (e) {
       const pt = document.getElementById('me-payslips-tbody');
-      if (pt) pt.innerHTML = '<tr><td colspan="3" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      if (pt) pt.innerHTML = '<tr><td colspan="3" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
 
@@ -2121,7 +2132,7 @@
           '<td>' + fmtNum(r.outstanding_amount) + '</td>' +
           '<td>' + statusBadge(r.status) + '</td>' +
           '</tr>').join('')
-        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No outstanding submitted invoices</td></tr>';
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">No outstanding submitted invoices</td></tr>';
 
       dr.innerHTML = drafts.length
         ? drafts.map(r => '<tr>' +
@@ -2130,10 +2141,10 @@
           '<td>' + escHtml(fmtDate(r.posting_date)) + '</td>' +
           '<td>' + fmtNum(r.grand_total) + '</td>' +
           '</tr>').join('')
-        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">No drafts</td></tr>';
+        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:14px 22px">No drafts</td></tr>';
       _loaded.salesInvoices = true;
     } catch (e) {
-      sub.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      sub.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
 
@@ -2164,10 +2175,10 @@
               '<td style="white-space:nowrap;color:var(--text-muted);font-size:12px">' + escHtml(fmtRelative(r.creation)) + '</td>' +
               '</tr>';
           }).join('')
-        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No open job cards</td></tr>';
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">No open job cards</td></tr>';
       _loaded.jobCards = true;
     } catch (e) {
-      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
 
@@ -2233,7 +2244,7 @@
       const tb = document.getElementById('sa-ageing-tbody');
       if (tb) {
         if (!ageing || !ageing.length || ageing[0]._error) {
-          tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">' +
+          tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">' +
             (ageing && ageing[0] && ageing[0]._error ? escHtml(ageing[0]._error) : 'No outstanding invoices in your scope') +
             '</td></tr>';
         } else {
@@ -2275,10 +2286,10 @@
             '<td style="white-space:nowrap;color:var(--text-muted);font-size:12px">' + escHtml(fmtRelative(r.raised)) + '</td>' +
             '<td><a target="_blank" href="' + escHtml(r.url || '#') + '" class="btn btn-sm btn-primary">Review</a></td>' +
             '</tr>').join('')
-        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Nothing waiting on you. Nice.</td></tr>';
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Nothing waiting on you. Nice.</td></tr>';
       _loaded.approvals = true;
     } catch (e) {
-      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
 
@@ -2344,10 +2355,10 @@
             '<td>' + (r.oldest_age_days || 0) + '</td>' +
             '<td>' + escHtml(r.last_contact ? fmtRelative(r.last_contact) : '—') + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No customers in collections (no outstanding > 30 d)</td></tr>';
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">No customers in collections (no outstanding > 30 d)</td></tr>';
       _loaded.salesCollections = true;
     } catch (e) {
-      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
 
@@ -2428,10 +2439,10 @@
               '<td><span class="badge ' + cls + '">' + escHtml(pct) + '</span></td>' +
               '</tr>';
           }).join('')
-        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">No Sales Persons in your scope</td></tr>';
+        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:14px 22px">No Sales Persons in your scope</td></tr>';
       _loaded.repDash = true;
     } catch (e) {
-      tb.innerHTML = '<tr><td colspan="4" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      tb.innerHTML = '<tr><td colspan="4" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
 
@@ -2457,7 +2468,7 @@
           '<td>' + (r.oldest_age_days || 0) + '</td>' +
           '<td>' + (r.oldest_overdue_days != null && r.oldest_overdue_days > 0 ? r.oldest_overdue_days : '—') + '</td>' +
           '</tr>').join('')
-      : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">Nothing outstanding</td></tr>';
+      : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">Nothing outstanding</td></tr>';
   }
   async function renderArDetail(force) {
     if (_loaded.arDetail && !force) return;
@@ -2468,7 +2479,7 @@
       tb.innerHTML = _renderArApRows(rows, 'customer');
       _loaded.arDetail = true;
     } catch (e) {
-      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
   async function renderApDetail(force) {
@@ -2480,7 +2491,7 @@
       tb.innerHTML = _renderArApRows(rows, 'supplier');
       _loaded.apDetail = true;
     } catch (e) {
-      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>';
+      tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>';
     }
   }
 
@@ -2628,9 +2639,9 @@
             '<td>' + (r.per_received != null ? Math.round(r.per_received) + '%' : '—') + '</td>' +
             '<td>' + statusBadge(r.status) + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">No open POs</td></tr>';
+        : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:14px 22px">No open POs</td></tr>';
       _loaded.po = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
   let _supTimer = null;
   async function renderSuppliers(force) {
@@ -2647,9 +2658,9 @@
             '<td>' + escHtml(r.country || '—') + '</td>' +
             '<td>' + escHtml(r.default_currency || '—') + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:18px">No suppliers found</td></tr>';
+        : '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:14px 22px">No suppliers found</td></tr>';
       _loaded.suppliers = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="4" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="4" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
   function _bindSupSearch() {
     const i = document.getElementById('sup-search');
@@ -2694,9 +2705,9 @@
             '<td>' + (r.per_received != null ? Math.round(r.per_received) + '%' : '0%') + '</td>' +
             '<td>' + statusBadge(r.status) + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">All POs fully received</td></tr>';
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">All POs fully received</td></tr>';
       _loaded.grn = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
 
   // ── Render: HR sub-pages ──
@@ -2717,9 +2728,9 @@
             '<td>' + escHtml(r.employment_type || '—') + '</td>' +
             '<td>' + escHtml(fmtDate(r.date_of_joining)) + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No employees</td></tr>';
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">No employees</td></tr>';
       _loaded.employees = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
   function _bindEmpSearch() {
     const i = document.getElementById('emp-search');
@@ -2795,9 +2806,9 @@
             '<td>' + escHtml(fmtDate(r.report_date)) + '</td>' +
             '<td>' + statusBadge(r.status) + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:18px">No inspections</td></tr>';
+        : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:14px 22px">No inspections</td></tr>';
       _loaded.qi = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="7" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
   async function renderIncoming(force) {
     if (_loaded.qiIncoming && !force) return;
@@ -2814,9 +2825,9 @@
             '<td>' + escHtml(fmtDate(r.report_date)) + '</td>' +
             '<td>' + statusBadge(r.status) + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No incoming inspections</td></tr>';
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">No incoming inspections</td></tr>';
       _loaded.qiIncoming = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
   async function renderCps(force) {
     if (_loaded.cps && !force) return;
@@ -2911,9 +2922,9 @@
             '<td>' + fmtNum(r.grand_total) + '</td>' +
             '<td>' + statusBadge(r.status) + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:18px">No delivery notes</td></tr>';
+        : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:14px 22px">No delivery notes</td></tr>';
       _loaded.delivery = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="5" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
   async function renderVehicleLogs(force) {
     if (_loaded.vlog && !force) return;
@@ -2980,9 +2991,9 @@
                 ? '<button class="btn btn-sm btn-outline" onclick="closeTodo(\'' + escHtml(t.name) + '\', \'preaudit\')">Close</button>'
                 : '—') + '</td>' +
             '</tr>').join('')
-        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No pre-audit actions for this filter</td></tr>';
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">No pre-audit actions for this filter</td></tr>';
       _loaded.preAudit = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   }
   window.closeTodo = async function(name, refresh) {
     if (!confirm('Close ToDo ' + name + '?')) return;
@@ -3049,7 +3060,7 @@
             '<td>' + escHtml(r.last_contact ? fmtRelative(r.last_contact) : '—') + '</td>' +
             '<td><button class="btn btn-sm btn-outline" onclick="prefillCollectionForm(\'' + escHtml(r.customer) + '\')">+ Follow-up</button></td>' +
             '</tr>').join('')
-        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No customers in collections</td></tr>';
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">No customers in collections</td></tr>';
 
       const fuTb = document.getElementById('cl-fu-tbody');
       fuTb.innerHTML = fuRows.length
@@ -3061,9 +3072,9 @@
             '<td><span class="badge ' + (t.priority === 'High' ? 'badge-red' : t.priority === 'Medium' ? 'badge-amber' : 'badge-grey') + '">' + escHtml(t.priority || '—') + '</span></td>' +
             '<td><button class="btn btn-sm btn-outline" onclick="closeTodo(\'' + escHtml(t.name) + '\', \'collections\')">Close</button></td>' +
             '</tr>').join('')
-        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:18px">No open follow-ups</td></tr>';
+        : '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:14px 22px">No open follow-ups</td></tr>';
       _loaded.salesCollections = true;
-    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:18px">' + escHtml(e.message) + '</td></tr>'; }
+    } catch (e) { tb.innerHTML = '<tr><td colspan="6" style="color:var(--red);padding:14px 22px">' + escHtml(e.message) + '</td></tr>'; }
   };
   window.prefillCollectionForm = function(customer) {
     document.getElementById('cl-form').classList.add('open');

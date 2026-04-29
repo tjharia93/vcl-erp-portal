@@ -68,3 +68,4 @@ def get_context(context):
     context.user_email = frappe.session.user
     context.roles = roles
     context.primary_role = primary_role
+    context.csrf_token = frappe.sessions.get_csrf_token()
