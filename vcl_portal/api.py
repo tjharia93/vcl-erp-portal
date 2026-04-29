@@ -69,13 +69,25 @@ def get_my_profile():
     user_doc = frappe.db.get_value(
         "User", user, ["full_name", "first_name", "email", "user_image"], as_dict=True
     ) or {}
-    employee = frappe.db.get_value(
-        "Employee",
-        {"user_id": user},
-        ["name", "employee_name", "designation", "department", "branch", "company",
-         "date_of_joining", "employment_type", "employee_image", "company_email"],
-        as_dict=True,
-    ) or {}
+    # DEF-R5-01: `employee_image` and `branch` aren't guaranteed columns on
+    # every install of Employee on Frappe Cloud; querying them returned 500.
+    # Stick to standard fields + `image` (Frappe core), which the template
+    # doesn't currently consume but is harmless to include.
+    try:
+        employee = frappe.db.get_value(
+            "Employee",
+            {"user_id": user},
+            ["name", "employee_name", "designation", "department", "company",
+             "date_of_joining", "employment_type", "image", "company_email"],
+            as_dict=True,
+        ) or {}
+    except Exception:
+        # Fallback to the minimum-safe field set if any column above is also missing.
+        employee = frappe.db.get_value(
+            "Employee", {"user_id": user},
+            ["name", "employee_name", "designation", "department", "company"],
+            as_dict=True,
+        ) or {}
     return {"user": user, "user_doc": user_doc, "employee": employee}
 
 
@@ -265,10 +277,15 @@ def get_my_day():
         pass
     out["approvals_waiting"] = waiting
 
-    # Open Sales Invoices for my scope
+    # Open Sales Invoices for my scope.
+    # Counts Drafts AND Submitted-and-owing — per Round 5 feedback, "Sales
+    # Invoice amount should be SUBMITTED AND DRAFT all across the board".
+    # Cancelled (docstatus=2) excluded.
     try:
-        si_filters = {"docstatus": 1,
-                      "status": ["in", ["Unpaid", "Overdue", "Partly Paid", "Submitted"]]}
+        si_filters = {
+            "docstatus": ["in", [0, 1]],
+            "status": ["not in", ["Cancelled", "Paid", "Return", "Credit Note Issued"]],
+        }
         if scope["is_restricted"]:
             if scope["customers"]:
                 si_filters["customer"] = ["in", scope["customers"]]

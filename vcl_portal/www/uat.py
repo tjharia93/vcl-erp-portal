@@ -69,3 +69,30 @@ def get_context(context):
     context.roles = roles
     context.primary_role = primary_role
     context.csrf_token = frappe.sessions.get_csrf_token()
+
+    # Current Fiscal Year — Round 5 feedback: dashboard hardcoded "FY 2025".
+    # Prefer ERPNext's user default; fall back to the active Fiscal Year doc;
+    # finally the calendar year.
+    fy = None
+    try:
+        fy = frappe.defaults.get_user_default("fiscal_year")
+    except Exception:
+        pass
+    if not fy:
+        try:
+            today = frappe.utils.today()
+            rows = frappe.get_all(
+                "Fiscal Year",
+                filters={"year_start_date": ["<=", today], "year_end_date": [">=", today]},
+                fields=["name"], limit=1,
+            )
+            if rows:
+                fy = rows[0].get("name")
+        except Exception:
+            pass
+    if not fy:
+        try:
+            fy = "FY " + str(frappe.utils.getdate(frappe.utils.today()).year)
+        except Exception:
+            fy = ""
+    context.current_fy = fy

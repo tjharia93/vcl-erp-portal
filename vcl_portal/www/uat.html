@@ -731,7 +731,6 @@
       </button>
       <button class="nav-item" onclick="navigate('approvals')" id="nav-approvals">
         <span class="nav-icon">✅</span> Approvals
-        <span class="nav-badge warn">3</span>
       </button>
     </div>
 
@@ -805,12 +804,10 @@
       </button>
       <button class="nav-item" onclick="navigate('projects')" id="nav-projects">
         <span class="nav-icon">🗂️</span> Projects
-        <span class="nav-badge">5</span>
       </button>
       {% if roles.is_finance or roles.is_hr or roles.is_admin %}
       <button class="nav-item" onclick="navigate('compliance')" id="nav-compliance">
         <span class="nav-icon">⚠</span> Compliance
-        <span class="nav-badge warn">!</span>
       </button>
       {% endif %}
       <button class="nav-item" onclick="navigate('automations')" id="nav-automations">
@@ -838,16 +835,16 @@
           <div class="hero-meta-item"><strong>Nairobi, Kenya</strong>Location</div>
           <div class="hero-meta-item"><strong>~120</strong>Employees</div>
           <div class="hero-meta-item"><strong>ERPNext v16</strong>ERP System</div>
-          <div class="hero-meta-item"><strong>FY 2025</strong>Current Year</div>
+          <div class="hero-meta-item"><strong>{{ current_fy or "—" }}</strong>Current Year</div>
         </div>
       </div>
 
       <div class="stat-strip" id="home-stat-strip">
-        <div class="stat-card"><div class="stat-label">My Tasks <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-my-tasks">—</div><div class="stat-change" id="kpi-my-tasks-sub">Open ToDos</div></div>
-        <div class="stat-card warning"><div class="stat-label">Approvals Waiting <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-approvals">—</div><div class="stat-change warn" id="kpi-approvals-sub">Workflow + Leave</div></div>
-        <div class="stat-card"><div class="stat-label">Open Sales Invoices <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-sales-invoices">—</div><div class="stat-change" id="kpi-sales-invoices-sub">Your scope</div></div>
-        <div class="stat-card positive"><div class="stat-label">Open Job Cards <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-job-cards">—</div><div class="stat-change" id="kpi-job-cards-sub">Across variants</div></div>
-        <div class="stat-card warning"><div class="stat-label">VAT Filing <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-vat" style="font-size:18px">—</div><div class="stat-change warn" id="kpi-vat-sub">KRA monthly</div></div>
+        <div class="stat-card" style="cursor:pointer" onclick="window.open('/app/todo?owner=' + encodeURIComponent('{{ user_email }}') + '&status=Open','_blank','noopener')" title="Open my ToDos in ERPNext"><div class="stat-label">My Tasks <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-my-tasks">—</div><div class="stat-change" id="kpi-my-tasks-sub">Open ToDos</div></div>
+        <div class="stat-card warning" style="cursor:pointer" onclick="navigate('approvals')" title="Open the Approvals inbox"><div class="stat-label">Approvals Waiting <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-approvals">—</div><div class="stat-change warn" id="kpi-approvals-sub">Workflow + Leave</div></div>
+        <div class="stat-card" style="cursor:pointer" onclick="navigate('sales-orders')" title="Open Sales Invoices (Drafts + Submitted)"><div class="stat-label">Open Sales Invoices <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-sales-invoices">—</div><div class="stat-change" id="kpi-sales-invoices-sub">Drafts + Submitted, your scope</div></div>
+        <div class="stat-card positive" style="cursor:pointer" onclick="navigate('prod-jobcards')" title="Open Job Cards (all variants)"><div class="stat-label">Open Job Cards <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-job-cards">—</div><div class="stat-change" id="kpi-job-cards-sub">Across variants</div></div>
+        <div class="stat-card warning" style="cursor:pointer" onclick="navigate('finance-vat')" title="VAT reconciliation"><div class="stat-label">VAT Filing <span class="live-tag" style="margin-left:0">LIVE</span></div><div class="stat-value" id="kpi-vat" style="font-size:18px">—</div><div class="stat-change warn" id="kpi-vat-sub">KRA monthly</div></div>
       </div>
 
       <div class="brand-strip">
@@ -1070,7 +1067,7 @@
       </div>
       <div class="section-heading">Sales Modules</div>
       <div class="card-grid">
-        <div class="card" onclick="navigate('sales-orders')"><div class="card-icon">🛍️</div><div class="card-title">Sales Orders</div><div class="card-desc">Create + track SOs, delivery notes, invoices.</div></div>
+        <div class="card" onclick="navigate('sales-orders')"><div class="card-icon">🧾</div><div class="card-title">Sales Invoices</div><div class="card-desc">Drafts + Submitted-and-owing invoices, scoped to your customers. Click an invoice to open it in ERPNext.</div></div>
         <div class="card" onclick="navigate('sales-collections')"><div class="card-icon">💳</div><div class="card-title">Collections Tracker</div><div class="card-desc">Weekly collections by rep with ageing/payment status.</div></div>
         <div class="card" onclick="navigate('sales-ageing')"><div class="card-icon">📋</div><div class="card-title">Ageing Report</div><div class="card-desc">0–30, 31–60, 61–90, 90+ buckets per customer.</div></div>
         <div class="card" onclick="navigate('sales-customer360')"><div class="card-icon">👤</div><div class="card-title">Customer 360</div><div class="card-desc">Outstanding, history, behaviour, contacts.</div></div>
