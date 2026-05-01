@@ -11,4 +11,6 @@ home_page = "home"
 website_route_rules = [
     {"from_route": "/employee/<path:app_path>", "to_route": "employee"},
     {"from_route": "/uat", "to_route": "uat"},
+    {"from_route": "/inbox", "to_route": "inbox"},
+    {"from_route": "/inbox/<path:app_path>", "to_route": "inbox"},
 ]
