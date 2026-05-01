@@ -266,7 +266,7 @@ def send_whatsapp_message(conversation, content, message_type="text"):
 
 
 @frappe.whitelist()
-def get_conversations(status=None, limit=50):
+def get_conversations(status=None, channel=None, limit=50):
     """Get conversations for the inbox view."""
     if frappe.session.user == "Guest":
         frappe.throw(_("Login required"), frappe.PermissionError)
@@ -274,6 +274,8 @@ def get_conversations(status=None, limit=50):
     filters = {}
     if status:
         filters["status"] = status
+    if channel:
+        filters["channel"] = channel
 
     conversations = frappe.get_all(
         "VCL Conversation",
@@ -281,7 +283,7 @@ def get_conversations(status=None, limit=50):
         fields=[
             "name", "contact", "channel", "status", "assigned_to",
             "last_message_at", "last_message_preview", "unread_count",
-            "linked_customer", "linked_lead",
+            "linked_customer", "linked_lead", "email_subject",
         ],
         order_by="last_message_at desc",
         limit=cint(limit),
@@ -290,10 +292,11 @@ def get_conversations(status=None, limit=50):
     for conv in conversations:
         contact = frappe.db.get_value(
             "VCL Message Contact", conv["contact"],
-            ["contact_name", "phone", "profile_picture"], as_dict=True
+            ["contact_name", "phone", "email", "profile_picture"], as_dict=True
         )
         conv["contact_name"] = contact.get("contact_name") if contact else conv["contact"]
         conv["contact_phone"] = contact.get("phone") if contact else None
+        conv["contact_email"] = contact.get("email") if contact else None
         conv["contact_image"] = contact.get("profile_picture") if contact else None
 
     return conversations
@@ -358,3 +361,34 @@ def update_conversation_status(conversation, status):
 
     frappe.db.set_value("VCL Conversation", conversation, "status", status)
     return {"success": True}
+
+
+@frappe.whitelist()
+def send_message(conversation, content):
+    """Send a message via the appropriate channel.
+
+    Routes to WhatsApp, Email, or Slack based on conversation channel.
+
+    Args:
+        conversation: VCL Conversation name
+        content: Message content
+
+    Returns:
+        dict with success status and message_id
+    """
+    if frappe.session.user == "Guest":
+        frappe.throw(_("Login required"), frappe.PermissionError)
+
+    conv = frappe.get_doc("VCL Conversation", conversation)
+    channel = conv.channel
+
+    if channel == "WhatsApp":
+        return send_whatsapp_message(conversation, content)
+    elif channel == "Slack":
+        from vcl_portal.vcl_messaging.slack_api import send_slack_message
+        return send_slack_message(conversation, content)
+    elif channel == "Email":
+        from vcl_portal.vcl_messaging.email_api import send_email_message
+        return send_email_message(conversation, content)
+    else:
+        frappe.throw(_("Unsupported channel: {0}").format(channel))

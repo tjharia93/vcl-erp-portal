@@ -10,8 +10,14 @@
             <div class="inbox-header">
                 <h4>Inbox</h4>
                 <div class="inbox-filters">
+                    <select id="channel-filter" class="form-control form-control-sm">
+                        <option value="">All Channels</option>
+                        <option value="WhatsApp">WhatsApp</option>
+                        <option value="Email">Email</option>
+                        <option value="Slack">Slack</option>
+                    </select>
                     <select id="status-filter" class="form-control form-control-sm">
-                        <option value="">All</option>
+                        <option value="">All Status</option>
                         <option value="Open">Open</option>
                         <option value="Pending">Pending</option>
                         <option value="Resolved">Resolved</option>
@@ -90,8 +96,14 @@
     margin: 0;
 }
 
+.inbox-filters {
+    display: flex;
+    gap: 8px;
+}
+
 .inbox-filters select {
     width: 100px;
+    font-size: 12px;
 }
 
 .conversation-list {
@@ -142,10 +154,14 @@
     font-size: 10px;
     padding: 2px 6px;
     border-radius: 10px;
-    background: #25D366;
     color: #fff;
     margin-left: 5px;
 }
+
+.conversation-item .channel-badge.whatsapp { background: #25D366; }
+.conversation-item .channel-badge.email { background: #EA4335; }
+.conversation-item .channel-badge.slack { background: #4A154B; }
+.conversation-item .channel-badge.sms { background: #0088cc; }
 
 .conversation-item .unread-badge {
     background: #007bff;
@@ -302,6 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         bindEvents() {
             document.getElementById('status-filter').addEventListener('change', () => this.loadConversations());
+            document.getElementById('channel-filter').addEventListener('change', () => this.loadConversations());
             document.getElementById('send-btn').addEventListener('click', () => this.sendMessage());
             document.getElementById('message-input').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -318,10 +335,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         async loadConversations() {
             const status = document.getElementById('status-filter').value;
+            const channel = document.getElementById('channel-filter').value;
             try {
                 const resp = await frappe.call({
                     method: 'vcl_portal.vcl_messaging.api.get_conversations',
-                    args: { status: status || null }
+                    args: { status: status || null, channel: channel || null }
                 });
                 this.conversations = resp.message || [];
                 this.renderConversations();
@@ -341,17 +359,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const time = conv.last_message_at ? this.formatTime(conv.last_message_at) : '';
                 const active = this.currentConversation === conv.name ? 'active' : '';
                 const unread = conv.unread_count > 0 ? `<span class="unread-badge">${conv.unread_count}</span>` : '';
+                const channelClass = conv.channel.toLowerCase();
 
                 return `
-                    <div class="conversation-item ${active}" data-name="${conv.name}">
+                    <div class="conversation-item ${active}" data-name="${conv.name}" data-channel="${conv.channel}">
                         <div class="conv-header">
                             <span class="contact-name">
-                                ${conv.contact_name}
-                                <span class="channel-badge">${conv.channel}</span>
+                                ${this.escapeHtml(conv.contact_name)}
+                                <span class="channel-badge ${channelClass}">${conv.channel}</span>
                             </span>
                             <span class="timestamp">${time} ${unread}</span>
                         </div>
-                        <div class="preview">${conv.last_message_preview || 'No messages'}</div>
+                        <div class="preview">${this.escapeHtml(conv.last_message_preview || 'No messages')}</div>
                     </div>
                 `;
             }).join('');
@@ -364,12 +383,14 @@ document.addEventListener('DOMContentLoaded', function() {
         async selectConversation(name) {
             this.currentConversation = name;
             const conv = this.conversations.find(c => c.name === name);
+            this.currentChannel = conv.channel;
 
             document.getElementById('chat-placeholder').style.display = 'none';
             document.getElementById('chat-view').style.display = 'flex';
 
             document.getElementById('contact-name').textContent = conv.contact_name;
-            document.getElementById('contact-phone').textContent = conv.contact_phone || '';
+            const contactInfo = conv.contact_phone || conv.contact_email || conv.channel;
+            document.getElementById('contact-phone').textContent = contactInfo;
             document.getElementById('contact-avatar').src = conv.contact_image || '/assets/frappe/images/default-avatar.png';
             document.getElementById('conversation-status').value = conv.status;
 
@@ -415,20 +436,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!content || !this.currentConversation) return;
 
             input.value = '';
+            document.getElementById('send-btn').disabled = true;
 
             try {
-                await frappe.call({
-                    method: 'vcl_portal.vcl_messaging.api.send_whatsapp_message',
+                const resp = await frappe.call({
+                    method: 'vcl_portal.vcl_messaging.api.send_message',
                     args: {
                         conversation: this.currentConversation,
                         content: content
                     }
                 });
+                if (resp.message && !resp.message.success) {
+                    frappe.msgprint('Failed to send: ' + (resp.message.error || 'Unknown error'));
+                }
                 await this.loadMessages();
                 await this.loadConversations();
             } catch (err) {
                 console.error('Failed to send message:', err);
                 frappe.msgprint('Failed to send message');
+            } finally {
+                document.getElementById('send-btn').disabled = false;
             }
         },
 
