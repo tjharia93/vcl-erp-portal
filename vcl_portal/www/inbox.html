@@ -1,0 +1,489 @@
+{% extends "templates/web.html" %}
+
+{% block title %}VCL Inbox{% endblock %}
+
+{% block page_content %}
+<div id="vcl-inbox-app">
+    <div class="inbox-container">
+        <!-- Sidebar: Conversation List -->
+        <div class="inbox-sidebar">
+            <div class="inbox-header">
+                <h4>Inbox</h4>
+                <div class="inbox-filters">
+                    <select id="status-filter" class="form-control form-control-sm">
+                        <option value="">All</option>
+                        <option value="Open">Open</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+            </div>
+            <div id="conversation-list" class="conversation-list">
+                <div class="loading-spinner">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Main: Chat View -->
+        <div class="inbox-main">
+            <div id="chat-placeholder" class="chat-placeholder">
+                <div class="placeholder-content">
+                    <i class="fa fa-comments fa-3x"></i>
+                    <p>Select a conversation to view messages</p>
+                </div>
+            </div>
+            <div id="chat-view" class="chat-view" style="display: none;">
+                <div class="chat-header">
+                    <div class="contact-info">
+                        <img id="contact-avatar" src="" alt="" class="contact-avatar">
+                        <div class="contact-details">
+                            <h5 id="contact-name"></h5>
+                            <span id="contact-phone" class="text-muted"></span>
+                        </div>
+                    </div>
+                    <div class="chat-actions">
+                        <select id="conversation-status" class="form-control form-control-sm">
+                            <option value="Open">Open</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Resolved">Resolved</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="message-list" class="message-list"></div>
+                <div class="message-input">
+                    <textarea id="message-input" placeholder="Type a message..." rows="1"></textarea>
+                    <button id="send-btn" class="btn btn-primary">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.inbox-container {
+    display: flex;
+    height: calc(100vh - 100px);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.inbox-sidebar {
+    width: 350px;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.inbox-header {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.inbox-header h4 {
+    margin: 0;
+}
+
+.inbox-filters select {
+    width: 100px;
+}
+
+.conversation-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.conversation-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.conversation-item:hover {
+    background: #f8f9fa;
+}
+
+.conversation-item.active {
+    background: #e3f2fd;
+}
+
+.conversation-item .conv-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.conversation-item .contact-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.conversation-item .timestamp {
+    font-size: 11px;
+    color: #888;
+}
+
+.conversation-item .preview {
+    font-size: 13px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conversation-item .channel-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: #25D366;
+    color: #fff;
+    margin-left: 5px;
+}
+
+.conversation-item .unread-badge {
+    background: #007bff;
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.inbox-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+}
+
+.placeholder-content {
+    text-align: center;
+}
+
+.chat-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contact-info {
+    display: flex;
+    align-items: center;
+}
+
+.contact-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background: #e0e0e0;
+}
+
+.contact-details h5 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.message-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background: #f5f5f5;
+}
+
+.message {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.message.inbound {
+    background: #fff;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+}
+
+.message.outbound {
+    background: #dcf8c6;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.message .content {
+    word-wrap: break-word;
+}
+
+.message .meta {
+    font-size: 10px;
+    color: #888;
+    text-align: right;
+    margin-top: 4px;
+}
+
+.message-input {
+    padding: 12px 15px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.message-input textarea {
+    flex: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 10px 15px;
+    resize: none;
+    max-height: 100px;
+}
+
+.message-input button {
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+}
+
+.loading-spinner {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+}
+
+@media (max-width: 768px) {
+    .inbox-sidebar {
+        width: 100%;
+    }
+    .inbox-main {
+        display: none;
+    }
+    .inbox-container.chat-open .inbox-sidebar {
+        display: none;
+    }
+    .inbox-container.chat-open .inbox-main {
+        display: flex;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const app = {
+        currentConversation: null,
+        conversations: [],
+
+        init() {
+            this.loadConversations();
+            this.bindEvents();
+        },
+
+        bindEvents() {
+            document.getElementById('status-filter').addEventListener('change', () => this.loadConversations());
+            document.getElementById('send-btn').addEventListener('click', () => this.sendMessage());
+            document.getElementById('message-input').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+            });
+            document.getElementById('conversation-status').addEventListener('change', (e) => {
+                if (this.currentConversation) {
+                    this.updateStatus(e.target.value);
+                }
+            });
+        },
+
+        async loadConversations() {
+            const status = document.getElementById('status-filter').value;
+            try {
+                const resp = await frappe.call({
+                    method: 'vcl_portal.vcl_messaging.api.get_conversations',
+                    args: { status: status || null }
+                });
+                this.conversations = resp.message || [];
+                this.renderConversations();
+            } catch (err) {
+                console.error('Failed to load conversations:', err);
+            }
+        },
+
+        renderConversations() {
+            const list = document.getElementById('conversation-list');
+            if (this.conversations.length === 0) {
+                list.innerHTML = '<div class="loading-spinner">No conversations yet</div>';
+                return;
+            }
+
+            list.innerHTML = this.conversations.map(conv => {
+                const time = conv.last_message_at ? this.formatTime(conv.last_message_at) : '';
+                const active = this.currentConversation === conv.name ? 'active' : '';
+                const unread = conv.unread_count > 0 ? `<span class="unread-badge">${conv.unread_count}</span>` : '';
+
+                return `
+                    <div class="conversation-item ${active}" data-name="${conv.name}">
+                        <div class="conv-header">
+                            <span class="contact-name">
+                                ${conv.contact_name}
+                                <span class="channel-badge">${conv.channel}</span>
+                            </span>
+                            <span class="timestamp">${time} ${unread}</span>
+                        </div>
+                        <div class="preview">${conv.last_message_preview || 'No messages'}</div>
+                    </div>
+                `;
+            }).join('');
+
+            list.querySelectorAll('.conversation-item').forEach(el => {
+                el.addEventListener('click', () => this.selectConversation(el.dataset.name));
+            });
+        },
+
+        async selectConversation(name) {
+            this.currentConversation = name;
+            const conv = this.conversations.find(c => c.name === name);
+
+            document.getElementById('chat-placeholder').style.display = 'none';
+            document.getElementById('chat-view').style.display = 'flex';
+
+            document.getElementById('contact-name').textContent = conv.contact_name;
+            document.getElementById('contact-phone').textContent = conv.contact_phone || '';
+            document.getElementById('contact-avatar').src = conv.contact_image || '/assets/frappe/images/default-avatar.png';
+            document.getElementById('conversation-status').value = conv.status;
+
+            this.renderConversations();
+            await this.loadMessages();
+        },
+
+        async loadMessages() {
+            if (!this.currentConversation) return;
+
+            try {
+                const resp = await frappe.call({
+                    method: 'vcl_portal.vcl_messaging.api.get_messages',
+                    args: { conversation: this.currentConversation }
+                });
+                this.renderMessages(resp.message || []);
+            } catch (err) {
+                console.error('Failed to load messages:', err);
+            }
+        },
+
+        renderMessages(messages) {
+            const list = document.getElementById('message-list');
+            list.innerHTML = messages.map(msg => {
+                const dir = msg.direction.toLowerCase();
+                const time = msg.sent_at ? this.formatTime(msg.sent_at) : '';
+                const status = msg.direction === 'Outbound' ? this.getStatusIcon(msg.status) : '';
+
+                return `
+                    <div class="message ${dir}">
+                        <div class="content">${this.escapeHtml(msg.content)}</div>
+                        <div class="meta">${time} ${status}</div>
+                    </div>
+                `;
+            }).join('');
+
+            list.scrollTop = list.scrollHeight;
+        },
+
+        async sendMessage() {
+            const input = document.getElementById('message-input');
+            const content = input.value.trim();
+            if (!content || !this.currentConversation) return;
+
+            input.value = '';
+
+            try {
+                await frappe.call({
+                    method: 'vcl_portal.vcl_messaging.api.send_whatsapp_message',
+                    args: {
+                        conversation: this.currentConversation,
+                        content: content
+                    }
+                });
+                await this.loadMessages();
+                await this.loadConversations();
+            } catch (err) {
+                console.error('Failed to send message:', err);
+                frappe.msgprint('Failed to send message');
+            }
+        },
+
+        async updateStatus(status) {
+            try {
+                await frappe.call({
+                    method: 'vcl_portal.vcl_messaging.api.update_conversation_status',
+                    args: {
+                        conversation: this.currentConversation,
+                        status: status
+                    }
+                });
+                await this.loadConversations();
+            } catch (err) {
+                console.error('Failed to update status:', err);
+            }
+        },
+
+        formatTime(datetime) {
+            const d = new Date(datetime);
+            const now = new Date();
+            const diff = now - d;
+
+            if (diff < 86400000 && d.getDate() === now.getDate()) {
+                return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            return d.toLocaleDateString();
+        },
+
+        getStatusIcon(status) {
+            const icons = {
+                'pending': '⏳',
+                'sent': '✓',
+                'delivered': '✓✓',
+                'read': '<span style="color:#34b7f1">✓✓</span>',
+                'failed': '❌'
+            };
+            return icons[status] || '';
+        },
+
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    };
+
+    app.init();
+
+    setInterval(() => {
+        if (app.currentConversation) {
+            app.loadMessages();
+        }
+        app.loadConversations();
+    }, 10000);
+});
+</script>
+{% endblock %}
