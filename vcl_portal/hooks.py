@@ -14,3 +14,10 @@ website_route_rules = [
     {"from_route": "/inbox", "to_route": "inbox"},
     {"from_route": "/inbox/<path:app_path>", "to_route": "inbox"},
 ]
+
+# Document Events - VCL Messaging email integration
+doc_events = {
+    "Communication": {
+        "after_insert": "vcl_portal.vcl_messaging.email_api.on_communication_insert",
+    }
+}

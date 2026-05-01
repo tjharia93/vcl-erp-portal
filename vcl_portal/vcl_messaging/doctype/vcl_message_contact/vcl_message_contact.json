@@ -11,6 +11,7 @@
     "email",
     "column_break_1",
     "whatsapp_id",
+    "slack_user_id",
     "linked_customer",
     "linked_lead",
     "section_profile",
@@ -38,7 +39,8 @@
       "fieldname": "email",
       "fieldtype": "Data",
       "label": "Email",
-      "options": "Email"
+      "options": "Email",
+      "in_list_view": 1
     },
     {
       "fieldname": "column_break_1",
@@ -48,8 +50,13 @@
       "fieldname": "whatsapp_id",
       "fieldtype": "Data",
       "label": "WhatsApp ID",
-      "description": "WhatsApp user ID (wa_id) from Meta API",
-      "unique": 1
+      "description": "WhatsApp user ID (wa_id) from Meta API"
+    },
+    {
+      "fieldname": "slack_user_id",
+      "fieldtype": "Data",
+      "label": "Slack User ID",
+      "description": "Slack user ID (U...) from Slack API"
     },
     {
       "fieldname": "linked_customer",
@@ -83,8 +90,8 @@
   "is_single": 0,
   "istable": 0,
   "modified": "2026-05-01 00:00:00.000000",
-  "naming_rule": "By fieldname",
-  "autoname": "field:contact_name",
+  "naming_rule": "Expression",
+  "autoname": "MSG-CONTACT-.#####",
   "owner": "Administrator",
   "permissions": [
     {
