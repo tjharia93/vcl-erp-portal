@@ -1,0 +1,99 @@
+{
+  "name": "VCL QBO Snapshot",
+  "doctype": "DocType",
+  "module": "VCL Portal",
+  "issingle": 1,
+  "engine": "InnoDB",
+  "description": "Latest QBO read-side snapshot. Written by the nightly QBO sync (CommandCentre) via update_qbo_snapshot; read by vcl_portal.qbo_api.* methods that the React Portal v2 consumes.",
+  "fields": [
+    {
+      "fieldname": "section_balances",
+      "fieldtype": "Section Break",
+      "label": "Balances"
+    },
+    {
+      "fieldname": "cash_balance",
+      "fieldtype": "Currency",
+      "label": "Cash Balance (QBO)",
+      "description": "Sum of QBO accounts where AccountType = 'Bank'."
+    },
+    {
+      "fieldname": "ar_total",
+      "fieldtype": "Currency",
+      "label": "AR Total (QBO)",
+      "description": "QBO Accounts Receivable outstanding total (Aged Receivables report)."
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "as_of",
+      "fieldtype": "Datetime",
+      "label": "As Of",
+      "description": "Snapshot timestamp — when the cron last queried QBO."
+    },
+    {
+      "fieldname": "stale_after_hours",
+      "fieldtype": "Int",
+      "label": "Stale After (hours)",
+      "default": 26,
+      "description": "If as_of is older than this, qbo_api returns connected:false with a 'stale' note."
+    },
+    {
+      "fieldname": "section_meta",
+      "fieldtype": "Section Break",
+      "label": "Sync Metadata"
+    },
+    {
+      "fieldname": "qbo_realm_id",
+      "fieldtype": "Data",
+      "label": "QBO Realm ID"
+    },
+    {
+      "fieldname": "qbo_company_name",
+      "fieldtype": "Data",
+      "label": "QBO Company"
+    },
+    {
+      "fieldname": "column_break_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "last_sync_status",
+      "fieldtype": "Select",
+      "label": "Last Sync Status",
+      "options": "\nsuccess\npartial\nfailed",
+      "default": ""
+    },
+    {
+      "fieldname": "last_sync_note",
+      "fieldtype": "Small Text",
+      "label": "Last Sync Note"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1
+    },
+    {
+      "role": "Accounts Manager",
+      "read": 1,
+      "write": 1
+    },
+    {
+      "role": "Sales Manager",
+      "read": 1
+    },
+    {
+      "role": "Sales User",
+      "read": 1
+    },
+    {
+      "role": "Accounts User",
+      "read": 1
+    }
+  ]
+}

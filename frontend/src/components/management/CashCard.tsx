@@ -32,7 +32,9 @@ async function loadCash(): Promise<CashState> {
   const driftPct =
     erp != null && qboVal != null && erp !== 0 ? (driftAbs! / erp) * 100 : null
   return {
-    asOf: new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kolkata' }),
+    asOf:
+      qbo.as_of ??
+      new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kolkata' }),
     erpnext: erp,
     qbo: qboVal,
     qboConnected: qbo.connected,
