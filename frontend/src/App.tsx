@@ -12,7 +12,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
+      <BrowserRouter basename="/portal-v2">
         <Routes>
           <Route element={<AppShell />}>
             <Route index element={<Landing />} />

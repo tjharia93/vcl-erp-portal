@@ -1,0 +1,26 @@
+{%- set bundle_base = "/assets/vcl_portal/portal_v2" -%}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="{{ bundle_base }}/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080C17" />
+    <title>VCL Portal v2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" crossorigin href="{{ bundle_base }}/index.css" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #080C17; }
+      #root { min-height: 100vh; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" crossorigin src="{{ bundle_base }}/index.js"></script>
+  </body>
+</html>
