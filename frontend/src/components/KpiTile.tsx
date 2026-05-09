@@ -14,7 +14,7 @@ interface Props {
 const deltaColor = {
   up: vclTokens.green,
   down: vclTokens.red,
-  flat: 'rgba(231,234,242,0.6)',
+  flat: vclTokens.textMuted,
 } as const
 
 const deltaIcon = {
@@ -41,11 +41,12 @@ export default function KpiTile({ kpi }: Props) {
       }}
     >
       <Box
+        aria-hidden
         sx={{
           position: 'absolute',
           inset: 0,
           background:
-            'linear-gradient(140deg, rgba(43,57,144,0.10) 0%, transparent 55%)',
+            'linear-gradient(135deg, rgba(43,57,144,0.04) 0%, transparent 55%)',
           pointerEvents: 'none',
         }}
       />

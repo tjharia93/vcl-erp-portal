@@ -13,78 +13,88 @@ export default function Landing() {
       <Box
         sx={{
           position: 'relative',
-          py: { xs: 6, md: 10 },
+          py: { xs: 6, md: 9 },
           px: { xs: 2, md: 4 },
           borderRadius: 2,
           border: `1px solid ${vclTokens.border}`,
+          backgroundColor: vclTokens.paper,
           overflow: 'hidden',
-          background:
-            'linear-gradient(140deg, rgba(43,57,144,0.18) 0%, rgba(8,12,23,0.9) 60%), radial-gradient(700px 280px at 100% 0%, rgba(237,28,36,0.18), transparent 70%)',
         }}
       >
-        <Box sx={{ mb: 3 }}>
-          <Logo size="md" />
+        <Box
+          aria-hidden
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(135deg, rgba(43,57,144,0.04) 0%, rgba(255,255,255,0) 50%), radial-gradient(700px 280px at 100% 0%, rgba(43,57,144,0.06), transparent 70%)',
+            pointerEvents: 'none',
+          }}
+        />
+        <Box sx={{ position: 'relative' }}>
+          <Box sx={{ mb: 3 }}>
+            <Logo size="md" />
+          </Box>
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: '2.2rem', sm: '3rem', md: '3.8rem' },
+              lineHeight: 1.05,
+              color: vclTokens.text,
+              maxWidth: 920,
+            }}
+          >
+            Manufacturing &amp; distribution,
+            <br />
+            operated from one desk.
+          </Typography>
+          <Typography
+            sx={{
+              mt: 2.5,
+              maxWidth: 640,
+              fontFamily: FONT_DISPLAY,
+              fontWeight: 500,
+              letterSpacing: '0.01em',
+              color: vclTokens.textMuted,
+              fontSize: { xs: '1rem', md: '1.15rem' },
+            }}
+          >
+            Vimit Converters Limited &mdash; printing, packaging and supply, run on
+            ERPNext and QuickBooks. Role-aware dashboards for management, sales and
+            the shop floor.
+          </Typography>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 4 }}>
+            <Button
+              component={RouterLink}
+              to="/login"
+              variant="contained"
+              size="large"
+              startIcon={<LoginIcon />}
+            >
+              Open the Portal
+            </Button>
+            <Button
+              component={RouterLink}
+              to="/management"
+              variant="outlined"
+              color="primary"
+              size="large"
+            >
+              Preview Management Desk
+            </Button>
+          </Stack>
+          <Typography
+            sx={{
+              mt: 4,
+              fontFamily: FONT_MONO,
+              fontSize: '0.7rem',
+              letterSpacing: '0.18em',
+              color: vclTokens.textMuted,
+            }}
+          >
+            LIVE FRAPPE DATA WHEN SIGNED IN · MOCK FALLBACK OTHERWISE
+          </Typography>
         </Box>
-        <Typography
-          variant="h1"
-          sx={{
-            fontSize: { xs: '2.4rem', sm: '3.4rem', md: '4.4rem' },
-            lineHeight: 1.05,
-            color: '#fff',
-            maxWidth: 920,
-          }}
-        >
-          MANUFACTURING &amp; DISTRIBUTION,
-          <br />
-          OPERATED FROM ONE DESK.
-        </Typography>
-        <Typography
-          sx={{
-            mt: 2.5,
-            maxWidth: 640,
-            fontFamily: FONT_DISPLAY,
-            fontWeight: 500,
-            letterSpacing: '0.02em',
-            color: 'rgba(231,234,242,0.7)',
-            fontSize: { xs: '1rem', md: '1.15rem' },
-          }}
-        >
-          Vimit Converters Limited &mdash; printing, packaging and supply, run on
-          ERPNext + QuickBooks. Role-aware dashboards for management, sales and the
-          shop floor.
-        </Typography>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 4 }}>
-          <Button
-            component={RouterLink}
-            to="/login"
-            variant="contained"
-            size="large"
-            startIcon={<LoginIcon />}
-          >
-            Open the Portal
-          </Button>
-          <Button
-            component={RouterLink}
-            to="/management"
-            variant="outlined"
-            color="inherit"
-            size="large"
-            sx={{ borderColor: 'rgba(255,255,255,0.18)', color: '#fff' }}
-          >
-            Preview Management Desk
-          </Button>
-        </Stack>
-        <Typography
-          sx={{
-            mt: 4,
-            fontFamily: FONT_MONO,
-            fontSize: '0.7rem',
-            letterSpacing: '0.18em',
-            color: 'rgba(231,234,242,0.45)',
-          }}
-        >
-          PROTOTYPE · MOCK DATA · NO LIVE BACKEND
-        </Typography>
       </Box>
 
       <Stack
@@ -105,7 +115,7 @@ export default function Landing() {
         <FeatureBlock
           icon={<VerifiedIcon />}
           title="Role-aware"
-          body="Management, Sales Manager and Sales Rep each get the desk they need - nothing more."
+          body="Management, Sales Manager and Sales Rep each get the desk they need — nothing more."
         />
       </Stack>
     </Stack>
@@ -130,10 +140,10 @@ function FeatureBlock({ icon, title, body }: FeatureBlockProps) {
       }}
     >
       <Box sx={{ color: vclTokens.blue, mb: 1.5 }}>{icon}</Box>
-      <Typography variant="h6" sx={{ color: '#fff', mb: 1 }}>
+      <Typography variant="h6" sx={{ mb: 1 }}>
         {title}
       </Typography>
-      <Typography sx={{ color: 'rgba(231,234,242,0.7)', fontSize: '0.95rem' }}>
+      <Typography sx={{ color: vclTokens.textMuted, fontSize: '0.95rem' }}>
         {body}
       </Typography>
     </Box>

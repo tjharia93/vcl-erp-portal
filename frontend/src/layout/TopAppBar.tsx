@@ -33,10 +33,9 @@ export default function TopAppBar({ mode }: Props) {
               component="a"
               href="/app"
               variant="outlined"
-              color="inherit"
+              color="primary"
               startIcon={<ArrowBackIcon />}
               size="small"
-              sx={{ borderColor: 'rgba(255,255,255,0.18)', color: '#fff' }}
             >
               Back to Desk
             </Button>

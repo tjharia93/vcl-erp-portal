@@ -5,21 +5,21 @@ import ARAgeingCard from '../components/management/ARAgeingCard'
 import RevenueTargetCard from '../components/management/RevenueTargetCard'
 import StockSummaryCard from '../components/management/StockSummaryCard'
 import ProductionFloorCard from '../components/management/ProductionFloorCard'
-import { FONT_MONO } from '../theme'
+import { FONT_MONO, vclTokens } from '../theme'
 
 export default function Management() {
   return (
     <Stack spacing={3}>
       <Box>
-        <Typography variant="h4" component="h1" sx={{ color: '#fff' }}>
-          MANAGEMENT DESK
+        <Typography variant="h4" component="h1" sx={{ color: 'text.primary' }}>
+          Management Desk
         </Typography>
         <Typography
           sx={{
             fontFamily: FONT_MONO,
             fontSize: '0.7rem',
             letterSpacing: '0.18em',
-            color: 'rgba(231,234,242,0.5)',
+            color: vclTokens.textMuted,
             mt: 0.5,
           }}
         >

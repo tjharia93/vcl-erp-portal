@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Paper,
@@ -13,7 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import LoginIcon from '@mui/icons-material/Login'
 import { roleHomePath, setRole } from '../auth'
 import type { Role } from '../mock/types'
-import { FONT_MONO } from '../theme'
+import { FONT_MONO, vclTokens } from '../theme'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -27,31 +28,42 @@ export default function Login() {
     navigate(roleHomePath(role))
   }
 
+  const frappeLoginHref =
+    '/login?redirect-to=' + encodeURIComponent('/portal-v2' + roleHomePath(role))
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', py: { xs: 2, md: 6 } }}>
       <Paper
         elevation={0}
         component="form"
         onSubmit={handleSubmit}
-        sx={{ width: '100%', maxWidth: 440, p: { xs: 3, sm: 4 } }}
+        sx={{ width: '100%', maxWidth: 460, p: { xs: 3, sm: 4 } }}
       >
         <Stack spacing={3}>
           <Box>
-            <Typography variant="h4" component="h1" sx={{ color: '#fff' }}>
-              SIGN IN
+            <Typography variant="h4" component="h1">
+              Sign in
             </Typography>
             <Typography
               sx={{
                 fontFamily: FONT_MONO,
                 fontSize: '0.7rem',
                 letterSpacing: '0.18em',
-                color: 'rgba(231,234,242,0.5)',
+                color: vclTokens.textMuted,
                 mt: 0.5,
               }}
             >
               VCL PORTAL · EMPLOYEE ACCESS
             </Typography>
           </Box>
+
+          <Alert severity="info" sx={{ fontSize: '0.85rem' }}>
+            For live data, sign in to Frappe via{' '}
+            <Box component="a" href={frappeLoginHref} sx={{ color: 'primary.main', fontWeight: 600 }}>
+              /login
+            </Box>
+            . The form below is a role preview and does not authenticate.
+          </Alert>
 
           <Stack spacing={2}>
             <TextField
@@ -79,11 +91,11 @@ export default function Login() {
                 fontFamily: FONT_MONO,
                 fontSize: '0.68rem',
                 letterSpacing: '0.16em',
-                color: 'rgba(231,234,242,0.5)',
+                color: vclTokens.textMuted,
                 mb: 1,
               }}
             >
-              ROLE
+              PREVIEW AS ROLE
             </Typography>
             <ToggleButtonGroup
               value={role}
@@ -97,15 +109,8 @@ export default function Login() {
                   justifyContent: 'flex-start',
                   textTransform: 'none',
                   letterSpacing: 'normal',
-                  color: 'rgba(231,234,242,0.78)',
-                  borderColor: 'rgba(255,255,255,0.12)',
                   fontWeight: 500,
                   px: 2,
-                },
-                '& .Mui-selected': {
-                  backgroundColor: 'rgba(43,57,144,0.35) !important',
-                  color: '#fff !important',
-                  borderColor: 'rgba(61,77,184,0.6) !important',
                 },
               }}
             >
@@ -122,7 +127,7 @@ export default function Login() {
             fullWidth
             startIcon={<LoginIcon />}
           >
-            Sign in
+            Open preview
           </Button>
 
           <Typography
@@ -130,11 +135,11 @@ export default function Login() {
               fontFamily: FONT_MONO,
               fontSize: '0.65rem',
               letterSpacing: '0.14em',
-              color: 'rgba(231,234,242,0.4)',
+              color: vclTokens.textMuted,
               textAlign: 'center',
             }}
           >
-            PROTOTYPE · NO REAL AUTH · ROLE STORED LOCALLY
+            ROLE STORED LOCALLY · LIVE DATA REQUIRES FRAPPE SESSION
           </Typography>
         </Stack>
       </Paper>

@@ -26,13 +26,13 @@ const labelMap: Record<Status, string> = {
 }
 
 const colorMap: Record<Status, { fg: string; bg: string; dot: string }> = {
-  RUNNING: { fg: vclTokens.green, bg: 'rgba(62,180,137,0.12)', dot: vclTokens.green },
-  'on-track': { fg: vclTokens.green, bg: 'rgba(62,180,137,0.12)', dot: vclTokens.green },
-  IDLE: { fg: 'rgba(231,234,242,0.78)', bg: 'rgba(255,255,255,0.06)', dot: 'rgba(231,234,242,0.5)' },
-  LOW: { fg: vclTokens.amber, bg: 'rgba(242,168,59,0.12)', dot: vclTokens.amber },
-  DOWN: { fg: vclTokens.red, bg: 'rgba(237,28,36,0.14)', dot: vclTokens.red },
-  CRITICAL: { fg: vclTokens.red, bg: 'rgba(237,28,36,0.14)', dot: vclTokens.red },
-  behind: { fg: vclTokens.red, bg: 'rgba(237,28,36,0.14)', dot: vclTokens.red },
+  RUNNING: { fg: vclTokens.green, bg: vclTokens.greenLight, dot: vclTokens.green },
+  'on-track': { fg: vclTokens.green, bg: vclTokens.greenLight, dot: vclTokens.green },
+  IDLE: { fg: vclTokens.textMuted, bg: '#EEF0F6', dot: vclTokens.textMuted },
+  LOW: { fg: vclTokens.amber, bg: vclTokens.amberLight, dot: vclTokens.amber },
+  DOWN: { fg: vclTokens.red, bg: vclTokens.redLight, dot: vclTokens.red },
+  CRITICAL: { fg: vclTokens.red, bg: vclTokens.redLight, dot: vclTokens.red },
+  behind: { fg: vclTokens.red, bg: vclTokens.redLight, dot: vclTokens.red },
 }
 
 export default function StatusChip({ status, labelOverride }: Props) {

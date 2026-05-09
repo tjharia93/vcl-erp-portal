@@ -23,7 +23,7 @@ export default function Logo({ size = 'sm' }: Props) {
           fontWeight: 700,
           letterSpacing: '0.18em',
           fontSize: big ? '1.5rem' : '1.05rem',
-          color: '#fff',
+          color: vclTokens.text,
         }}
       >
         VCL
@@ -34,7 +34,7 @@ export default function Logo({ size = 'sm' }: Props) {
           fontWeight: 500,
           letterSpacing: '0.22em',
           fontSize: big ? '0.85rem' : '0.66rem',
-          color: 'rgba(231,234,242,0.55)',
+          color: vclTokens.textMuted,
           mt: big ? '6px' : '2px',
         }}
       >

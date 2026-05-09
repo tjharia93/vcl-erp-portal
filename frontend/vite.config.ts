@@ -24,5 +24,14 @@ export default defineConfig({
   server: {
     port: 5174,
     host: true,
+    // Set VITE_FRAPPE_HOST to point npm run dev at a real bench (default off).
+    proxy: process.env.VITE_FRAPPE_HOST
+      ? {
+          '/api': { target: process.env.VITE_FRAPPE_HOST, changeOrigin: true },
+          '/assets': { target: process.env.VITE_FRAPPE_HOST, changeOrigin: true },
+          '/login': { target: process.env.VITE_FRAPPE_HOST, changeOrigin: true },
+          '/app': { target: process.env.VITE_FRAPPE_HOST, changeOrigin: true },
+        }
+      : undefined,
   },
 })

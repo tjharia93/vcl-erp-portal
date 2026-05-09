@@ -67,7 +67,7 @@ export default function BottomNav({ role }: Props) {
         borderRight: 'none',
         borderBottom: 'none',
         backdropFilter: 'blur(8px)',
-        backgroundColor: 'rgba(8,12,23,0.92)',
+        backgroundColor: 'rgba(255,255,255,0.96)',
         display: { xs: 'block', md: 'none' },
       }}
     >

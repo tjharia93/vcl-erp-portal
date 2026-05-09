@@ -1,69 +1,84 @@
 import { createTheme } from '@mui/material/styles'
 
-const VCL_NAVY = '#080C17'
-const VCL_PAPER = '#0E1426'
-const VCL_PAPER_HI = '#141B30'
-const VCL_BORDER = 'rgba(255,255,255,0.08)'
-const VCL_BORDER_HI = 'rgba(255,255,255,0.16)'
+// VCL Brand Standards v1.0 — light surfaces, navy primary used sparingly,
+// red restricted to true error / alert states. Tokens mirror the existing
+// vcl_portal/public/css/vcl-website.css so portal-v2 visually aligns with
+// /home and /uat (Avery-Dennison-style refinement).
+const VCL_BG = '#F5F6FA'
+const VCL_PAPER = '#FFFFFF'
+const VCL_PAPER_ALT = '#FAFBFD'
+const VCL_BORDER = '#D9DDE7'
+const VCL_BORDER_HI = '#C4CADA'
 const VCL_BLUE = '#2B3990'
-const VCL_BLUE_HI = '#3D4DB8'
+const VCL_BLUE_DARK = '#1D2766'
+const VCL_BLUE_PALE = '#F4F6FC'
 const VCL_RED = '#ED1C24'
-const VCL_AMBER = '#F2A83B'
-const VCL_GREEN = '#3EB489'
+const VCL_RED_LIGHT = '#FBEAE7'
+const VCL_AMBER = '#B86B00'
+const VCL_AMBER_LIGHT = '#FCF3DF'
+const VCL_GREEN = '#1B7A45'
+const VCL_GREEN_LIGHT = '#E5F1EC'
+const VCL_TEXT = '#1F2937'
+const VCL_TEXT_MUTED = '#6B7280'
 
 export const FONT_DISPLAY = '"Barlow Condensed", "Barlow", system-ui, sans-serif'
 export const FONT_BODY = '"Barlow", system-ui, -apple-system, sans-serif'
 export const FONT_MONO = '"IBM Plex Mono", ui-monospace, monospace'
 
 export const vclTokens = {
-  navy: VCL_NAVY,
+  bg: VCL_BG,
   paper: VCL_PAPER,
-  paperHi: VCL_PAPER_HI,
+  paperAlt: VCL_PAPER_ALT,
   border: VCL_BORDER,
   borderHi: VCL_BORDER_HI,
   blue: VCL_BLUE,
+  blueDark: VCL_BLUE_DARK,
+  bluePale: VCL_BLUE_PALE,
   red: VCL_RED,
+  redLight: VCL_RED_LIGHT,
   amber: VCL_AMBER,
+  amberLight: VCL_AMBER_LIGHT,
   green: VCL_GREEN,
+  greenLight: VCL_GREEN_LIGHT,
+  text: VCL_TEXT,
+  textMuted: VCL_TEXT_MUTED,
 } as const
 
 const theme = createTheme({
   palette: {
-    mode: 'dark',
-    primary: { main: VCL_BLUE, light: VCL_BLUE_HI, contrastText: '#fff' },
-    error: { main: VCL_RED, contrastText: '#fff' },
-    warning: { main: VCL_AMBER, contrastText: '#0B0F1A' },
-    success: { main: VCL_GREEN, contrastText: '#0B0F1A' },
-    background: { default: VCL_NAVY, paper: VCL_PAPER },
-    text: {
-      primary: '#E7EAF2',
-      secondary: 'rgba(231,234,242,0.66)',
-      disabled: 'rgba(231,234,242,0.36)',
-    },
+    mode: 'light',
+    primary: { main: VCL_BLUE, dark: VCL_BLUE_DARK, light: '#5C6DBE', contrastText: '#fff' },
+    error: { main: VCL_RED, light: VCL_RED_LIGHT, contrastText: '#fff' },
+    warning: { main: VCL_AMBER, light: VCL_AMBER_LIGHT, contrastText: '#fff' },
+    success: { main: VCL_GREEN, light: VCL_GREEN_LIGHT, contrastText: '#fff' },
+    background: { default: VCL_BG, paper: VCL_PAPER },
+    text: { primary: VCL_TEXT, secondary: VCL_TEXT_MUTED },
     divider: VCL_BORDER,
   },
   shape: { borderRadius: 8 },
   typography: {
     fontFamily: FONT_BODY,
-    h1: { fontFamily: FONT_DISPLAY, fontWeight: 700, letterSpacing: '0.01em' },
-    h2: { fontFamily: FONT_DISPLAY, fontWeight: 700, letterSpacing: '0.01em' },
-    h3: { fontFamily: FONT_DISPLAY, fontWeight: 700, letterSpacing: '0.02em' },
-    h4: { fontFamily: FONT_DISPLAY, fontWeight: 600, letterSpacing: '0.02em' },
-    h5: { fontFamily: FONT_DISPLAY, fontWeight: 600, letterSpacing: '0.03em' },
-    h6: { fontFamily: FONT_DISPLAY, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' },
-    button: { fontFamily: FONT_DISPLAY, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' },
-    overline: { fontFamily: FONT_MONO, fontWeight: 500, letterSpacing: '0.12em' },
-    caption: { fontFamily: FONT_BODY },
+    h1: { fontFamily: FONT_DISPLAY, fontWeight: 700, letterSpacing: '0.005em', color: VCL_TEXT },
+    h2: { fontFamily: FONT_DISPLAY, fontWeight: 700, letterSpacing: '0.01em', color: VCL_TEXT },
+    h3: { fontFamily: FONT_DISPLAY, fontWeight: 700, letterSpacing: '0.02em', color: VCL_TEXT },
+    h4: { fontFamily: FONT_DISPLAY, fontWeight: 600, letterSpacing: '0.02em', color: VCL_TEXT },
+    h5: { fontFamily: FONT_DISPLAY, fontWeight: 600, letterSpacing: '0.03em', color: VCL_TEXT },
+    h6: {
+      fontFamily: FONT_DISPLAY,
+      fontWeight: 600,
+      letterSpacing: '0.06em',
+      textTransform: 'uppercase',
+      color: VCL_TEXT,
+      fontSize: '0.95rem',
+    },
+    button: { fontFamily: FONT_BODY, fontWeight: 600, letterSpacing: '0.02em', textTransform: 'none' },
+    overline: { fontFamily: FONT_MONO, fontWeight: 500, letterSpacing: '0.14em', color: VCL_TEXT_MUTED },
+    caption: { fontFamily: FONT_BODY, color: VCL_TEXT_MUTED },
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        body: {
-          backgroundColor: VCL_NAVY,
-          backgroundImage:
-            'radial-gradient(1200px 600px at 10% -10%, rgba(43,57,144,0.18), transparent 60%), radial-gradient(800px 500px at 90% 0%, rgba(237,28,36,0.06), transparent 70%)',
-          backgroundAttachment: 'fixed',
-        },
+        body: { backgroundColor: VCL_BG, color: VCL_TEXT },
       },
     },
     MuiPaper: {
@@ -71,14 +86,16 @@ const theme = createTheme({
         root: {
           backgroundImage: 'none',
           border: `1px solid ${VCL_BORDER}`,
+          boxShadow: '0 1px 0 rgba(8,12,23,0.04)',
         },
+        elevation0: { boxShadow: 'none' },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: 'rgba(8,12,23,0.85)',
-          backdropFilter: 'blur(8px)',
+          backgroundColor: VCL_PAPER,
+          color: VCL_TEXT,
           borderBottom: `1px solid ${VCL_BORDER}`,
           boxShadow: 'none',
         },
@@ -87,6 +104,7 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: { borderRadius: 6 },
+        outlined: { borderColor: VCL_BORDER_HI },
       },
     },
     MuiChip: {
@@ -99,33 +117,37 @@ const theme = createTheme({
         root: {
           height: 8,
           borderRadius: 4,
-          backgroundColor: 'rgba(255,255,255,0.06)',
+          backgroundColor: '#EEF0F6',
         },
-        bar: {
-          borderRadius: 4,
-        },
+        bar: { borderRadius: 4 },
       },
     },
     MuiTableCell: {
       styleOverrides: {
-        root: {
-          borderBottom: `1px solid ${VCL_BORDER}`,
-        },
+        root: { borderBottom: `1px solid ${VCL_BORDER}` },
         head: {
           fontFamily: FONT_DISPLAY,
           fontWeight: 600,
           letterSpacing: '0.06em',
           textTransform: 'uppercase',
-          fontSize: '0.78rem',
-          color: 'rgba(231,234,242,0.6)',
+          fontSize: '0.74rem',
+          color: VCL_TEXT_MUTED,
+          backgroundColor: VCL_PAPER_ALT,
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&:hover': { backgroundColor: VCL_BLUE_PALE },
         },
       },
     },
     MuiBottomNavigationAction: {
       styleOverrides: {
         root: {
-          color: 'rgba(231,234,242,0.55)',
-          '&.Mui-selected': { color: '#fff' },
+          color: VCL_TEXT_MUTED,
+          '&.Mui-selected': { color: VCL_BLUE },
         },
         label: {
           fontFamily: FONT_DISPLAY,
